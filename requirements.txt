@@ -1,0 +1,11 @@
+# Core dependencies for the soccer analytics data pipeline.
+# Install with:  pip install -r requirements.txt
+
+# Data load tool (ELT framework) with the DuckDB destination extra.
+dlt[duckdb]>=1.27.2
+
+# HTTP client used to call the API-SPORTS / API-Football REST API.
+requests>=2.31.0
+
+# Pinned for the certifi CA bundle (resolves macOS SSL cert issues).
+certifi>=2024.0.0

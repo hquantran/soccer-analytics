@@ -1,0 +1,9 @@
+[api_sports]
+# Get your key from https://dashboard.api-football.com/ (or your RapidAPI account)
+key = "YOUR_API_KEY_HERE"
+base_url = "https://v3.football.api-sports.io"
+
+[query]
+team = 85
+search = "cavani"
+season = 2018
