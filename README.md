@@ -102,15 +102,31 @@ export SSL_CERT_FILE="$(python3 -m certifi)"
 
 ```
 soccer_analytics/
+├── api_client.py         # HTTP layer: retries, pacing, pagination
+├── config.py             # Load config.toml and build API headers
 ├── config.example.toml   # Template config (committed) — copy to config.toml
 ├── config.toml           # Your real config with API key (gitignored)
-├── requirements.txt      # Python dependencies
+├── sources/              # dlt resources (one module per endpoint)
+│   └── players.py
+├── pipelines/            # Thin runners that execute dlt pipelines
+│   └── run_players.py
+├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
 
-> Pipeline scripts will be added here as the project develops. The DuckDB file
-> (`*.duckdb`) is generated locally and is gitignored.
+The DuckDB file (`*.duckdb`) is generated locally and is gitignored.
+
+### Run the players pipeline
+
+From the project root with your venv activated:
+
+```sh
+python -m pipelines.run_players
+```
+
+This reads `team` and `season` from `[query]` in `config.toml`, fetches player
+stats via `api_client.py`, and loads them into `api_sports.duckdb`.
 
 ## Contributing
 
