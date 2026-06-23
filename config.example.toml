@@ -3,7 +3,13 @@
 key = "YOUR_API_KEY_HERE"
 base_url = "https://v3.football.api-sports.io"
 
+[api]
+# Free plan: ~10 requests/min and 100/day; max 3 pages per paginated query.
+safe_pause_seconds = 6.0
+max_retries = 3
+max_pages = 3
+
 [query]
-team = 85
-search = "cavani"
-season = 2018
+# Defaults used by pipelines/run_players.py (override for your test run).
+team = 33
+season = 2024
