@@ -9,6 +9,17 @@ from config import get_api_settings, load_config
 
 DEFAULT_BASE_URL = "https://v3.football.api-sports.io"
 
+_REQUESTS_MADE = 0
+
+
+def reset_requests_made() -> None:
+    global _REQUESTS_MADE
+    _REQUESTS_MADE = 0
+
+
+def get_requests_made() -> int:
+    return _REQUESTS_MADE
+
 
 def fetch_from_api(
     endpoint: str,
@@ -24,6 +35,8 @@ def fetch_from_api(
 
     Returns the parsed JSON body. Raises on HTTP errors or API-level errors.
     """
+    global _REQUESTS_MADE
+
     params = params or {}
     url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
@@ -37,6 +50,7 @@ def fetch_from_api(
     for attempt in range(max_retries + 1):
         try:
             response = requests.get(url, headers=headers, params=params, timeout=30)
+            _REQUESTS_MADE += 1
 
             if response.status_code == 429 or response.status_code >= 500:
                 wait_time = 15.0 * (attempt + 1)
