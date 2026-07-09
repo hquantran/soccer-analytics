@@ -1,6 +1,12 @@
 """Load player statistics into DuckDB using local metadata-driven logic."""
 
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from api_client import fetch_all_pages, reset_requests_made
 from config import get_api_settings, get_headers, load_config
