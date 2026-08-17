@@ -1,0 +1,9 @@
+
+# ELT transform layer (SQL models run against the DuckDB warehouse post-load).
+dbt-core>=1.8.0
+dbt-duckdb>=1.8.0
+
+# Extraction layer dependencies for the API-SPORTS pipeline.
+dlt[duckdb]>=1.27.2
+requests>=2.31.0
+certifi>=2024.0.0

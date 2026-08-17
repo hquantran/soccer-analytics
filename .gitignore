@@ -1,0 +1,8 @@
+# Local config and runtime artifacts
+config.toml
+*.duckdb
+__pycache__/
+*.pyc
+.venv/
+target/
+dbt_internal_packages/

@@ -1,0 +1,10 @@
+[api_sports]
+# Get your key from https://dashboard.api-football.com/
+key = "YOUR_API_KEY_HERE"
+base_url = "https://v3.football.api-sports.io"
+
+[api]
+# Free plan: ~10 requests/min and 100/day; max 3 pages per paginated query.
+safe_pause_seconds = 6.0
+max_retries = 3
+max_pages = 3

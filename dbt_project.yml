@@ -1,0 +1,16 @@
+name: 'soccer_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'soccer_analytics'
+
+model-paths: ["models"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  soccer_analytics:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

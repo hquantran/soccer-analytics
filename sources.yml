@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: api_sports   # matches dataset_name in pipelines/run_players.py
+    tables:
+      - name: players_raw
+      - name: players_raw__statistics

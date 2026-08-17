@@ -1,0 +1,7 @@
+soccer_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "api_sports.duckdb"   # local DuckDB file in the project root
+      schema: main                 # where dbt models materialize (raw stays in api_sports schema, see models/sources.yml)
