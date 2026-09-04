@@ -14,5 +14,4 @@ LEAGUE_IDS = [
 MVP_LEAGUE_IDS = LEAGUE_IDS
 
 # Target seasons for ingestion (inclusive).
-# Adjusted to 2023-2025 per request.
-SEASONS = [2023, 2024, 2025]
+SEASONS = list(range(2020, 2027))

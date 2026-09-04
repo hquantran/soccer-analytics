@@ -1,6 +1,7 @@
 -- Feature model computing per-90 player metrics from the staging player data.
 
 select
+    player_season_id,
     player_id,
     name,
     age,

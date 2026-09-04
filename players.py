@@ -23,15 +23,28 @@ from config import get_headers, load_config
 @dlt.resource(
     name="players_raw",
     write_disposition="merge",
-    primary_key="player__id",
+    # Preserve one row per player per season instead of overwriting previous
+    # seasons when the same player ID appears again in a new year.
+    primary_key=["player__id", "league__season"],
+    columns={
+        "dribbles__past": {"data_type": "bigint"},
+        "games__number": {"data_type": "bigint"},
+        "penalty__commited": {"data_type": "bigint"},
+        "penalty__won": {"data_type": "bigint"},
+        "league__id": {"data_type": "bigint"},
+        "league__season": {"data_type": "bigint"},
+    },
 )
 def players_resource(league_id: int, season: int):
-    """Yield raw /players API items, untouched, for one league/season."""
+    """Yield raw /players API items, tagged with season metadata for history."""
     config = load_config()
     headers = get_headers(config)
 
-    yield from fetch_all_pages(
+    for item in fetch_all_pages(
         "players",
         {"league": league_id, "season": season},
         headers=headers,
-    )
+    ):
+        item["league__id"] = league_id
+        item["league__season"] = season
+        yield item

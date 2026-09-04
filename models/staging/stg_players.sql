@@ -7,8 +7,8 @@ with player as (
         player__name as name,
         player__age as age,
         player__nationality as nationality,
-        player__height as height_cm,
-        player__weight as weight_kg,
+        regexp_replace(player__height, '[^0-9]', '', 'g')::int as height_cm,
+        regexp_replace(player__weight, '[^0-9]', '', 'g')::int as weight_kg,
         player__injured as injured
     from {{ source('raw', 'players_raw') }}
 ),
@@ -20,7 +20,10 @@ stats as (
         team__name as team_name,
         league__id as league_id,
         league__season as season,
-        games__position as position,
+        case
+            when games__position = 'Forward' then 'Attacker'
+            else games__position
+        end as position,
         games__appearences as appearances,
         games__minutes as minutes,
         cast(games__rating as double) as rating,
@@ -45,6 +48,7 @@ stats as (
 )
 
 select
+    {{ dbt_utils.generate_surrogate_key(['player_id', 'team_id', 'league_id', 'season']) }} as player_season_id,
     p.player_id,
     p.name,
     p.age,

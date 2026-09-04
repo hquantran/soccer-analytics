@@ -10,11 +10,13 @@ from config import get_api_settings, load_config
 DEFAULT_BASE_URL = "https://v3.football.api-sports.io"
 
 _REQUESTS_MADE = 0
+_REQUESTS_REMAINING: Optional[int] = None
 
 
 def reset_requests_made() -> None:
-    global _REQUESTS_MADE
+    global _REQUESTS_MADE, _REQUESTS_REMAINING
     _REQUESTS_MADE = 0
+    _REQUESTS_REMAINING = None
 
 
 def get_requests_made() -> int:
@@ -29,22 +31,30 @@ def fetch_from_api(
     base_url: str = DEFAULT_BASE_URL,
     safe_pause_seconds: Optional[float] = None,
     max_retries: Optional[int] = None,
+    quota_reserve: Optional[int] = None,
 ) -> dict:
     """GET one API page with retries, pacing, and quota logging."""
-    global _REQUESTS_MADE
+    global _REQUESTS_MADE, _REQUESTS_REMAINING
 
     params = params or {}
     url = f"{base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
-    if safe_pause_seconds is None or max_retries is None:
+    if safe_pause_seconds is None or max_retries is None or quota_reserve is None:
         settings = get_api_settings(load_config())
         safe_pause_seconds = safe_pause_seconds or settings["safe_pause_seconds"]
         max_retries = max_retries if max_retries is not None else settings["max_retries"]
+        quota_reserve = quota_reserve if quota_reserve is not None else settings["quota_reserve"]
 
     last_error: Optional[Exception] = None
 
     for attempt in range(max_retries + 1):
         try:
+            if _REQUESTS_REMAINING is not None and _REQUESTS_REMAINING <= quota_reserve:
+                raise RuntimeError(
+                    f"Stopping before API quota reserve is exhausted: "
+                    f"{_REQUESTS_REMAINING} requests remaining, reserve is {quota_reserve}."
+                )
+
             response = requests.get(url, headers=headers, params=params, timeout=30)
             _REQUESTS_MADE += 1
 
@@ -67,6 +77,7 @@ def fetch_from_api(
             remaining = response.headers.get("x-ratelimit-requests-remaining")
             limit = response.headers.get("x-ratelimit-requests-limit")
             if remaining and limit:
+                _REQUESTS_REMAINING = int(remaining)
                 print(f"API quota: {remaining}/{limit} requests remaining today.")
 
             time.sleep(safe_pause_seconds)
@@ -92,10 +103,14 @@ def fetch_all_pages(
     max_pages: Optional[int] = None,
     safe_pause_seconds: Optional[float] = None,
     max_retries: Optional[int] = None,
+    quota_reserve: Optional[int] = None,
 ) -> Iterator[dict[str, Any]]:
     """Yield each item from a paginated endpoint's response list."""
+    settings = get_api_settings(load_config())
     if max_pages is None:
-        max_pages = get_api_settings(load_config()).get("max_pages")
+        max_pages = settings.get("max_pages")
+    if quota_reserve is None:
+        quota_reserve = settings.get("quota_reserve", 5)
 
     page = 1
     total_pages = 1
@@ -111,6 +126,7 @@ def fetch_all_pages(
             base_url=base_url,
             safe_pause_seconds=safe_pause_seconds,
             max_retries=max_retries,
+            quota_reserve=quota_reserve,
         )
         total_pages = payload.get("paging", {}).get("total", 1)
         yield from payload.get("response", [])

@@ -31,8 +31,9 @@ def get_headers(config: dict) -> dict:
 
 def get_api_settings(config: dict) -> dict:
     defaults = {
-        "safe_pause_seconds": 6.0,
+        "safe_pause_seconds": 2.0,
         "max_retries": 3,
-        "max_pages": 3,
+        "max_pages": None,
+        "quota_reserve": 5,
     }
     return {**defaults, **config.get("api", {})}
