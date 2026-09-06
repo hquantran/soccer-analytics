@@ -13232,3 +13232,2236 @@ alter table "api_sports"."main"."player_features__dbt_tmp" rename to "player_fea
 [0m14:58:19.477218 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001677D1E6170>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001677CECFD10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001677A93F4D0>]}
 [0m14:58:19.477601 [debug] [MainThread]: Flushing usage events
 [0m14:58:20.075285 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:29:31.324252 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2AEF4E120>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2AC6FE850>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B191B890>]}
+
+
+============================== 22:29:31.337831 | 95b30f99-cffa-4fcd-8968-709cd08bf319 ==============================
+[0m22:29:31.337831 [info ] [MainThread]: Running with dbt=1.12.3
+[0m22:29:31.338851 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'version_check': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'maximum_seed_size_mib': '1', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'profiles_dir': '.', 'invocation_command': 'dbt run --project-dir . --profiles-dir .', 'hints_enabled': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'indirect_selection': 'eager', 'log_path': 'logs'}
+[0m22:29:32.133808 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B199E780>]}
+[0m22:29:32.345873 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B1BB3790>]}
+[0m22:29:32.371564 [info ] [MainThread]: Registered adapter: duckdb=1.11.0
+[0m22:29:33.051369 [debug] [MainThread]: checksum: ee3cd47c58ccbdbeea38ae32d7431346e64a2003cf51f67bdbc91e87c624f56d, vars: {}, profile: soccer_analytics, target: dev, version: 1.12.3
+[0m22:29:33.276187 [info ] [MainThread]: Unable to do partial parsing because of a version mismatch
+[0m22:29:33.277422 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B2082250>]}
+[0m22:29:37.987091 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B37C5C70>]}
+[0m22:29:38.143647 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:29:38.172377 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:29:38.251196 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:29:38.290777 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B39191D0>]}
+[0m22:29:38.294090 [info ] [MainThread]: Found 2 models, 37 data tests, 2 sources, 618 macros
+[0m22:29:38.295426 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B39A93D0>]}
+[0m22:29:38.303781 [info ] [MainThread]: 
+[0m22:29:38.305950 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m22:29:38.307050 [info ] [MainThread]: 
+[0m22:29:38.309073 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:29:38.322423 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_api_sports'
+[0m22:29:38.652090 [debug] [ThreadPool]: Using duckdb connection "list_api_sports"
+[0m22:29:38.653035 [debug] [ThreadPool]: On list_api_sports: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "list_api_sports"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"api_sports"'
+    
+  
+  
+[0m22:29:38.653631 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:29:38.727263 [debug] [ThreadPool]: SQL status: OK in 0.074 seconds
+[0m22:29:38.729376 [debug] [ThreadPool]: On list_api_sports: Close
+[0m22:29:38.730518 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_api_sports, now create_api_sports_main)
+[0m22:29:38.731032 [debug] [ThreadPool]: Creating schema "database: "api_sports"
+schema: "main"
+"
+[0m22:29:38.741424 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:29:38.742592 [debug] [ThreadPool]: On create_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "create_api_sports_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='api_sports'
+        and type != 'duckdb'
+    
+  
+[0m22:29:38.743631 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m22:29:38.746960 [debug] [ThreadPool]: SQL status: OK in 0.004 seconds
+[0m22:29:38.748628 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:29:38.749809 [debug] [ThreadPool]: On create_api_sports_main: BEGIN
+[0m22:29:38.751208 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m22:29:38.751807 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:29:38.752096 [debug] [ThreadPool]: On create_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "create_api_sports_main"} */
+
+    
+    
+        create schema if not exists "api_sports"."main"
+    
+[0m22:29:38.753693 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:29:38.754545 [debug] [ThreadPool]: On create_api_sports_main: COMMIT
+[0m22:29:38.754816 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:29:38.755050 [debug] [ThreadPool]: On create_api_sports_main: COMMIT
+[0m22:29:38.755484 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m22:29:38.755755 [debug] [ThreadPool]: On create_api_sports_main: Close
+[0m22:29:38.758998 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_api_sports_main'
+[0m22:29:38.764670 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:29:38.765429 [debug] [ThreadPool]: On list_api_sports_main: BEGIN
+[0m22:29:38.765760 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:29:38.767526 [debug] [ThreadPool]: SQL status: OK in 0.002 seconds
+[0m22:29:38.768252 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:29:38.768639 [debug] [ThreadPool]: On list_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "list_api_sports_main"} */
+select
+      'api_sports' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'api_sports'
+  
+[0m22:29:38.783118 [debug] [ThreadPool]: SQL status: OK in 0.014 seconds
+[0m22:29:38.785721 [debug] [ThreadPool]: On list_api_sports_main: ROLLBACK
+[0m22:29:38.786913 [debug] [ThreadPool]: On list_api_sports_main: Close
+[0m22:29:38.789041 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B390BD10>]}
+[0m22:29:38.789748 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:29:38.790036 [debug] [MainThread]: On master: BEGIN
+[0m22:29:38.790277 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:29:38.790875 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:29:38.791435 [debug] [MainThread]: On master: COMMIT
+[0m22:29:38.792319 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:29:38.793069 [debug] [MainThread]: On master: COMMIT
+[0m22:29:38.794048 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:29:38.794593 [debug] [MainThread]: On master: Close
+[0m22:29:38.829581 [debug] [Thread-1 (]: Began running node model.soccer_analytics.stg_players
+[0m22:29:38.830236 [info ] [Thread-1 (]: 1 of 2 START sql view model main.stg_players ................................... [RUN]
+[0m22:29:38.831729 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.soccer_analytics.stg_players'
+[0m22:29:38.833306 [debug] [Thread-1 (]: Began compiling node model.soccer_analytics.stg_players
+[0m22:29:38.845509 [debug] [Thread-1 (]: Writing injected SQL for node "model.soccer_analytics.stg_players"
+[0m22:29:38.846937 [debug] [Thread-1 (]: Began executing node model.soccer_analytics.stg_players
+[0m22:29:38.892425 [debug] [Thread-1 (]: Writing runtime sql for node "model.soccer_analytics.stg_players"
+[0m22:29:38.895912 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:29:38.896800 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: BEGIN
+[0m22:29:38.897434 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:29:38.899273 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:29:38.900265 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:29:38.900745 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+  
+  create view "api_sports"."main"."stg_players__dbt_tmp" as (
+    -- Staging model for raw player statistics loaded by dlt.
+
+with player as (
+    select
+        _dlt_id as player_row_id,
+        player__id as player_id,
+        player__name as name,
+        player__age as age,
+        player__nationality as nationality,
+        regexp_replace(player__height, '[^0-9]', '', 'g')::int as height_cm,
+        regexp_replace(player__weight, '[^0-9]', '', 'g')::int as weight_kg,
+        player__injured as injured
+    from "api_sports"."soccer_analytics_data"."players_raw"
+),
+
+stats as (
+    select
+        _dlt_parent_id as player_row_id,
+        team__id as team_id,
+        team__name as team_name,
+        league__id as league_id,
+        league__season as season,
+        case
+            when games__position = 'Forward' then 'Attacker'
+            else games__position
+        end as position,
+        games__appearences as appearances,
+        games__minutes as minutes,
+        cast(games__rating as double) as rating,
+        goals__total as goals,
+        goals__assists as assists,
+        shots__total as shots_total,
+        shots__on as shots_on_target,
+        passes__total as passes_total,
+        passes__key as passes_key,
+        cast(passes__accuracy as double) as passes_accuracy_pct,
+        tackles__total as tackles_total,
+        duels__total as duels_total,
+        duels__won as duels_won,
+        dribbles__attempts as dribbles_attempts,
+        dribbles__success as dribbles_success,
+        fouls__drawn as fouls_drawn,
+        fouls__committed as fouls_committed,
+        cards__yellow as cards_yellow,
+        cards__red as cards_red
+    from "api_sports"."soccer_analytics_data"."players_raw__statistics"
+    where games__minutes >= 300
+)
+
+select
+    md5(cast(coalesce(cast(player_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(team_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(league_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(season as TEXT), '_dbt_utils_surrogate_key_null_') as TEXT)) as player_season_id,
+    p.player_id,
+    p.name,
+    p.age,
+    p.nationality,
+    p.height_cm,
+    p.weight_kg,
+    p.injured,
+    s.team_id,
+    s.team_name,
+    s.league_id,
+    s.season,
+    s.position,
+    s.appearances,
+    s.minutes,
+    s.rating,
+    s.goals,
+    s.assists,
+    s.shots_total,
+    s.shots_on_target,
+    s.passes_total,
+    s.passes_key,
+    s.passes_accuracy_pct,
+    s.tackles_total,
+    s.duels_total,
+    s.duels_won,
+    s.dribbles_attempts,
+    s.dribbles_success,
+    s.fouls_drawn,
+    s.fouls_committed,
+    s.cards_yellow,
+    s.cards_red
+from player p
+inner join stats s using (player_row_id)
+  );
+
+[0m22:29:38.904649 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:29:38.912215 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:29:38.912662 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+alter view "api_sports"."main"."stg_players" rename to "stg_players__dbt_backup"
+[0m22:29:38.913524 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:29:38.916977 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:29:38.917402 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+alter view "api_sports"."main"."stg_players__dbt_tmp" rename to "stg_players"
+[0m22:29:38.918223 [debug] [Thread-1 (]: SQL status: OK in 0.000 seconds
+[0m22:29:38.936454 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:29:38.936960 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+        COPY (SELECT * FROM "api_sports"."main"."stg_players") TO 'output/stg_players.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+      
+[0m22:29:39.012947 [debug] [Thread-1 (]: DuckDB adapter: duckdb error: Conversion Error: Could not convert string '' to INT32
+[0m22:29:39.013836 [debug] [Thread-1 (]: DuckDB adapter: Error running SQL: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+        COPY (SELECT * FROM "api_sports"."main"."stg_players") TO 'output/stg_players.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+      
+[0m22:29:39.014735 [debug] [Thread-1 (]: DuckDB adapter: Rolling back transaction.
+[0m22:29:39.015550 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: ROLLBACK
+[0m22:29:39.017653 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: Close
+[0m22:29:39.117829 [debug] [Thread-1 (]: Runtime Error in model stg_players (models\staging\stg_players.sql)
+  Conversion Error: Could not convert string '' to INT32
+[0m22:29:39.123081 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '95b30f99-cffa-4fcd-8968-709cd08bf319', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2AF463800>]}
+[0m22:29:39.124825 [error] [Thread-1 (]: 1 of 2 ERROR creating sql view model main.stg_players .......................... [[31mERROR[0m in 0.29s]
+[0m22:29:39.127897 [debug] [Thread-1 (]: Finished running node model.soccer_analytics.stg_players
+[0m22:29:39.129090 [debug] [Thread-4 (]: Marking all children of 'model.soccer_analytics.stg_players' to be skipped because of status 'error'.  Reason: Runtime Error in model stg_players (models\staging\stg_players.sql)
+  Conversion Error: Could not convert string '' to INT32.
+[0m22:29:39.131022 [debug] [Thread-1 (]: Began running node model.soccer_analytics.player_features
+[0m22:29:39.132397 [info ] [Thread-1 (]: 2 of 2 SKIP relation main.player_features ...................................... [[33mSKIP[0m]
+[0m22:29:39.134884 [debug] [Thread-1 (]: Finished running node model.soccer_analytics.player_features
+[0m22:29:39.137523 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:29:39.137946 [debug] [MainThread]: On master: BEGIN
+[0m22:29:39.138215 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:29:39.139254 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:29:39.140143 [debug] [MainThread]: On master: COMMIT
+[0m22:29:39.141237 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:29:39.142542 [debug] [MainThread]: On master: COMMIT
+[0m22:29:39.143986 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:29:39.144780 [debug] [MainThread]: On master: Close
+[0m22:29:39.145654 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:29:39.146229 [debug] [MainThread]: Connection 'create_api_sports_main' was properly closed.
+[0m22:29:39.146710 [debug] [MainThread]: Connection 'list_api_sports_main' was properly closed.
+[0m22:29:39.147169 [debug] [MainThread]: Connection 'model.soccer_analytics.stg_players' was properly closed.
+[0m22:29:39.147822 [info ] [MainThread]: 
+[0m22:29:39.148747 [info ] [MainThread]: Finished running 1 table model, 1 view model in 0 hours 0 minutes and 0.84 seconds (0.84s).
+[0m22:29:39.152210 [debug] [MainThread]: Command end result
+[0m22:29:39.215070 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:29:39.222508 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:29:39.228643 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:29:39.242033 [debug] [MainThread]: Wrote artifact RunExecutionResult to .\target\run_results.json
+[0m22:29:39.242861 [info ] [MainThread]: 
+[0m22:29:39.243889 [info ] [MainThread]: [31mCompleted with 1 error, 0 partial successes, and 0 warnings:[0m
+[0m22:29:39.244861 [info ] [MainThread]: 
+[0m22:29:39.246146 [error] [MainThread]: [[31mERROR[0m]: in model stg_players (models\staging\stg_players.sql)
+[0m22:29:39.246984 [error] [MainThread]:   Runtime Error in model stg_players (models\staging\stg_players.sql)
+  Conversion Error: Could not convert string '' to INT32
+[0m22:29:39.247994 [info ] [MainThread]: 
+[0m22:29:39.249312 [info ] [MainThread]:   compiled code at target\compiled\soccer_analytics\models\staging\stg_players.sql
+[0m22:29:39.252038 [info ] [MainThread]: 
+[0m22:29:39.252642 [info ] [MainThread]: Done. PASS=0 WARN=0 ERROR=1 SKIP=1 NO-OP=0 REUSED=0 TOTAL=2
+[0m22:29:39.254812 [debug] [MainThread]: Command `dbt run` failed at 22:29:39.254637 after 8.44 seconds
+[0m22:29:39.255927 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B358C4B0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B38DEB10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A2B39B0D50>]}
+[0m22:29:39.257331 [debug] [MainThread]: Flushing usage events
+[0m22:29:39.979839 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:30:00.288203 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7CE5E120>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7A5FE850>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7F82B890>]}
+
+
+============================== 22:30:00.294931 | 8f30f643-024d-4289-b699-1f51b2874755 ==============================
+[0m22:30:00.294931 [info ] [MainThread]: Running with dbt=1.12.3
+[0m22:30:00.295624 [debug] [MainThread]: running dbt with arguments {'version_check': 'True', 'no_print': 'None', 'maximum_seed_size_mib': '1', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'static_parser': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'False', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'indirect_selection': 'eager', 'hints_enabled': 'True', 'invocation_command': 'dbt run --project-dir . --profiles-dir .', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'logs'}
+[0m22:30:00.696228 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7F8BA780>]}
+[0m22:30:00.829525 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7FA3F790>]}
+[0m22:30:00.833861 [info ] [MainThread]: Registered adapter: duckdb=1.11.0
+[0m22:30:01.236483 [debug] [MainThread]: checksum: ee3cd47c58ccbdbeea38ae32d7431346e64a2003cf51f67bdbc91e87c624f56d, vars: {}, profile: soccer_analytics, target: dev, version: 1.12.3
+[0m22:30:01.472805 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m22:30:01.474168 [debug] [MainThread]: Partial parsing: updated file: soccer_analytics://models\staging\stg_players.sql
+[0m22:30:02.920761 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E01023A50>]}
+[0m22:30:03.105758 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:30:03.111061 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:30:03.161449 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:30:03.182027 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E0160AA80>]}
+[0m22:30:03.185298 [info ] [MainThread]: Found 2 models, 37 data tests, 2 sources, 618 macros
+[0m22:30:03.187844 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E016742F0>]}
+[0m22:30:03.193684 [info ] [MainThread]: 
+[0m22:30:03.194850 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m22:30:03.195304 [info ] [MainThread]: 
+[0m22:30:03.196144 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:30:03.211357 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_api_sports'
+[0m22:30:03.286070 [debug] [ThreadPool]: Using duckdb connection "list_api_sports"
+[0m22:30:03.286510 [debug] [ThreadPool]: On list_api_sports: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "list_api_sports"} */
+
+    
+    select schema_name
+    from system.information_schema.schemata
+    
+    where lower(catalog_name) = '"api_sports"'
+    
+  
+  
+[0m22:30:03.287183 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:30:03.311355 [debug] [ThreadPool]: SQL status: OK in 0.024 seconds
+[0m22:30:03.312776 [debug] [ThreadPool]: On list_api_sports: Close
+[0m22:30:03.313683 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_api_sports, now create_api_sports_main)
+[0m22:30:03.314184 [debug] [ThreadPool]: Creating schema "database: "api_sports"
+schema: "main"
+"
+[0m22:30:03.323089 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:30:03.323543 [debug] [ThreadPool]: On create_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "create_api_sports_main"} */
+
+    
+        select type from duckdb_databases()
+        where lower(database_name)='api_sports'
+        and type != 'duckdb'
+    
+  
+[0m22:30:03.324238 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m22:30:03.327844 [debug] [ThreadPool]: SQL status: OK in 0.004 seconds
+[0m22:30:03.329783 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:30:03.330760 [debug] [ThreadPool]: On create_api_sports_main: BEGIN
+[0m22:30:03.331875 [debug] [ThreadPool]: SQL status: OK in 0.000 seconds
+[0m22:30:03.333161 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:30:03.335169 [debug] [ThreadPool]: On create_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "create_api_sports_main"} */
+
+    
+    
+        create schema if not exists "api_sports"."main"
+    
+[0m22:30:03.336708 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:30:03.338664 [debug] [ThreadPool]: On create_api_sports_main: COMMIT
+[0m22:30:03.339381 [debug] [ThreadPool]: Using duckdb connection "create_api_sports_main"
+[0m22:30:03.339738 [debug] [ThreadPool]: On create_api_sports_main: COMMIT
+[0m22:30:03.341932 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:30:03.342762 [debug] [ThreadPool]: On create_api_sports_main: Close
+[0m22:30:03.345228 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_api_sports_main'
+[0m22:30:03.352980 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:30:03.354237 [debug] [ThreadPool]: On list_api_sports_main: BEGIN
+[0m22:30:03.355209 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:30:03.356999 [debug] [ThreadPool]: SQL status: OK in 0.001 seconds
+[0m22:30:03.358355 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:30:03.359742 [debug] [ThreadPool]: On list_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "list_api_sports_main"} */
+select
+      'api_sports' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'api_sports'
+  
+[0m22:30:03.367797 [debug] [ThreadPool]: SQL status: OK in 0.006 seconds
+[0m22:30:03.370539 [debug] [ThreadPool]: On list_api_sports_main: ROLLBACK
+[0m22:30:03.371300 [debug] [ThreadPool]: On list_api_sports_main: Close
+[0m22:30:03.372534 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E0185DE60>]}
+[0m22:30:03.373018 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:03.373281 [debug] [MainThread]: On master: BEGIN
+[0m22:30:03.373516 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:30:03.374670 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:30:03.375471 [debug] [MainThread]: On master: COMMIT
+[0m22:30:03.376419 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:03.376977 [debug] [MainThread]: On master: COMMIT
+[0m22:30:03.377710 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:30:03.378010 [debug] [MainThread]: On master: Close
+[0m22:30:03.381936 [debug] [Thread-1 (]: Began running node model.soccer_analytics.stg_players
+[0m22:30:03.387612 [info ] [Thread-1 (]: 1 of 2 START sql view model main.stg_players ................................... [RUN]
+[0m22:30:03.388683 [debug] [Thread-1 (]: Acquiring new duckdb connection 'model.soccer_analytics.stg_players'
+[0m22:30:03.389150 [debug] [Thread-1 (]: Began compiling node model.soccer_analytics.stg_players
+[0m22:30:03.397896 [debug] [Thread-1 (]: Writing injected SQL for node "model.soccer_analytics.stg_players"
+[0m22:30:03.399747 [debug] [Thread-1 (]: Began executing node model.soccer_analytics.stg_players
+[0m22:30:03.440392 [debug] [Thread-1 (]: Writing runtime sql for node "model.soccer_analytics.stg_players"
+[0m22:30:03.444184 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.445029 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: BEGIN
+[0m22:30:03.445965 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:30:03.447076 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.447440 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.447790 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+  
+  create view "api_sports"."main"."stg_players__dbt_tmp" as (
+    -- Staging model for raw player statistics loaded by dlt.
+
+with player as (
+    select
+        _dlt_id as player_row_id,
+        player__id as player_id,
+        player__name as name,
+        player__age as age,
+        player__nationality as nationality,
+        nullif(regexp_replace(player__height, '[^0-9]', '', 'g'), '')::int as height_cm,
+        nullif(regexp_replace(player__weight, '[^0-9]', '', 'g'), '')::int as weight_kg,
+        player__injured as injured
+    from "api_sports"."soccer_analytics_data"."players_raw"
+),
+
+stats as (
+    select
+        _dlt_parent_id as player_row_id,
+        team__id as team_id,
+        team__name as team_name,
+        league__id as league_id,
+        league__season as season,
+        case
+            when games__position = 'Forward' then 'Attacker'
+            else games__position
+        end as position,
+        games__appearences as appearances,
+        games__minutes as minutes,
+        cast(games__rating as double) as rating,
+        goals__total as goals,
+        goals__assists as assists,
+        shots__total as shots_total,
+        shots__on as shots_on_target,
+        passes__total as passes_total,
+        passes__key as passes_key,
+        cast(passes__accuracy as double) as passes_accuracy_pct,
+        tackles__total as tackles_total,
+        duels__total as duels_total,
+        duels__won as duels_won,
+        dribbles__attempts as dribbles_attempts,
+        dribbles__success as dribbles_success,
+        fouls__drawn as fouls_drawn,
+        fouls__committed as fouls_committed,
+        cards__yellow as cards_yellow,
+        cards__red as cards_red
+    from "api_sports"."soccer_analytics_data"."players_raw__statistics"
+    where games__minutes >= 300
+)
+
+select
+    md5(cast(coalesce(cast(player_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(team_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(league_id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(season as TEXT), '_dbt_utils_surrogate_key_null_') as TEXT)) as player_season_id,
+    p.player_id,
+    p.name,
+    p.age,
+    p.nationality,
+    p.height_cm,
+    p.weight_kg,
+    p.injured,
+    s.team_id,
+    s.team_name,
+    s.league_id,
+    s.season,
+    s.position,
+    s.appearances,
+    s.minutes,
+    s.rating,
+    s.goals,
+    s.assists,
+    s.shots_total,
+    s.shots_on_target,
+    s.passes_total,
+    s.passes_key,
+    s.passes_accuracy_pct,
+    s.tackles_total,
+    s.duels_total,
+    s.duels_won,
+    s.dribbles_attempts,
+    s.dribbles_success,
+    s.fouls_drawn,
+    s.fouls_committed,
+    s.cards_yellow,
+    s.cards_red
+from player p
+inner join stats s using (player_row_id)
+  );
+
+[0m22:30:03.453014 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:03.460091 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.460877 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+alter view "api_sports"."main"."stg_players" rename to "stg_players__dbt_backup"
+[0m22:30:03.462976 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.466262 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.467435 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+alter view "api_sports"."main"."stg_players__dbt_tmp" rename to "stg_players"
+[0m22:30:03.468669 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.483624 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.484166 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+        COPY (SELECT * FROM "api_sports"."main"."stg_players") TO 'output/stg_players.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+      
+[0m22:30:03.568406 [debug] [Thread-1 (]: SQL status: OK in 0.084 seconds
+[0m22:30:03.569469 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: COMMIT
+[0m22:30:03.569799 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.570081 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: COMMIT
+[0m22:30:03.576163 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:03.589077 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.stg_players"
+[0m22:30:03.589551 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.stg_players"} */
+
+      drop view if exists "api_sports"."main"."stg_players__dbt_backup" cascade
+    
+[0m22:30:03.597033 [debug] [Thread-1 (]: SQL status: OK in 0.007 seconds
+[0m22:30:03.603098 [debug] [Thread-1 (]: On model.soccer_analytics.stg_players: Close
+[0m22:30:03.606669 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E01689310>]}
+[0m22:30:03.608608 [info ] [Thread-1 (]: 1 of 2 OK created sql view model main.stg_players .............................. [[32mOK[0m in 0.22s]
+[0m22:30:03.611028 [debug] [Thread-1 (]: Finished running node model.soccer_analytics.stg_players
+[0m22:30:03.612222 [debug] [Thread-1 (]: Began running node model.soccer_analytics.player_features
+[0m22:30:03.612862 [info ] [Thread-1 (]: 2 of 2 START sql table model main.player_features .............................. [RUN]
+[0m22:30:03.613747 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly model.soccer_analytics.stg_players, now model.soccer_analytics.player_features)
+[0m22:30:03.614114 [debug] [Thread-1 (]: Began compiling node model.soccer_analytics.player_features
+[0m22:30:03.618177 [debug] [Thread-1 (]: Writing injected SQL for node "model.soccer_analytics.player_features"
+[0m22:30:03.621280 [debug] [Thread-1 (]: Began executing node model.soccer_analytics.player_features
+[0m22:30:03.678296 [debug] [Thread-1 (]: Writing runtime sql for node "model.soccer_analytics.player_features"
+[0m22:30:03.680253 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.680683 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: BEGIN
+[0m22:30:03.680988 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:03.682438 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.683668 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.684295 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+
+    
+
+    create  table
+      "api_sports"."main"."player_features__dbt_tmp"
+  
+    
+    as (
+      -- Feature model computing per-90 player metrics from the staging player data.
+
+select
+    player_season_id,
+    player_id,
+    name,
+    age,
+    nationality,
+    team_id,
+    team_name,
+    league_id,
+    season,
+    position,
+    minutes,
+    rating,
+    round(goals * 90.0 / minutes, 3) as goals_per90,
+    round(assists * 90.0 / minutes, 3) as assists_per90,
+    round(passes_key * 90.0 / minutes, 3) as key_passes_per90,
+    round(tackles_total * 90.0 / minutes, 3) as tackles_per90,
+    round(dribbles_success * 90.0 / minutes, 3) as dribbles_per90,
+    passes_accuracy_pct
+from "api_sports"."main"."stg_players"
+    );
+    
+  
+[0m22:30:03.739890 [debug] [Thread-1 (]: SQL status: OK in 0.055 seconds
+[0m22:30:03.746046 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.746514 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+
+    SELECT index_name
+    FROM duckdb_indexes()
+    WHERE database_name = 'api_sports'
+      AND schema_name = 'main'
+      AND table_name = 'player_features'
+  
+[0m22:30:03.749160 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:03.752977 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.753401 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+alter table "api_sports"."main"."player_features" rename to "player_features__dbt_backup"
+[0m22:30:03.754249 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.756906 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.758111 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+alter table "api_sports"."main"."player_features__dbt_tmp" rename to "player_features"
+[0m22:30:03.760016 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:03.770306 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.770781 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+
+        COPY (SELECT * FROM "api_sports"."main"."player_features") TO 'output/player_features.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+      
+[0m22:30:03.810020 [debug] [Thread-1 (]: SQL status: OK in 0.038 seconds
+[0m22:30:03.811659 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: COMMIT
+[0m22:30:03.812029 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.812316 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: COMMIT
+[0m22:30:03.822092 [debug] [Thread-1 (]: SQL status: OK in 0.009 seconds
+[0m22:30:03.824345 [debug] [Thread-1 (]: Using duckdb connection "model.soccer_analytics.player_features"
+[0m22:30:03.824834 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "model.soccer_analytics.player_features"} */
+
+      drop table if exists "api_sports"."main"."player_features__dbt_backup" cascade
+    
+[0m22:30:03.827948 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:03.829426 [debug] [Thread-1 (]: On model.soccer_analytics.player_features: Close
+[0m22:30:03.830052 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '8f30f643-024d-4289-b699-1f51b2874755', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E01679F40>]}
+[0m22:30:03.830651 [info ] [Thread-1 (]: 2 of 2 OK created sql table model main.player_features ......................... [[32mOK[0m in 0.22s]
+[0m22:30:03.832625 [debug] [Thread-1 (]: Finished running node model.soccer_analytics.player_features
+[0m22:30:03.836252 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:03.836682 [debug] [MainThread]: On master: BEGIN
+[0m22:30:03.836945 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:30:03.837725 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:30:03.838024 [debug] [MainThread]: On master: COMMIT
+[0m22:30:03.838261 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:03.838483 [debug] [MainThread]: On master: COMMIT
+[0m22:30:03.838960 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:30:03.839236 [debug] [MainThread]: On master: Close
+[0m22:30:03.839856 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:30:03.840429 [debug] [MainThread]: Connection 'create_api_sports_main' was properly closed.
+[0m22:30:03.840653 [debug] [MainThread]: Connection 'list_api_sports_main' was properly closed.
+[0m22:30:03.841811 [debug] [MainThread]: Connection 'model.soccer_analytics.player_features' was properly closed.
+[0m22:30:03.843316 [info ] [MainThread]: 
+[0m22:30:03.844228 [info ] [MainThread]: Finished running 1 table model, 1 view model in 0 hours 0 minutes and 0.65 seconds (0.65s).
+[0m22:30:03.845388 [debug] [MainThread]: Command end result
+[0m22:30:03.900520 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:30:03.905992 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:30:03.911285 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:30:03.922393 [debug] [MainThread]: Wrote artifact RunExecutionResult to .\target\run_results.json
+[0m22:30:03.923142 [info ] [MainThread]: 
+[0m22:30:03.923887 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m22:30:03.924702 [info ] [MainThread]: 
+[0m22:30:03.925348 [info ] [MainThread]: Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
+[0m22:30:03.926496 [debug] [MainThread]: Command `dbt run` succeeded at 22:30:03.926373 after 3.94 seconds
+[0m22:30:03.926876 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E01376670>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E01645D00>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026E7FE687D0>]}
+[0m22:30:03.927244 [debug] [MainThread]: Flushing usage events
+[0m22:30:04.496895 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m22:30:38.819082 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA0CEE120>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018E9E486850>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA36BB890>]}
+
+
+============================== 22:30:38.837866 | a02f867d-1d7d-4cd4-827f-4edf72b7bbc8 ==============================
+[0m22:30:38.837866 [info ] [MainThread]: Running with dbt=1.12.3
+[0m22:30:38.838896 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'no_print': 'None', 'maximum_seed_size_mib': '1', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'version_check': 'True', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'log_format': 'default', 'debug': 'False', 'fail_fast': 'False', 'profiles_dir': '.', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'use_colors': 'True', 'hints_enabled': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'invocation_command': 'dbt test --project-dir . --profiles-dir .', 'log_path': 'logs'}
+[0m22:30:39.234543 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA373E780>]}
+[0m22:30:39.354910 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA39B3790>]}
+[0m22:30:39.359325 [info ] [MainThread]: Registered adapter: duckdb=1.11.0
+[0m22:30:39.695135 [debug] [MainThread]: checksum: ee3cd47c58ccbdbeea38ae32d7431346e64a2003cf51f67bdbc91e87c624f56d, vars: {}, profile: soccer_analytics, target: dev, version: 1.12.3
+[0m22:30:39.931156 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m22:30:39.932508 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m22:30:39.933443 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m22:30:39.950377 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA4EC2950>]}
+[0m22:30:40.204351 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:30:40.209971 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:30:40.246638 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:30:40.279861 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA3DF1E50>]}
+[0m22:30:40.280477 [info ] [MainThread]: Found 2 models, 37 data tests, 2 sources, 618 macros
+[0m22:30:40.281028 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA5194F30>]}
+[0m22:30:40.286403 [info ] [MainThread]: 
+[0m22:30:40.287052 [info ] [MainThread]: Concurrency: 1 threads (target='dev')
+[0m22:30:40.287769 [info ] [MainThread]: 
+[0m22:30:40.288776 [debug] [MainThread]: Acquiring new duckdb connection 'master'
+[0m22:30:40.295429 [debug] [ThreadPool]: Acquiring new duckdb connection 'list_api_sports_main'
+[0m22:30:40.370272 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:30:40.370699 [debug] [ThreadPool]: On list_api_sports_main: BEGIN
+[0m22:30:40.370965 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m22:30:40.429883 [debug] [ThreadPool]: SQL status: OK in 0.059 seconds
+[0m22:30:40.430379 [debug] [ThreadPool]: Using duckdb connection "list_api_sports_main"
+[0m22:30:40.430669 [debug] [ThreadPool]: On list_api_sports_main: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "connection_name": "list_api_sports_main"} */
+select
+      'api_sports' as database,
+      table_name as name,
+      table_schema as schema,
+      CASE table_type
+        WHEN 'BASE TABLE' THEN 'table'
+        WHEN 'VIEW' THEN 'view'
+        WHEN 'LOCAL TEMPORARY' THEN 'table'
+        END as type
+    from system.information_schema.tables
+    where lower(table_schema) = 'main'
+    and lower(table_catalog) = 'api_sports'
+  
+[0m22:30:40.438814 [debug] [ThreadPool]: SQL status: OK in 0.008 seconds
+[0m22:30:40.442313 [debug] [ThreadPool]: On list_api_sports_main: ROLLBACK
+[0m22:30:40.443813 [debug] [ThreadPool]: On list_api_sports_main: Close
+[0m22:30:40.445573 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'a02f867d-1d7d-4cd4-827f-4edf72b7bbc8', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA533AB60>]}
+[0m22:30:40.446062 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:40.446336 [debug] [MainThread]: On master: BEGIN
+[0m22:30:40.446578 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m22:30:40.448037 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:30:40.448953 [debug] [MainThread]: On master: COMMIT
+[0m22:30:40.450225 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:40.451041 [debug] [MainThread]: On master: COMMIT
+[0m22:30:40.452159 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:30:40.452512 [debug] [MainThread]: On master: Close
+[0m22:30:40.456572 [debug] [Thread-1 (]: Began running node test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7
+[0m22:30:40.457668 [info ] [Thread-1 (]: 1 of 37 START test accepted_values_stg_players_league_id__39__61__78__135__140 . [RUN]
+[0m22:30:40.458964 [debug] [Thread-1 (]: Acquiring new duckdb connection 'test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7'
+[0m22:30:40.459366 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7
+[0m22:30:40.480876 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7"
+[0m22:30:40.482883 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7
+[0m22:30:40.508856 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7"
+[0m22:30:40.510445 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7"
+[0m22:30:40.510974 [debug] [Thread-1 (]: On test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7: BEGIN
+[0m22:30:40.511296 [debug] [Thread-1 (]: Opening a new connection, currently in state init
+[0m22:30:40.512896 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.513833 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7"
+[0m22:30:40.514365 [debug] [Thread-1 (]: On test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with all_values as (
+
+    select
+        league_id as value_field,
+        count(*) as n_records
+
+    from "api_sports"."main"."stg_players"
+    group by league_id
+
+)
+
+select *
+from all_values
+where value_field not in (
+    '39','61','78','135','140'
+)
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.536324 [debug] [Thread-1 (]: SQL status: OK in 0.021 seconds
+[0m22:30:40.542599 [debug] [Thread-1 (]: On test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7: ROLLBACK
+[0m22:30:40.543435 [debug] [Thread-1 (]: On test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7: Close
+[0m22:30:40.544126 [info ] [Thread-1 (]: 1 of 37 PASS accepted_values_stg_players_league_id__39__61__78__135__140 ....... [[32mPASS[0m in 0.09s]
+[0m22:30:40.544944 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7
+[0m22:30:40.545363 [debug] [Thread-1 (]: Began running node test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16
+[0m22:30:40.545812 [info ] [Thread-1 (]: 2 of 37 START test dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season  [RUN]
+[0m22:30:40.546416 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.accepted_values_stg_players_league_id__39__61__78__135__140.291d0169d7, now test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16)
+[0m22:30:40.546751 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16
+[0m22:30:40.577609 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16"
+[0m22:30:40.579165 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16
+[0m22:30:40.583204 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16"
+[0m22:30:40.585396 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16"
+[0m22:30:40.587081 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16: BEGIN
+[0m22:30:40.587764 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.588600 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.589073 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16"
+[0m22:30:40.589439 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+
+
+
+
+with validation_errors as (
+
+    select
+        player_id, team_id, league_id, season
+    from "api_sports"."main"."player_features"
+    group by player_id, team_id, league_id, season
+    having count(*) > 1
+
+)
+
+select *
+from validation_errors
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.604570 [debug] [Thread-1 (]: SQL status: OK in 0.014 seconds
+[0m22:30:40.606489 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16: ROLLBACK
+[0m22:30:40.608029 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16: Close
+[0m22:30:40.609635 [info ] [Thread-1 (]: 2 of 37 PASS dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season  [[32mPASS[0m in 0.06s]
+[0m22:30:40.611148 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16
+[0m22:30:40.611715 [debug] [Thread-1 (]: Began running node test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34
+[0m22:30:40.612164 [info ] [Thread-1 (]: 3 of 37 START test dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season  [RUN]
+[0m22:30:40.612816 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.dbt_utils_unique_combination_of_columns_player_features_player_id__team_id__league_id__season.70351f6b16, now test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34)
+[0m22:30:40.613156 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34
+[0m22:30:40.624604 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34"
+[0m22:30:40.627059 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34
+[0m22:30:40.628859 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34"
+[0m22:30:40.630100 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34"
+[0m22:30:40.630466 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34: BEGIN
+[0m22:30:40.630754 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.632269 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.632840 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34"
+[0m22:30:40.633940 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+
+
+
+
+with validation_errors as (
+
+    select
+        player_id, team_id, league_id, season
+    from "api_sports"."main"."stg_players"
+    group by player_id, team_id, league_id, season
+    having count(*) > 1
+
+)
+
+select *
+from validation_errors
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.650196 [debug] [Thread-1 (]: SQL status: OK in 0.016 seconds
+[0m22:30:40.652840 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34: ROLLBACK
+[0m22:30:40.654157 [debug] [Thread-1 (]: On test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34: Close
+[0m22:30:40.655212 [info ] [Thread-1 (]: 3 of 37 PASS dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season  [[32mPASS[0m in 0.04s]
+[0m22:30:40.658113 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34
+[0m22:30:40.659453 [debug] [Thread-1 (]: Began running node test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5
+[0m22:30:40.660122 [info ] [Thread-1 (]: 4 of 37 START test is_between_stg_players_minutes__300 ......................... [RUN]
+[0m22:30:40.660883 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.dbt_utils_unique_combination_of_columns_stg_players_player_id__team_id__league_id__season.ef6ae0dd34, now test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5)
+[0m22:30:40.661833 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5
+[0m22:30:40.671015 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5"
+[0m22:30:40.672137 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5
+[0m22:30:40.675180 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5"
+[0m22:30:40.676351 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5"
+[0m22:30:40.676736 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5: BEGIN
+[0m22:30:40.677022 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.677774 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.678241 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5"
+[0m22:30:40.678567 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where minutes is not null
+
+  and minutes < 300
+
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.681796 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:40.684310 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5: ROLLBACK
+[0m22:30:40.685341 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5: Close
+[0m22:30:40.686064 [info ] [Thread-1 (]: 4 of 37 PASS is_between_stg_players_minutes__300 ............................... [[32mPASS[0m in 0.03s]
+[0m22:30:40.687101 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5
+[0m22:30:40.687643 [debug] [Thread-1 (]: Began running node test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800
+[0m22:30:40.688064 [info ] [Thread-1 (]: 5 of 37 START test is_between_stg_players_passes_accuracy_pct__100__0 .......... [RUN]
+[0m22:30:40.688686 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.is_between_stg_players_minutes__300.586fd412b5, now test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800)
+[0m22:30:40.689045 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800
+[0m22:30:40.695943 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800"
+[0m22:30:40.697291 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800
+[0m22:30:40.700574 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800"
+[0m22:30:40.702050 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800"
+[0m22:30:40.702456 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800: BEGIN
+[0m22:30:40.702746 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.703440 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.703762 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800"
+[0m22:30:40.704047 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where passes_accuracy_pct is not null
+
+  and passes_accuracy_pct < 0
+
+
+  and passes_accuracy_pct > 100
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.707641 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:40.709634 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800: ROLLBACK
+[0m22:30:40.710342 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800: Close
+[0m22:30:40.710966 [info ] [Thread-1 (]: 5 of 37 PASS is_between_stg_players_passes_accuracy_pct__100__0 ................ [[32mPASS[0m in 0.02s]
+[0m22:30:40.712060 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800
+[0m22:30:40.712615 [debug] [Thread-1 (]: Began running node test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2
+[0m22:30:40.713151 [info ] [Thread-1 (]: 6 of 37 START test is_between_stg_players_rating__10__0 ........................ [RUN]
+[0m22:30:40.713797 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.is_between_stg_players_passes_accuracy_pct__100__0.8c17764800, now test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2)
+[0m22:30:40.714146 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2
+[0m22:30:40.719686 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2"
+[0m22:30:40.721031 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2
+[0m22:30:40.722756 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2"
+[0m22:30:40.724978 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2"
+[0m22:30:40.725404 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2: BEGIN
+[0m22:30:40.725693 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.726444 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.726790 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2"
+[0m22:30:40.727093 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where rating is not null
+
+  and rating < 0
+
+
+  and rating > 10
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.729527 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:40.730932 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2: ROLLBACK
+[0m22:30:40.732318 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2: Close
+[0m22:30:40.734273 [info ] [Thread-1 (]: 6 of 37 PASS is_between_stg_players_rating__10__0 .............................. [[32mPASS[0m in 0.02s]
+[0m22:30:40.735502 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2
+[0m22:30:40.735893 [debug] [Thread-1 (]: Began running node test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea
+[0m22:30:40.736208 [info ] [Thread-1 (]: 7 of 37 START test is_between_stg_players_season__2026__2020 ................... [RUN]
+[0m22:30:40.736945 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.is_between_stg_players_rating__10__0.1b46d9a3c2, now test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea)
+[0m22:30:40.737313 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea
+[0m22:30:40.743541 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea"
+[0m22:30:40.744987 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea
+[0m22:30:40.746471 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea"
+[0m22:30:40.747477 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea"
+[0m22:30:40.747911 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea: BEGIN
+[0m22:30:40.749284 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.750765 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:40.751169 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea"
+[0m22:30:40.751491 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where season is not null
+
+  and season < 2020
+
+
+  and season > 2026
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.754138 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:40.755865 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea: ROLLBACK
+[0m22:30:40.756895 [debug] [Thread-1 (]: On test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea: Close
+[0m22:30:40.758496 [info ] [Thread-1 (]: 7 of 37 PASS is_between_stg_players_season__2026__2020 ......................... [[32mPASS[0m in 0.02s]
+[0m22:30:40.759770 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea
+[0m22:30:40.760159 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723
+[0m22:30:40.760471 [info ] [Thread-1 (]: 8 of 37 START test non_negative_player_features_assists_per90 .................. [RUN]
+[0m22:30:40.761012 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.is_between_stg_players_season__2026__2020.5a8cafdcea, now test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723)
+[0m22:30:40.761345 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723
+[0m22:30:40.769792 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723"
+[0m22:30:40.770928 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723
+[0m22:30:40.772506 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723"
+[0m22:30:40.775074 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723"
+[0m22:30:40.775534 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723: BEGIN
+[0m22:30:40.775838 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.776660 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.776994 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723"
+[0m22:30:40.777292 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."player_features"
+where assists_per90 is not null
+  and assists_per90 < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.778765 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.780279 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723: ROLLBACK
+[0m22:30:40.780839 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723: Close
+[0m22:30:40.781430 [info ] [Thread-1 (]: 8 of 37 PASS non_negative_player_features_assists_per90 ........................ [[32mPASS[0m in 0.02s]
+[0m22:30:40.782104 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723
+[0m22:30:40.782559 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a
+[0m22:30:40.782865 [info ] [Thread-1 (]: 9 of 37 START test non_negative_player_features_dribbles_per90 ................. [RUN]
+[0m22:30:40.783521 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_player_features_assists_per90.0aed7d6723, now test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a)
+[0m22:30:40.783860 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a
+[0m22:30:40.791758 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a"
+[0m22:30:40.793180 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a
+[0m22:30:40.794775 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a"
+[0m22:30:40.795805 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a"
+[0m22:30:40.796154 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a: BEGIN
+[0m22:30:40.796442 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.797215 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.797601 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a"
+[0m22:30:40.797915 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."player_features"
+where dribbles_per90 is not null
+  and dribbles_per90 < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.800699 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:40.803142 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a: ROLLBACK
+[0m22:30:40.804014 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a: Close
+[0m22:30:40.804724 [info ] [Thread-1 (]: 9 of 37 PASS non_negative_player_features_dribbles_per90 ....................... [[32mPASS[0m in 0.02s]
+[0m22:30:40.805572 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a
+[0m22:30:40.805986 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a
+[0m22:30:40.807522 [info ] [Thread-1 (]: 10 of 37 START test non_negative_player_features_goals_per90 ................... [RUN]
+[0m22:30:40.809864 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_player_features_dribbles_per90.6f13e83b6a, now test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a)
+[0m22:30:40.811505 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a
+[0m22:30:40.826348 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a"
+[0m22:30:40.830471 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a
+[0m22:30:40.835335 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a"
+[0m22:30:40.841570 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a"
+[0m22:30:40.842978 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a: BEGIN
+[0m22:30:40.846091 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.848734 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:40.849880 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a"
+[0m22:30:40.851098 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."player_features"
+where goals_per90 is not null
+  and goals_per90 < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.855169 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:40.857930 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a: ROLLBACK
+[0m22:30:40.859273 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a: Close
+[0m22:30:40.861240 [info ] [Thread-1 (]: 10 of 37 PASS non_negative_player_features_goals_per90 ......................... [[32mPASS[0m in 0.05s]
+[0m22:30:40.862555 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a
+[0m22:30:40.862983 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d
+[0m22:30:40.863611 [info ] [Thread-1 (]: 11 of 37 START test non_negative_player_features_key_passes_per90 .............. [RUN]
+[0m22:30:40.865609 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_player_features_goals_per90.baffbd338a, now test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d)
+[0m22:30:40.866774 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d
+[0m22:30:40.875497 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d"
+[0m22:30:40.876839 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d
+[0m22:30:40.878434 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d"
+[0m22:30:40.879808 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d"
+[0m22:30:40.880197 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d: BEGIN
+[0m22:30:40.880494 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.881601 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.882466 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d"
+[0m22:30:40.883320 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."player_features"
+where key_passes_per90 is not null
+  and key_passes_per90 < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.885213 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.886739 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d: ROLLBACK
+[0m22:30:40.887353 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d: Close
+[0m22:30:40.887977 [info ] [Thread-1 (]: 11 of 37 PASS non_negative_player_features_key_passes_per90 .................... [[32mPASS[0m in 0.02s]
+[0m22:30:40.888746 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d
+[0m22:30:40.889123 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5
+[0m22:30:40.889919 [info ] [Thread-1 (]: 12 of 37 START test non_negative_player_features_tackles_per90 ................. [RUN]
+[0m22:30:40.891663 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_player_features_key_passes_per90.d7f8d5051d, now test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5)
+[0m22:30:40.892163 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5
+[0m22:30:40.897826 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5"
+[0m22:30:40.900651 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5
+[0m22:30:40.902862 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5"
+[0m22:30:40.904353 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5"
+[0m22:30:40.905004 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5: BEGIN
+[0m22:30:40.905339 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.906029 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.906893 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5"
+[0m22:30:40.908460 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."player_features"
+where tackles_per90 is not null
+  and tackles_per90 < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.910101 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.911553 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5: ROLLBACK
+[0m22:30:40.912210 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5: Close
+[0m22:30:40.912826 [info ] [Thread-1 (]: 12 of 37 PASS non_negative_player_features_tackles_per90 ....................... [[32mPASS[0m in 0.02s]
+[0m22:30:40.914316 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5
+[0m22:30:40.915465 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a
+[0m22:30:40.916826 [info ] [Thread-1 (]: 13 of 37 START test non_negative_stg_players_assists ........................... [RUN]
+[0m22:30:40.918260 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_player_features_tackles_per90.9c8f7cb4c5, now test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a)
+[0m22:30:40.918757 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a
+[0m22:30:40.927185 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a"
+[0m22:30:40.928419 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a
+[0m22:30:40.929943 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a"
+[0m22:30:40.931256 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a"
+[0m22:30:40.932448 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a: BEGIN
+[0m22:30:40.933582 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.934531 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.934928 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a"
+[0m22:30:40.935217 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where assists is not null
+  and assists < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.938913 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:40.940636 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a: ROLLBACK
+[0m22:30:40.941723 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a: Close
+[0m22:30:40.942440 [info ] [Thread-1 (]: 13 of 37 PASS non_negative_stg_players_assists ................................. [[32mPASS[0m in 0.02s]
+[0m22:30:40.943657 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a
+[0m22:30:40.944104 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40
+[0m22:30:40.944506 [info ] [Thread-1 (]: 14 of 37 START test non_negative_stg_players_cards_red ......................... [RUN]
+[0m22:30:40.945202 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_assists.ef503dea6a, now test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40)
+[0m22:30:40.945544 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40
+[0m22:30:40.953261 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40"
+[0m22:30:40.954690 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40
+[0m22:30:40.956217 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40"
+[0m22:30:40.957963 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40"
+[0m22:30:40.958458 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40: BEGIN
+[0m22:30:40.958818 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.959535 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.959856 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40"
+[0m22:30:40.960140 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where cards_red is not null
+  and cards_red < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.963395 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:40.965046 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40: ROLLBACK
+[0m22:30:40.966573 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40: Close
+[0m22:30:40.967375 [info ] [Thread-1 (]: 14 of 37 PASS non_negative_stg_players_cards_red ............................... [[32mPASS[0m in 0.02s]
+[0m22:30:40.968256 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40
+[0m22:30:40.968624 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719
+[0m22:30:40.968926 [info ] [Thread-1 (]: 15 of 37 START test non_negative_stg_players_cards_yellow ...................... [RUN]
+[0m22:30:40.969495 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_cards_red.f06f6feb40, now test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719)
+[0m22:30:40.969827 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719
+[0m22:30:40.976771 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719"
+[0m22:30:40.978434 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719
+[0m22:30:40.981016 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719"
+[0m22:30:40.984194 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719"
+[0m22:30:40.985317 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719: BEGIN
+[0m22:30:40.985839 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:40.986563 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:40.986892 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719"
+[0m22:30:40.987178 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where cards_yellow is not null
+  and cards_yellow < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:40.991731 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:40.993471 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719: ROLLBACK
+[0m22:30:40.994293 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719: Close
+[0m22:30:40.994978 [info ] [Thread-1 (]: 15 of 37 PASS non_negative_stg_players_cards_yellow ............................ [[32mPASS[0m in 0.03s]
+[0m22:30:40.995830 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719
+[0m22:30:40.996213 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db
+[0m22:30:40.996602 [info ] [Thread-1 (]: 16 of 37 START test non_negative_stg_players_dribbles_attempts ................. [RUN]
+[0m22:30:40.997263 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_cards_yellow.66e0751719, now test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db)
+[0m22:30:40.997600 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db
+[0m22:30:41.004549 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db"
+[0m22:30:41.006465 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db
+[0m22:30:41.010158 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db"
+[0m22:30:41.011431 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db"
+[0m22:30:41.011832 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db: BEGIN
+[0m22:30:41.012328 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.013223 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.013562 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db"
+[0m22:30:41.013861 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where dribbles_attempts is not null
+  and dribbles_attempts < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.016776 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.018288 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db: ROLLBACK
+[0m22:30:41.018881 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db: Close
+[0m22:30:41.019462 [info ] [Thread-1 (]: 16 of 37 PASS non_negative_stg_players_dribbles_attempts ....................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.020420 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db
+[0m22:30:41.020773 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4
+[0m22:30:41.021057 [info ] [Thread-1 (]: 17 of 37 START test non_negative_stg_players_dribbles_success .................. [RUN]
+[0m22:30:41.021505 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_dribbles_attempts.622f3520db, now test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4)
+[0m22:30:41.021981 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4
+[0m22:30:41.029555 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4"
+[0m22:30:41.030833 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4
+[0m22:30:41.034228 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4"
+[0m22:30:41.035606 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4"
+[0m22:30:41.036023 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4: BEGIN
+[0m22:30:41.036312 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.037001 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.037442 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4"
+[0m22:30:41.037749 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where dribbles_success is not null
+  and dribbles_success < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.041968 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.044219 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4: ROLLBACK
+[0m22:30:41.044908 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4: Close
+[0m22:30:41.045531 [info ] [Thread-1 (]: 17 of 37 PASS non_negative_stg_players_dribbles_success ........................ [[32mPASS[0m in 0.02s]
+[0m22:30:41.046523 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4
+[0m22:30:41.046895 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b
+[0m22:30:41.047202 [info ] [Thread-1 (]: 18 of 37 START test non_negative_stg_players_duels_total ....................... [RUN]
+[0m22:30:41.048660 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_dribbles_success.b84b87deb4, now test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b)
+[0m22:30:41.049481 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b
+[0m22:30:41.054807 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b"
+[0m22:30:41.055840 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b
+[0m22:30:41.058640 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b"
+[0m22:30:41.060131 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b"
+[0m22:30:41.060545 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b: BEGIN
+[0m22:30:41.060849 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.061708 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.062046 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b"
+[0m22:30:41.062330 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where duels_total is not null
+  and duels_total < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.066090 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.067991 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b: ROLLBACK
+[0m22:30:41.068774 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b: Close
+[0m22:30:41.069408 [info ] [Thread-1 (]: 18 of 37 PASS non_negative_stg_players_duels_total ............................. [[32mPASS[0m in 0.02s]
+[0m22:30:41.070165 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b
+[0m22:30:41.070550 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3
+[0m22:30:41.070859 [info ] [Thread-1 (]: 19 of 37 START test non_negative_stg_players_duels_won ......................... [RUN]
+[0m22:30:41.071499 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_duels_total.0adb61429b, now test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3)
+[0m22:30:41.071838 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3
+[0m22:30:41.079985 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3"
+[0m22:30:41.081485 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3
+[0m22:30:41.084820 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3"
+[0m22:30:41.086493 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3"
+[0m22:30:41.087102 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3: BEGIN
+[0m22:30:41.087394 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.088067 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.088375 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3"
+[0m22:30:41.088641 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where duels_won is not null
+  and duels_won < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.093564 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.095185 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3: ROLLBACK
+[0m22:30:41.095794 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3: Close
+[0m22:30:41.096391 [info ] [Thread-1 (]: 19 of 37 PASS non_negative_stg_players_duels_won ............................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.098025 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3
+[0m22:30:41.099199 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6
+[0m22:30:41.100065 [info ] [Thread-1 (]: 20 of 37 START test non_negative_stg_players_fouls_committed ................... [RUN]
+[0m22:30:41.100951 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_duels_won.dc2174dba3, now test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6)
+[0m22:30:41.101312 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6
+[0m22:30:41.106347 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6"
+[0m22:30:41.108930 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6
+[0m22:30:41.110925 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6"
+[0m22:30:41.112147 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6"
+[0m22:30:41.112522 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6: BEGIN
+[0m22:30:41.112804 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.113498 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.113904 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6"
+[0m22:30:41.114246 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where fouls_committed is not null
+  and fouls_committed < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.119179 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.120894 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6: ROLLBACK
+[0m22:30:41.121559 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6: Close
+[0m22:30:41.122213 [info ] [Thread-1 (]: 20 of 37 PASS non_negative_stg_players_fouls_committed ......................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.123135 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6
+[0m22:30:41.123902 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f
+[0m22:30:41.124532 [info ] [Thread-1 (]: 21 of 37 START test non_negative_stg_players_fouls_drawn ....................... [RUN]
+[0m22:30:41.125312 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_fouls_committed.351935c8e6, now test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f)
+[0m22:30:41.125682 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f
+[0m22:30:41.131835 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f"
+[0m22:30:41.134817 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f
+[0m22:30:41.136600 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f"
+[0m22:30:41.137695 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f"
+[0m22:30:41.138046 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f: BEGIN
+[0m22:30:41.138342 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.139016 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.139326 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f"
+[0m22:30:41.139609 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where fouls_drawn is not null
+  and fouls_drawn < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.144253 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.145851 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f: ROLLBACK
+[0m22:30:41.146515 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f: Close
+[0m22:30:41.147123 [info ] [Thread-1 (]: 21 of 37 PASS non_negative_stg_players_fouls_drawn ............................. [[32mPASS[0m in 0.02s]
+[0m22:30:41.148380 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f
+[0m22:30:41.149872 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e
+[0m22:30:41.150464 [info ] [Thread-1 (]: 22 of 37 START test non_negative_stg_players_goals ............................. [RUN]
+[0m22:30:41.151764 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_fouls_drawn.1b0b24d33f, now test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e)
+[0m22:30:41.152195 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e
+[0m22:30:41.158511 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e"
+[0m22:30:41.160517 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e
+[0m22:30:41.162376 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e"
+[0m22:30:41.163537 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e"
+[0m22:30:41.163900 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e: BEGIN
+[0m22:30:41.164178 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.165606 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.166313 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e"
+[0m22:30:41.167460 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where goals is not null
+  and goals < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.171929 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.174670 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e: ROLLBACK
+[0m22:30:41.175737 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e: Close
+[0m22:30:41.176502 [info ] [Thread-1 (]: 22 of 37 PASS non_negative_stg_players_goals ................................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.177652 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e
+[0m22:30:41.178259 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e
+[0m22:30:41.179072 [info ] [Thread-1 (]: 23 of 37 START test non_negative_stg_players_passes_key ........................ [RUN]
+[0m22:30:41.179691 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_goals.fc79916d8e, now test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e)
+[0m22:30:41.180046 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e
+[0m22:30:41.192341 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e"
+[0m22:30:41.195207 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e
+[0m22:30:41.198059 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e"
+[0m22:30:41.199598 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e"
+[0m22:30:41.200308 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e: BEGIN
+[0m22:30:41.200877 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.202046 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.202446 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e"
+[0m22:30:41.203597 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where passes_key is not null
+  and passes_key < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.207735 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.209290 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e: ROLLBACK
+[0m22:30:41.209857 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e: Close
+[0m22:30:41.211240 [info ] [Thread-1 (]: 23 of 37 PASS non_negative_stg_players_passes_key .............................. [[32mPASS[0m in 0.03s]
+[0m22:30:41.212115 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e
+[0m22:30:41.212496 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4
+[0m22:30:41.212797 [info ] [Thread-1 (]: 24 of 37 START test non_negative_stg_players_passes_total ...................... [RUN]
+[0m22:30:41.213345 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_passes_key.50f86da05e, now test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4)
+[0m22:30:41.213650 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4
+[0m22:30:41.220873 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4"
+[0m22:30:41.223275 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4
+[0m22:30:41.227128 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4"
+[0m22:30:41.228504 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4"
+[0m22:30:41.228892 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4: BEGIN
+[0m22:30:41.229204 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.229907 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.230219 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4"
+[0m22:30:41.230507 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where passes_total is not null
+  and passes_total < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.235580 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:41.237168 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4: ROLLBACK
+[0m22:30:41.237911 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4: Close
+[0m22:30:41.238577 [info ] [Thread-1 (]: 24 of 37 PASS non_negative_stg_players_passes_total ............................ [[32mPASS[0m in 0.03s]
+[0m22:30:41.240279 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4
+[0m22:30:41.241588 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111
+[0m22:30:41.242183 [info ] [Thread-1 (]: 25 of 37 START test non_negative_stg_players_shots_on_target ................... [RUN]
+[0m22:30:41.243226 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_passes_total.f0a83101a4, now test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111)
+[0m22:30:41.243632 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111
+[0m22:30:41.250798 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111"
+[0m22:30:41.253156 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111
+[0m22:30:41.255102 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111"
+[0m22:30:41.256737 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111"
+[0m22:30:41.257628 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111: BEGIN
+[0m22:30:41.258313 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.259220 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.259607 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111"
+[0m22:30:41.260164 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where shots_on_target is not null
+  and shots_on_target < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.263314 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.266443 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111: ROLLBACK
+[0m22:30:41.267735 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111: Close
+[0m22:30:41.268791 [info ] [Thread-1 (]: 25 of 37 PASS non_negative_stg_players_shots_on_target ......................... [[32mPASS[0m in 0.03s]
+[0m22:30:41.269925 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111
+[0m22:30:41.270332 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0
+[0m22:30:41.270783 [info ] [Thread-1 (]: 26 of 37 START test non_negative_stg_players_shots_total ....................... [RUN]
+[0m22:30:41.271725 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_shots_on_target.9b96add111, now test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0)
+[0m22:30:41.272077 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0
+[0m22:30:41.278789 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0"
+[0m22:30:41.280185 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0
+[0m22:30:41.282051 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0"
+[0m22:30:41.284015 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0"
+[0m22:30:41.285073 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0: BEGIN
+[0m22:30:41.285945 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.287181 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.287764 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0"
+[0m22:30:41.288353 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where shots_total is not null
+  and shots_total < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.293709 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:41.295776 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0: ROLLBACK
+[0m22:30:41.296527 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0: Close
+[0m22:30:41.297152 [info ] [Thread-1 (]: 26 of 37 PASS non_negative_stg_players_shots_total ............................. [[32mPASS[0m in 0.03s]
+[0m22:30:41.298400 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0
+[0m22:30:41.299351 [debug] [Thread-1 (]: Began running node test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9
+[0m22:30:41.300402 [info ] [Thread-1 (]: 27 of 37 START test non_negative_stg_players_tackles_total ..................... [RUN]
+[0m22:30:41.301370 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_shots_total.ed41e30bf0, now test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9)
+[0m22:30:41.301766 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9
+[0m22:30:41.309847 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9"
+[0m22:30:41.311141 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9
+[0m22:30:41.312866 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9"
+[0m22:30:41.313973 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9"
+[0m22:30:41.314333 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9: BEGIN
+[0m22:30:41.314721 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.315454 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.315851 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9"
+[0m22:30:41.316235 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+select *
+from "api_sports"."main"."stg_players"
+where tackles_total is not null
+  and tackles_total < 0
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.319314 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.321606 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9: ROLLBACK
+[0m22:30:41.322367 [debug] [Thread-1 (]: On test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9: Close
+[0m22:30:41.323527 [info ] [Thread-1 (]: 27 of 37 PASS non_negative_stg_players_tackles_total ........................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.324480 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9
+[0m22:30:41.324887 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8
+[0m22:30:41.325370 [info ] [Thread-1 (]: 28 of 37 START test not_null_player_features_player_season_id .................. [RUN]
+[0m22:30:41.326110 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.non_negative_stg_players_tackles_total.9908d5e0e9, now test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8)
+[0m22:30:41.327874 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8
+[0m22:30:41.340187 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8"
+[0m22:30:41.343215 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8
+[0m22:30:41.345582 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8"
+[0m22:30:41.346827 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8"
+[0m22:30:41.347208 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8: BEGIN
+[0m22:30:41.347574 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.348320 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.348665 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8"
+[0m22:30:41.348958 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select player_season_id
+from "api_sports"."main"."player_features"
+where player_season_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.350915 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.352928 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8: ROLLBACK
+[0m22:30:41.353661 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8: Close
+[0m22:30:41.354663 [info ] [Thread-1 (]: 28 of 37 PASS not_null_player_features_player_season_id ........................ [[32mPASS[0m in 0.03s]
+[0m22:30:41.355891 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8
+[0m22:30:41.358242 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_league_id.951f42a256
+[0m22:30:41.359322 [info ] [Thread-1 (]: 29 of 37 START test not_null_stg_players_league_id ............................. [RUN]
+[0m22:30:41.360426 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_player_features_player_season_id.d52a9ad8c8, now test.soccer_analytics.not_null_stg_players_league_id.951f42a256)
+[0m22:30:41.360913 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_league_id.951f42a256
+[0m22:30:41.368559 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_league_id.951f42a256"
+[0m22:30:41.369975 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_league_id.951f42a256
+[0m22:30:41.371906 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_league_id.951f42a256"
+[0m22:30:41.374631 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_league_id.951f42a256"
+[0m22:30:41.375579 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_league_id.951f42a256: BEGIN
+[0m22:30:41.376131 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.376850 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.377175 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_league_id.951f42a256"
+[0m22:30:41.377491 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_league_id.951f42a256: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_league_id.951f42a256"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select league_id
+from "api_sports"."main"."stg_players"
+where league_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.381216 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.383538 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_league_id.951f42a256: ROLLBACK
+[0m22:30:41.384382 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_league_id.951f42a256: Close
+[0m22:30:41.385049 [info ] [Thread-1 (]: 29 of 37 PASS not_null_stg_players_league_id ................................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.385928 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_league_id.951f42a256
+[0m22:30:41.386370 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_minutes.23a9468b81
+[0m22:30:41.386707 [info ] [Thread-1 (]: 30 of 37 START test not_null_stg_players_minutes ............................... [RUN]
+[0m22:30:41.387309 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_league_id.951f42a256, now test.soccer_analytics.not_null_stg_players_minutes.23a9468b81)
+[0m22:30:41.387670 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_minutes.23a9468b81
+[0m22:30:41.394569 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_minutes.23a9468b81"
+[0m22:30:41.395786 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_minutes.23a9468b81
+[0m22:30:41.397241 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_minutes.23a9468b81"
+[0m22:30:41.400674 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_minutes.23a9468b81"
+[0m22:30:41.401932 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_minutes.23a9468b81: BEGIN
+[0m22:30:41.402813 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.403848 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.404216 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_minutes.23a9468b81"
+[0m22:30:41.404514 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_minutes.23a9468b81: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_minutes.23a9468b81"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select minutes
+from "api_sports"."main"."stg_players"
+where minutes is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.408727 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.411109 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_minutes.23a9468b81: ROLLBACK
+[0m22:30:41.412061 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_minutes.23a9468b81: Close
+[0m22:30:41.412729 [info ] [Thread-1 (]: 30 of 37 PASS not_null_stg_players_minutes ..................................... [[32mPASS[0m in 0.03s]
+[0m22:30:41.413480 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_minutes.23a9468b81
+[0m22:30:41.413862 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b
+[0m22:30:41.414270 [info ] [Thread-1 (]: 31 of 37 START test not_null_stg_players_player_id ............................. [RUN]
+[0m22:30:41.415142 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_minutes.23a9468b81, now test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b)
+[0m22:30:41.415569 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b
+[0m22:30:41.422532 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b"
+[0m22:30:41.424430 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b
+[0m22:30:41.427500 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b"
+[0m22:30:41.428899 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b"
+[0m22:30:41.429286 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b: BEGIN
+[0m22:30:41.429589 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.430744 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.431564 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b"
+[0m22:30:41.432239 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select player_id
+from "api_sports"."main"."stg_players"
+where player_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.437924 [debug] [Thread-1 (]: SQL status: OK in 0.004 seconds
+[0m22:30:41.439750 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b: ROLLBACK
+[0m22:30:41.440488 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b: Close
+[0m22:30:41.441269 [info ] [Thread-1 (]: 31 of 37 PASS not_null_stg_players_player_id ................................... [[32mPASS[0m in 0.03s]
+[0m22:30:41.442680 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b
+[0m22:30:41.443193 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348
+[0m22:30:41.443522 [info ] [Thread-1 (]: 32 of 37 START test not_null_stg_players_player_season_id ...................... [RUN]
+[0m22:30:41.444519 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_player_id.702d1d8c7b, now test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348)
+[0m22:30:41.444928 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348
+[0m22:30:41.456538 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348"
+[0m22:30:41.459798 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348
+[0m22:30:41.464568 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348"
+[0m22:30:41.467627 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348"
+[0m22:30:41.469370 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348: BEGIN
+[0m22:30:41.470741 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.473740 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.474604 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348"
+[0m22:30:41.475062 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select player_season_id
+from "api_sports"."main"."stg_players"
+where player_season_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.495713 [debug] [Thread-1 (]: SQL status: OK in 0.020 seconds
+[0m22:30:41.497414 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348: ROLLBACK
+[0m22:30:41.498625 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348: Close
+[0m22:30:41.500066 [info ] [Thread-1 (]: 32 of 37 PASS not_null_stg_players_player_season_id ............................ [[32mPASS[0m in 0.06s]
+[0m22:30:41.501758 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348
+[0m22:30:41.502292 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_season.352de310ee
+[0m22:30:41.502745 [info ] [Thread-1 (]: 33 of 37 START test not_null_stg_players_season ................................ [RUN]
+[0m22:30:41.503378 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_player_season_id.b0781a6348, now test.soccer_analytics.not_null_stg_players_season.352de310ee)
+[0m22:30:41.504009 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_season.352de310ee
+[0m22:30:41.513388 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_season.352de310ee"
+[0m22:30:41.515846 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_season.352de310ee
+[0m22:30:41.518677 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_season.352de310ee"
+[0m22:30:41.520385 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_season.352de310ee"
+[0m22:30:41.520933 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_season.352de310ee: BEGIN
+[0m22:30:41.521262 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.523197 [debug] [Thread-1 (]: SQL status: OK in 0.002 seconds
+[0m22:30:41.523882 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_season.352de310ee"
+[0m22:30:41.524206 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_season.352de310ee: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_season.352de310ee"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select season
+from "api_sports"."main"."stg_players"
+where season is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.529802 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:41.533069 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_season.352de310ee: ROLLBACK
+[0m22:30:41.533890 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_season.352de310ee: Close
+[0m22:30:41.536026 [info ] [Thread-1 (]: 33 of 37 PASS not_null_stg_players_season ...................................... [[32mPASS[0m in 0.03s]
+[0m22:30:41.537253 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_season.352de310ee
+[0m22:30:41.537918 [debug] [Thread-1 (]: Began running node test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4
+[0m22:30:41.538308 [info ] [Thread-1 (]: 34 of 37 START test not_null_stg_players_team_id ............................... [RUN]
+[0m22:30:41.539099 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_season.352de310ee, now test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4)
+[0m22:30:41.539566 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4
+[0m22:30:41.546470 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4"
+[0m22:30:41.547867 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4
+[0m22:30:41.550540 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4"
+[0m22:30:41.551775 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4"
+[0m22:30:41.552164 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4: BEGIN
+[0m22:30:41.552460 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.553155 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.553455 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4"
+[0m22:30:41.553748 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select team_id
+from "api_sports"."main"."stg_players"
+where team_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.559081 [debug] [Thread-1 (]: SQL status: OK in 0.005 seconds
+[0m22:30:41.561033 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4: ROLLBACK
+[0m22:30:41.561677 [debug] [Thread-1 (]: On test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4: Close
+[0m22:30:41.562304 [info ] [Thread-1 (]: 34 of 37 PASS not_null_stg_players_team_id ..................................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.563177 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4
+[0m22:30:41.563566 [debug] [Thread-1 (]: Began running node test.soccer_analytics.player_features_metrics
+[0m22:30:41.563872 [info ] [Thread-1 (]: 35 of 37 START test player_features_metrics .................................... [RUN]
+[0m22:30:41.564488 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.not_null_stg_players_team_id.ac90d4d6e4, now test.soccer_analytics.player_features_metrics)
+[0m22:30:41.564999 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.player_features_metrics
+[0m22:30:41.567036 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.player_features_metrics"
+[0m22:30:41.568123 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.player_features_metrics
+[0m22:30:41.570908 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.player_features_metrics"
+[0m22:30:41.572413 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.player_features_metrics"
+[0m22:30:41.572843 [debug] [Thread-1 (]: On test.soccer_analytics.player_features_metrics: BEGIN
+[0m22:30:41.573164 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.574629 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.575331 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.player_features_metrics"
+[0m22:30:41.575668 [debug] [Thread-1 (]: On test.soccer_analytics.player_features_metrics: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.player_features_metrics"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  select *
+from "api_sports"."main"."player_features"
+where minutes < 300
+   or goals_per90 < 0
+   or assists_per90 < 0
+   or key_passes_per90 < 0
+   or tackles_per90 < 0
+   or dribbles_per90 < 0
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.579541 [debug] [Thread-1 (]: SQL status: OK in 0.003 seconds
+[0m22:30:41.581597 [debug] [Thread-1 (]: On test.soccer_analytics.player_features_metrics: ROLLBACK
+[0m22:30:41.583180 [debug] [Thread-1 (]: On test.soccer_analytics.player_features_metrics: Close
+[0m22:30:41.583989 [info ] [Thread-1 (]: 35 of 37 PASS player_features_metrics .......................................... [[32mPASS[0m in 0.02s]
+[0m22:30:41.584744 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.player_features_metrics
+[0m22:30:41.585481 [debug] [Thread-1 (]: Began running node test.soccer_analytics.stg_players_scope
+[0m22:30:41.585825 [info ] [Thread-1 (]: 36 of 37 START test stg_players_scope .......................................... [RUN]
+[0m22:30:41.586499 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.player_features_metrics, now test.soccer_analytics.stg_players_scope)
+[0m22:30:41.586822 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.stg_players_scope
+[0m22:30:41.588688 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.stg_players_scope"
+[0m22:30:41.590764 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.stg_players_scope
+[0m22:30:41.593664 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.stg_players_scope"
+[0m22:30:41.594756 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.stg_players_scope"
+[0m22:30:41.595115 [debug] [Thread-1 (]: On test.soccer_analytics.stg_players_scope: BEGIN
+[0m22:30:41.595407 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.596098 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.596398 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.stg_players_scope"
+[0m22:30:41.596673 [debug] [Thread-1 (]: On test.soccer_analytics.stg_players_scope: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.stg_players_scope"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  select *
+from "api_sports"."main"."stg_players"
+where league_id not in (39, 61, 78, 135, 140)
+   or season not between 2020 and 2026
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.605388 [debug] [Thread-1 (]: SQL status: OK in 0.008 seconds
+[0m22:30:41.608775 [debug] [Thread-1 (]: On test.soccer_analytics.stg_players_scope: ROLLBACK
+[0m22:30:41.610085 [debug] [Thread-1 (]: On test.soccer_analytics.stg_players_scope: Close
+[0m22:30:41.610971 [info ] [Thread-1 (]: 36 of 37 PASS stg_players_scope ................................................ [[32mPASS[0m in 0.02s]
+[0m22:30:41.612012 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.stg_players_scope
+[0m22:30:41.612401 [debug] [Thread-1 (]: Began running node test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1
+[0m22:30:41.613201 [info ] [Thread-1 (]: 37 of 37 START test unique_stg_players_player_season_id ........................ [RUN]
+[0m22:30:41.614650 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.soccer_analytics.stg_players_scope, now test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1)
+[0m22:30:41.615488 [debug] [Thread-1 (]: Began compiling node test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1
+[0m22:30:41.630702 [debug] [Thread-1 (]: Writing injected SQL for node "test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1"
+[0m22:30:41.633210 [debug] [Thread-1 (]: Began executing node test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1
+[0m22:30:41.634966 [debug] [Thread-1 (]: Writing runtime sql for node "test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1"
+[0m22:30:41.636533 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1"
+[0m22:30:41.637373 [debug] [Thread-1 (]: On test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1: BEGIN
+[0m22:30:41.638059 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m22:30:41.638895 [debug] [Thread-1 (]: SQL status: OK in 0.001 seconds
+[0m22:30:41.639223 [debug] [Thread-1 (]: Using duckdb connection "test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1"
+[0m22:30:41.639579 [debug] [Thread-1 (]: On test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1: /* {"app": "dbt", "dbt_version": "1.12.3", "profile_name": "soccer_analytics", "target_name": "dev", "node_id": "test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    player_season_id as unique_field,
+    count(*) as n_records
+
+from "api_sports"."main"."stg_players"
+where player_season_id is not null
+group by player_season_id
+having count(*) > 1
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m22:30:41.663138 [debug] [Thread-1 (]: SQL status: OK in 0.023 seconds
+[0m22:30:41.664922 [debug] [Thread-1 (]: On test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1: ROLLBACK
+[0m22:30:41.666479 [debug] [Thread-1 (]: On test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1: Close
+[0m22:30:41.667303 [info ] [Thread-1 (]: 37 of 37 PASS unique_stg_players_player_season_id .............................. [[32mPASS[0m in 0.05s]
+[0m22:30:41.668085 [debug] [Thread-1 (]: Finished running node test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1
+[0m22:30:41.669785 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:41.670127 [debug] [MainThread]: On master: BEGIN
+[0m22:30:41.670389 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m22:30:41.671015 [debug] [MainThread]: SQL status: OK in 0.001 seconds
+[0m22:30:41.671319 [debug] [MainThread]: On master: COMMIT
+[0m22:30:41.671568 [debug] [MainThread]: Using duckdb connection "master"
+[0m22:30:41.671801 [debug] [MainThread]: On master: COMMIT
+[0m22:30:41.672216 [debug] [MainThread]: SQL status: OK in 0.000 seconds
+[0m22:30:41.672477 [debug] [MainThread]: On master: Close
+[0m22:30:41.672814 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m22:30:41.673060 [debug] [MainThread]: Connection 'list_api_sports_main' was properly closed.
+[0m22:30:41.674012 [debug] [MainThread]: Connection 'test.soccer_analytics.unique_stg_players_player_season_id.6345c5f0d1' was properly closed.
+[0m22:30:41.675495 [info ] [MainThread]: 
+[0m22:30:41.676487 [info ] [MainThread]: Finished running 37 data tests in 0 hours 0 minutes and 1.39 seconds (1.39s).
+[0m22:30:41.680856 [debug] [MainThread]: Command end result
+[0m22:30:41.742228 [debug] [MainThread]: Wrote artifact WritableManifest to .\target\manifest.json
+[0m22:30:41.748629 [debug] [MainThread]: Wrote artifact SemanticManifest to .\target\semantic_manifest.json
+[0m22:30:41.753132 [debug] [MainThread]: Wrote artifact OsiDocument to .\target\osi_document.json
+[0m22:30:41.763297 [debug] [MainThread]: Wrote artifact RunExecutionResult to .\target\run_results.json
+[0m22:30:41.763726 [info ] [MainThread]: 
+[0m22:30:41.764283 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m22:30:41.765295 [info ] [MainThread]: 
+[0m22:30:41.766850 [info ] [MainThread]: Done. PASS=37 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=37
+[0m22:30:41.768362 [debug] [MainThread]: Command `dbt test` succeeded at 22:30:41.768199 after 3.25 seconds
+[0m22:30:41.768808 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA5137890>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA549E2B0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000018EA549DA70>]}
+[0m22:30:41.769311 [debug] [MainThread]: Flushing usage events
+[0m22:30:42.389145 [debug] [MainThread]: An error was encountered while trying to flush usage events

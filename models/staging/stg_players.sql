@@ -7,8 +7,8 @@ with player as (
         player__name as name,
         player__age as age,
         player__nationality as nationality,
-        regexp_replace(player__height, '[^0-9]', '', 'g')::int as height_cm,
-        regexp_replace(player__weight, '[^0-9]', '', 'g')::int as weight_kg,
+        nullif(regexp_replace(player__height, '[^0-9]', '', 'g'), '')::int as height_cm,
+        nullif(regexp_replace(player__weight, '[^0-9]', '', 'g'), '')::int as weight_kg,
         player__injured as injured
     from {{ source('raw', 'players_raw') }}
 ),

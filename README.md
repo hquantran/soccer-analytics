@@ -314,6 +314,56 @@ and the SQL files under `tests/`. A failing test returns the offending rows in a
 generated relation under the dbt test schema and reports the failure in the
 terminal.
 
+## Parquet exports and Power BI
+
+The dbt project has a post-hook that runs after each model succeeds:
+
+```text
+output/{{ model.name }}.parquet
+```
+
+The current outputs are:
+
+| File | Contents |
+| --- | --- |
+| `output/stg_players.parquet` | Cleaned and joined staging rows. Useful for troubleshooting or detailed analysis. |
+| `output/player_features.parquet` | Final analysis-ready mart. This is the recommended Power BI source. |
+
+The Parquet files are generated from the DuckDB relations after dbt builds them,
+so they contain the same rows and columns as `main.stg_players` and
+`main.player_features`. They are generated artifacts, are ignored by Git, and
+are replaced on the next successful `dbt run`.
+
+For Power BI Desktop, connect to the final file using **Get Data > Parquet** and
+select `output/player_features.parquet`. Build reports from this file rather
+than the staging export unless you specifically need the lower-level columns.
+After refreshing the pipeline, run `dbt run` again and refresh the Power BI
+dataset to read the updated file.
+
+This is a good approach for a local project or a small scheduled workflow:
+Parquet is columnar, preserves types better than CSV, is compact, and is fast
+for Power BI to read. It also keeps Power BI separate from the raw API and the
+transformation logic.
+
+The main limitation is refresh location. A local path works in Power BI Desktop,
+but Power BI Service cannot normally refresh a file that exists only on your
+computer. For published dashboards, copy the Parquet output to a supported
+shared location such as OneDrive/SharePoint, Azure Blob Storage, Azure Data
+Lake, or another organization-approved data store, then connect Power BI to
+that shared location. Alternatively, configure an on-premises gateway if the
+file must remain on a local or network machine.
+
+The complete local workflow is:
+
+```bash
+python run_players.py
+# or, when the raw DuckDB data already exists:
+dbt run --project-dir . --profiles-dir .
+```
+
+Then refresh Power BI from `output/player_features.parquet`. Do not edit the
+Parquet file manually; change the source or dbt model and regenerate it.
+
 Common points of confusion:
 
 - `players_raw` is not the final player table. It is a flattened API parent

@@ -6,3 +6,4 @@ __pycache__/
 .venv/
 target/
 dbt_internal_packages/
+output/*.parquet

@@ -2130,3 +2130,208 @@ Finished 'compile' successfully for target 'dev' [888ms]
 Processed: 2 models
 Summary: 2 total | 2 success
 01:37:50.243760 [info ]: Cached model count updated: 2 models (accurate)
+==================== 2026-09-06T02:29:14.471729Z | 6d33e0bb-e5f9-417a-8d09-8a07f1ad36bb ====================
+02:29:14.480995 [info ]: Started loading project
+02:29:14.526293 [info ]: Loading profiles.yml
+==================== 2026-09-06T02:29:14.686671Z | c086200e-c33d-4c66-8a0b-877187191d92 ====================
+02:29:14.686855 [info ]: Started loading project
+02:29:14.688555 [info ]: Loading profiles.yml
+02:29:14.690025 [info ]: Finished loading project [  0.21s]
+02:29:14.698030 [info ]: Loading profiles.yml
+02:29:14.745091 [info ]:    Started resolving packages from packages.yml
+02:29:14.920067 [info ]:   Finished [  0.17s] resolving packages from packages.yml (1 items)
+02:29:14.924077 [debug]:    Started loading packages
+02:29:14.937804 [debug]:     Loaded [  0.01s] packages
+02:29:14.939232 [info ]: Finished loading project [  0.25s]
+02:29:14.944996 [info ]: Started parsing
+02:29:15.155893 [debug]: Finished parsing models/schema.yml [  0.02s]
+02:29:15.202943 [debug]: Finished parsing models/marts/player_features.sql [  0.03s]
+02:29:15.213767 [debug]: Finished parsing models/staging/stg_players.sql [  0.01s]
+02:29:15.226759 [debug]: Finished parsing tests/player_features_metrics.sql [  0.00s]
+02:29:15.228568 [debug]: Finished parsing tests/stg_players_scope.sql [  0.00s]
+02:29:15.546739 [info ]: Finished parsing [  0.60s]
+02:29:15.553672 [info ]: Cached model count updated: 2 models (estimate)
+02:29:15.553720 [info ]: Cached model count updated: 2 models (accurate)
+02:29:15.556782 [info ]: Started scheduling
+02:29:15.565856 [info ]: Finished scheduling [  0.01s]
+02:29:15.565959 [debug]: Compilation - 0 nodes selected: {}
+02:29:15.567549 [warn ]: [NoNodesForSelectionCriteria (dbt1092)]: The selection criterion '' does not match any enabled nodes
+02:29:15.568786 [warn ]: [NoNodesSelected (dbt1601)]: Nothing to do. Try checking your model configs and model specification args
+02:29:15.570066 [info ]: Started scheduling
+02:29:15.572389 [info ]: Finished scheduling [  0.00s]
+02:29:15.579383 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "api_sports", schema: "soccer_analytics_data", table: "players_raw" }) and interval: None
+02:29:15.580087 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "api_sports", schema: "soccer_analytics_data", table: "players_raw__statistics" }) and interval: None
+02:29:15.686596 [info ]: Started building task graph
+02:29:15.689881 [info ]: Finished building task graph [  0.00s]
+02:29:17.272399 [info ]: Started scheduling
+02:29:17.272479 [info ]: Finished scheduling [  0.00s]
+02:29:17.274022 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' with 2 warnings for target 'dev' [2.6s]
+02:29:17.276110 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [2.8s]
+02:29:17.330305 [info ]: Cached model count updated: 2 models (accurate)
+==================== 2026-09-06T02:29:19.097322Z | a2cf1330-caa1-4baf-8319-fb3c114f334a ====================
+02:29:19.097501 [info ]: Started loading project
+02:29:19.098647 [info ]: Loading profiles.yml
+02:29:19.172708 [info ]: Cached model count updated: 2 models (estimate)
+02:29:19.172743 [info ]: Cached model count updated: 2 models (accurate)
+02:29:19.172797 [info ]: Started scheduling
+02:29:19.172908 [info ]: Finished scheduling [  0.00s]
+02:29:19.172939 [debug]: Compilation - 2 nodes selected: {"model.soccer_analytics.player_features", "model.soccer_analytics.stg_players"}
+02:29:19.264279 [info ]: Started building task graph
+02:29:19.270733 [info ]: Finished building task graph [  0.01s]
+02:29:19.516309 [info ]: Started rendering (2 nodes)
+02:29:19.518719 [info ]: Started model main.player_features
+02:29:19.519548 [debug]: Started rendering model main.player_features
+02:29:19.521013 [info ]: Started model main.stg_players
+02:29:19.521030 [debug]: Started rendering model main.stg_players
+02:29:19.521041 [info ]: Finished loading project [  0.42s]
+02:29:19.542459 [debug]: Compiled SQL for node model.soccer_analytics.player_features at target\.lsp\compiled\soccer_analytics\models\marts\player_features.sql
+02:29:19.549133 [debug]: Finished rendering [  0.03s] model main.player_features [success]
+02:29:19.551036 [info ]: Started analyzing (2 nodes)
+02:29:19.551070 [debug]: Started analyzing model main.player_features
+02:29:19.587967 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+02:29:19.588856 [debug]: Finished rendering [  0.07s] model main.stg_players [success]
+02:29:19.588918 [info ]: Finished rendering [  0.07s] (2 nodes, 0 skipped, 0 errors)
+02:29:19.588962 [debug]: Started analyzing model main.stg_players
+02:29:19.596121 [debug]: Finished analyzing [  0.05s] model main.player_features [success]
+02:29:19.596232 [info ]:  Succeeded [  0.07s] model main.player_features (table)
+02:29:19.602974 [debug]: Finished analyzing [  0.01s] model main.stg_players [success]
+02:29:19.603053 [info ]: Finished analyzing [  0.05s] (2 nodes, 0 skipped, 0 errors)
+02:29:19.603090 [info ]:  Succeeded [  0.08s] model main.stg_players (view)
+02:29:19.610917 [info ]: Started scheduling
+02:29:19.610995 [info ]: Finished scheduling [  0.00s]
+02:29:19.611455 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [514ms]
+Processed: 2 models
+Summary: 2 total | 2 success
+02:29:19.612196 [info ]: Cached model count updated: 2 models (accurate)
+==================== 2026-09-06T02:29:47.142324Z | 9a5d4a39-8a0a-44ff-bd34-37617f93b570 ====================
+02:29:47.142536 [info ]: Started loading project
+02:29:47.144151 [info ]: Loading profiles.yml
+02:29:47.173056 [info ]: Started parsing
+02:29:47.240203 [info ]: Finished loading project [  0.10s]
+02:29:47.246537 [debug]: Finished parsing models/schema.yml [  0.00s]
+02:29:47.250141 [debug]: Finished parsing models/marts/player_features.sql [  0.00s]
+02:29:47.252538 [debug]: Finished parsing models/staging/stg_players.sql [  0.00s]
+02:29:47.498701 [info ]: Finished parsing [  0.33s]
+02:29:47.504518 [info ]: Cached model count updated: 2 models (estimate)
+02:29:47.504547 [info ]: Cached model count updated: 2 models (accurate)
+02:29:47.504592 [info ]: Started scheduling
+02:29:47.506442 [info ]: Finished scheduling [  0.00s]
+02:29:47.506483 [debug]: Compilation - 1 nodes selected: {"model.soccer_analytics.stg_players"}
+02:29:47.581464 [info ]: Started building task graph
+02:29:47.581637 [info ]: Finished building task graph [  0.00s]
+02:29:47.720348 [info ]: Started rendering (1 nodes)
+02:29:47.720445 [info ]: Started model main.stg_players
+02:29:47.720461 [debug]: Started rendering model main.stg_players
+02:29:47.729372 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+02:29:47.729630 [debug]: Finished rendering [  0.01s] model main.stg_players [success]
+02:29:47.729658 [info ]: Finished rendering [  0.01s] (1 nodes, 0 skipped, 0 errors)
+02:29:47.729689 [info ]: Started analyzing (1 nodes)
+02:29:47.729699 [debug]: Started analyzing model main.stg_players
+02:29:47.757127 [debug]: Finished analyzing [  0.03s] model main.stg_players [success]
+02:29:47.757437 [info ]: Finished analyzing [  0.03s] (1 nodes, 0 skipped, 0 errors)
+02:29:47.757467 [info ]:  Succeeded [  0.04s] model main.stg_players (view)
+02:29:47.764240 [info ]: Started scheduling
+02:29:47.764380 [info ]: Finished scheduling [  0.00s]
+02:29:47.766650 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [624ms]
+Processed: 1 model
+Summary: 1 total | 1 success
+02:29:47.766886 [info ]: Cached model count updated: 2 models (accurate)
+==================== 2026-09-06T02:29:49.442806Z | 98359144-bb08-49a0-b2d2-0eda231b1f4a ====================
+02:29:49.443023 [info ]: Started loading project
+02:29:49.444656 [info ]: Loading profiles.yml
+02:29:49.497947 [info ]: Cached model count updated: 2 models (estimate)
+02:29:49.497982 [info ]: Cached model count updated: 2 models (accurate)
+02:29:49.498021 [info ]: Started scheduling
+02:29:49.498097 [info ]: Finished scheduling [  0.00s]
+02:29:49.498116 [debug]: Compilation - 2 nodes selected: {"model.soccer_analytics.player_features", "model.soccer_analytics.stg_players"}
+02:29:49.572384 [info ]: Started building task graph
+02:29:49.572495 [info ]: Finished building task graph [  0.00s]
+02:29:49.711350 [info ]: Started rendering (2 nodes)
+02:29:49.711394 [info ]: Started model main.player_features
+02:29:49.711405 [debug]: Started rendering model main.player_features
+02:29:49.711503 [info ]: Finished loading project [  0.27s]
+02:29:49.711579 [info ]: Started model main.stg_players
+02:29:49.711632 [debug]: Started rendering model main.stg_players
+02:29:49.713500 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+02:29:49.713677 [debug]: Finished rendering [  0.00s] model main.stg_players [success]
+02:29:49.713750 [info ]: Started analyzing (2 nodes)
+02:29:49.713772 [debug]: Started analyzing model main.stg_players
+02:29:49.713927 [debug]: Compiled SQL for node model.soccer_analytics.player_features at target\.lsp\compiled\soccer_analytics\models\marts\player_features.sql
+02:29:49.714126 [debug]: Finished rendering [  0.00s] model main.player_features [success]
+02:29:49.714158 [info ]: Finished rendering [  0.00s] (2 nodes, 0 skipped, 0 errors)
+02:29:49.714187 [debug]: Started analyzing model main.player_features
+02:29:49.714734 [debug]: Finished analyzing [  0.00s] model main.player_features [success]
+02:29:49.714766 [info ]:  Succeeded [  0.00s] model main.player_features (table)
+02:29:49.715418 [debug]: Finished analyzing [  0.00s] model main.stg_players [success]
+02:29:49.715433 [info ]: Finished analyzing [  0.00s] (2 nodes, 0 skipped, 0 errors)
+02:29:49.715440 [info ]:  Succeeded [  0.00s] model main.stg_players (view)
+02:29:49.720076 [info ]: Started scheduling
+02:29:49.720154 [info ]: Finished scheduling [  0.00s]
+02:29:49.720281 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [277ms]
+Processed: 2 models
+Summary: 2 total | 2 success
+02:29:49.720919 [info ]: Cached model count updated: 2 models (accurate)
+==================== 2026-09-06T02:32:37.576794Z | 7ecb7b1a-9d2a-4d25-a401-b08533edb94f ====================
+02:32:37.577045 [info ]: Started loading project
+02:32:37.578709 [info ]: Loading profiles.yml
+02:32:37.635898 [info ]: Cached model count updated: 2 models (accurate)
+02:32:37.635921 [info ]: Finished loading project [  0.06s]
+02:32:37.635951 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [59ms]
+==================== 2026-09-06T02:32:38.065484Z | f67390b4-bfe2-471f-8acf-278f2eb4cafa ====================
+02:32:38.065784 [info ]: Started loading project
+02:32:38.066971 [info ]: Loading profiles.yml
+02:32:38.125411 [info ]: Cached model count updated: 2 models (accurate)
+02:32:38.125543 [info ]: Finished loading project [  0.06s]
+02:32:38.125575 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [60ms]
+02:32:38.312998 [info ]: Loading profiles.yml
+==================== 2026-09-06T02:32:39.883501Z | 058df698-9ff3-4ad7-b1ca-64c95be86aa6 ====================
+02:32:39.883713 [info ]: Started loading project
+02:32:39.885370 [info ]: Loading profiles.yml
+02:32:39.998600 [info ]: Cached model count updated: 2 models (estimate)
+02:32:39.998646 [info ]: Cached model count updated: 2 models (accurate)
+02:32:39.998707 [info ]: Started scheduling
+02:32:39.998928 [info ]: Finished scheduling [  0.00s]
+02:32:39.998968 [debug]: Compilation - 2 nodes selected: {"model.soccer_analytics.player_features", "model.soccer_analytics.stg_players"}
+02:32:40.085919 [info ]: Started building task graph
+02:32:40.086016 [info ]: Finished building task graph [  0.00s]
+02:32:40.342617 [info ]: Started rendering (2 nodes)
+02:32:40.342750 [info ]: Started model main.player_features
+02:32:40.342794 [debug]: Started rendering model main.player_features
+02:32:40.342854 [info ]: Started model main.stg_players
+02:32:40.342868 [debug]: Started rendering model main.stg_players
+02:32:40.342909 [info ]: Finished loading project [  0.46s]
+02:32:40.343706 [debug]: Compiled SQL for node model.soccer_analytics.player_features at target\.lsp\compiled\soccer_analytics\models\marts\player_features.sql
+02:32:40.343940 [debug]: Finished rendering [  0.00s] model main.player_features [success]
+02:32:40.344012 [info ]: Started analyzing (2 nodes)
+02:32:40.344035 [debug]: Started analyzing model main.player_features
+02:32:40.344187 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+02:32:40.344386 [debug]: Finished rendering [  0.00s] model main.stg_players [success]
+02:32:40.344422 [info ]: Finished rendering [  0.00s] (2 nodes, 0 skipped, 0 errors)
+02:32:40.344455 [debug]: Started analyzing model main.stg_players
+02:32:40.344837 [debug]: Finished analyzing [  0.00s] model main.player_features [success]
+02:32:40.344870 [info ]:  Succeeded [  0.00s] model main.player_features (table)
+02:32:40.347747 [debug]: Finished analyzing [  0.00s] model main.stg_players [success]
+02:32:40.347772 [info ]: Finished analyzing [  0.00s] (2 nodes, 0 skipped, 0 errors)
+02:32:40.347782 [info ]:  Succeeded [  0.00s] model main.stg_players (view)
+02:32:40.355754 [info ]: Started scheduling
+02:32:40.356002 [info ]: Finished scheduling [  0.00s]
+02:32:40.356222 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [472ms]
+Processed: 2 models
+Summary: 2 total | 2 success
+02:32:40.356851 [info ]: Cached model count updated: 2 models (accurate)
