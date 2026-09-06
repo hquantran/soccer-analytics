@@ -30,9 +30,13 @@ api_client.py  (HTTP, pagination, retries, pacing, quota protection)
 players.py + dlt
 				|
 				v
-api_sports.duckdb / soccer_analytics_data
-	players_raw                  one row per player response item
-	players_raw__statistics      one row per player/team/competition stint
+api_sports.duckdb
+				|
+				+--> soccer_analytics_data_staging (temporary latest load package)
+				|
+				+--> soccer_analytics_data (merged historical raw data)
+					players_raw                  one row per player response item
+					players_raw__statistics      one row per player/team/competition stint
 				|
 				|  sources.yml tells dbt where these two tables are
 				v
@@ -141,6 +145,50 @@ The raw tables are intentionally wide and close to the API shape. They are not
 the tables to use for analysis because values still have API names and types,
 and they include low-minute rows and fields that the feature model does not need.
 
+### What `dlt` cleans, and what it does not
+
+It is important to separate **structural normalization** from **analytical
+cleaning**. `dlt` does the first one. dbt does the second one.
+
+`dlt` performs these loading tasks:
+
+- Sends the records produced by `players.py` to DuckDB.
+- Flattens nested JSON keys. For example, `player.id` becomes `player__id` and
+	`games.minutes` becomes `games__minutes`.
+- Splits the nested `statistics` array into the child table
+	`players_raw__statistics`.
+- Adds `_dlt_id`, `_dlt_parent_id`, `_dlt_load_id`, and related metadata so rows
+	can be connected and load batches can be tracked.
+- Merges records from the different league-season requests into the final raw
+	tables according to the resource's configured keys.
+
+`dlt` does **not** decide whether the data is useful for analysis. It does not
+apply the 300-minute threshold, calculate per-90 rates, rename fields into the
+project's preferred vocabulary, or guarantee that API values are in the final
+numeric format. Raw values can therefore look like this:
+
+| Raw value | Why it is still raw |
+| --- | --- |
+| `player__height = '173'` | Height arrived as text and still has the API field name. |
+| `games__rating = '6.79'` | Rating is stored as text in the source relation. |
+| `games__position = 'Forward'` | The project later standardizes this label to `Attacker`. |
+| `passes__accuracy = NULL` | The API did not provide a value for that record; `dlt` preserves the null. |
+| `games__minutes = 209` | The row is valid source data but is excluded from the analytical layer because it is below 300 minutes. |
+
+The cleanup happens in `models/staging/stg_players.sql`. That model:
+
+- Converts height and weight text to integer centimeters and kilograms.
+- Casts rating and pass accuracy to numeric types.
+- Renames fields such as `games__appearences` to `appearances`.
+- Changes `Forward` to `Attacker`.
+- Joins player profile rows to their statistics rows.
+- Keeps only statistics rows where `games__minutes >= 300`.
+
+The next model, `models/marts/player_features.sql`, calculates goals, assists,
+key passes, tackles, and successful dribbles per 90 minutes. Therefore, raw
+tables are not broken or unfinished; they preserve the source faithfully so the
+transformation logic can be inspected, changed, and rerun.
+
 #### `_dlt_loads`, `_dlt_pipeline_state`, and `_dlt_version`
 
 These are `dlt` bookkeeping tables. They record load metadata, pipeline state,
@@ -149,11 +197,29 @@ are not analytical datasets.
 
 ### Transient dlt relations: `soccer_analytics_data_staging`
 
-This schema contains `dlt` staging copies used during loading. It currently has
-`players_raw` and `players_raw__statistics` staging tables plus `_dlt_version`.
-dbt does not read this schema; `sources.yml` points to the final
-`soccer_analytics_data` schema. Staging contents may change or disappear on a
-future load.
+This schema contains temporary `dlt` copies used while a load package is being
+prepared and merged. It currently has `players_raw` and
+`players_raw__statistics` staging tables plus `_dlt_version`. In this workspace,
+each staging table has 511 rows because the latest load was the 2026 La Liga
+request, which returned 511 player records. That does **not** mean the pipeline
+only loaded 511 players: the merged final tables contain 26,132 player rows and
+27,412 statistics rows across all 35 league-season loads.
+
+The staging rows are raw source rows, not failed cleaning attempts. They are a
+load buffer or recent package snapshot. `dlt` may keep the latest staging
+relations after a successful load, and their contents can change or disappear
+on a later load. dbt does not read this schema; `sources.yml` points to the
+merged `soccer_analytics_data` schema instead.
+
+To inspect the difference directly:
+
+```sql
+select count(*) from soccer_analytics_data_staging.players_raw;
+-- Current result: 511
+
+select count(*) from soccer_analytics_data.players_raw;
+-- Current result: 26,132
+```
 
 ### dbt relations: `main`
 
@@ -254,6 +320,8 @@ Common points of confusion:
 	table; its statistics are in `players_raw__statistics`.
 - `soccer_analytics_data` is the raw source schema. `main` is where dbt models
 	are materialized.
+- `soccer_analytics_data_staging` is a temporary `dlt` load area. It is not the
+	complete historical dataset and it is not where cleaning happens.
 - `stg_players` is a view, while `player_features` is a table.
 - `player_features.csv` is an export and is not the source dbt reads.
 - `soccer_analytics.duckdb` is not the configured target. The configured target
