@@ -80,7 +80,7 @@ remaining daily quota reaches `quota_reserve`.
 | `config.toml` | Local runtime configuration. It is secret-bearing and should not be committed. |
 | `constants.py` | Defines the five league IDs and the inclusive season list used by the loader. |
 | `players.py` | Defines the `dlt` resource. It calls the API client and adds the requested league and season to each raw response item. It intentionally does not clean or calculate metrics. |
-| `run_players.py` | Main orchestrator. It optionally loads the API, exports raw CSV, runs dbt, and exports the final feature CSV. It uses `api_sports.duckdb`. If that file already exists, it skips API ingestion and only reruns dbt and exports. |
+| `run_players.py` | Main orchestrator. It optionally loads the API, runs dbt, and lets dbt write the model exports under `output/`. It uses `api_sports.duckdb`. If that file already exists, it skips API ingestion and only reruns dbt and exports. |
 | `export_sample.py` | Command-line Excel exporter for `main.player_features`. It can export all rows or a limited sample. |
 | `requirements.txt` | Python dependencies: dbt core and DuckDB adapter, `dlt` with DuckDB support, HTTP requests, and certificates. |
 
@@ -111,9 +111,7 @@ remaining daily quota reaches `quota_reserve`.
 | --- | --- |
 | `api_sports.duckdb` | Active DuckDB warehouse used by both `run_players.py` and dbt. |
 | `soccer_analytics.duckdb` | An older/unused DuckDB file. In the current workspace it has no project tables; use `api_sports.duckdb`. |
-| `players_raw.csv` | CSV export of `soccer_analytics_data.players_raw`, created by `run_players.py` before dbt runs. |
-| `player_features.csv` | CSV export of `main.player_features`, created by `run_players.py` after dbt runs. |
-| `tmp_player_features.csv` | Temporary or manually generated feature extract; it is not used by the pipeline code. |
+| `output/` | Generated CSV and Parquet exports written by dbt post-hooks. `output/player_features.parquet` is the recommended Power BI source. |
 
 ## DuckDB tables and views
 
@@ -288,10 +286,13 @@ dbt test --project-dir . --profiles-dir .
 
 # Export an Excel sample from the final mart
 python export_sample.py --limit 20
+
+# Rebuild dbt models and refresh only dbt CSV and Parquet outputs
+dbt run --project-dir . --profiles-dir .
 ```
 
 On later runs, `run_players.py` sees the existing `api_sports.duckdb` and skips
-the API load. It still runs dbt and refreshes the CSV exports. To intentionally
+the API load. It still runs dbt and refreshes the `output/` exports. To intentionally
 rebuild from the API, remove the active database and the matching `dlt` pipeline
 state, then run the script again. `run_players.py` contains the reset helper,
 but it is not called automatically.
@@ -334,6 +335,16 @@ so they contain the same rows and columns as `main.stg_players` and
 `main.player_features`. They are generated artifacts, are ignored by Git, and
 are replaced on the next successful `dbt run`.
 
+The dbt run writes these four Power BI-ready files without running the API
+ingestion:
+
+```text
+output/stg_players.csv
+output/stg_players.parquet
+output/player_features.csv
+output/player_features.parquet
+```
+
 For Power BI Desktop, connect to the final file using **Get Data > Parquet** and
 select `output/player_features.parquet`. Build reports from this file rather
 than the staging export unless you specifically need the lower-level columns.
@@ -373,7 +384,7 @@ Common points of confusion:
 - `soccer_analytics_data_staging` is a temporary `dlt` load area. It is not the
 	complete historical dataset and it is not where cleaning happens.
 - `stg_players` is a view, while `player_features` is a table.
-- `player_features.csv` is an export and is not the source dbt reads.
+- The files under `output/` are exports and are not the source dbt reads.
 - `soccer_analytics.duckdb` is not the configured target. The configured target
 	is `api_sports.duckdb` in `profiles.yml`.
 - If a raw schema change causes a `dlt` schema-evolution error, inspect the

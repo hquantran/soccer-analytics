@@ -2,7 +2,7 @@
 
 Run from the project root with the venv activated:
 
-    python -m pipelines.run_players
+    python run_players.py
 
 To expand scope later, add league IDs to constants.MVP_LEAGUE_IDS (or point
 this at constants.LEAGUE_IDS once you're ready for the full backlog) and
@@ -23,8 +23,6 @@ from players import players_resource
 
 
 DB_PATH = Path("api_sports.duckdb")
-RAW_CSV_PATH = Path("players_raw.csv")
-FEATURES_CSV_PATH = Path("player_features.csv")
 
 
 def reset_pipeline_state() -> None:
@@ -60,24 +58,6 @@ def reset_pipeline_state() -> None:
         conn.close()
 
 
-def export_players_csv(db_path: Path, csv_path: Path, query: str) -> None:
-    if not db_path.exists():
-        print(f"Database file {db_path} not found. Skipping CSV export.")
-        return
-
-    if csv_path.exists():
-        csv_path.unlink()
-
-    conn = duckdb.connect(str(db_path))
-    try:
-        conn.execute(
-            f"COPY ({query}) TO '{csv_path}' (HEADER, DELIMITER ',');"
-        )
-        print(f"Exported to {csv_path}")
-    finally:
-        conn.close()
-
-
 def main() -> None:
     project_root = Path(__file__).resolve().parent
     db_exists = DB_PATH.exists()
@@ -97,8 +77,6 @@ def main() -> None:
                 print(load_info)
     else:
         print(f"Database already exists at {DB_PATH}. Skipping API load and exporting current data only.")
-
-    export_players_csv(DB_PATH, RAW_CSV_PATH, "SELECT * FROM soccer_analytics_data.players_raw")
 
     active_dbt = Path(sys.executable).parent / "Scripts" / "dbt.exe"
     if sys.version_info >= (3, 14):
@@ -120,10 +98,7 @@ def main() -> None:
     dbt_cmd = [dbt_executable, "run", "--project-dir", str(project_root), "--profiles-dir", str(project_root)]
     print(f"Running dbt transform: {' '.join(dbt_cmd)}")
     subprocess.run(dbt_cmd, cwd=project_root, check=True)
-
-    export_players_csv(DB_PATH, FEATURES_CSV_PATH, "SELECT * FROM main.player_features")
-
-    print("CSV export complete. API load skipped because database already exists.")
+    print("dbt models and output exports complete.")
 
 
 if __name__ == "__main__":

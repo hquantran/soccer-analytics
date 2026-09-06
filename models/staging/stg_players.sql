@@ -5,11 +5,12 @@ with player as (
         _dlt_id as player_row_id,
         player__id as player_id,
         player__name as name,
-        player__age as age,
+        date_diff('year', cast(player__birth__date as date), current_date) as age,
         player__nationality as nationality,
         nullif(regexp_replace(player__height, '[^0-9]', '', 'g'), '')::int as height_cm,
         nullif(regexp_replace(player__weight, '[^0-9]', '', 'g'), '')::int as weight_kg,
-        player__injured as injured
+        player__injured as injured,
+        player__photo as photo
     from {{ source('raw', 'players_raw') }}
 ),
 
@@ -79,6 +80,7 @@ select
     s.fouls_drawn,
     s.fouls_committed,
     s.cards_yellow,
-    s.cards_red
+    s.cards_red,
+    p.photo
 from player p
 inner join stats s using (player_row_id)

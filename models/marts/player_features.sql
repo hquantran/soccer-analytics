@@ -6,6 +6,7 @@ select
     name,
     age,
     nationality,
+    photo,
     team_id,
     team_name,
     league_id,

@@ -7,3 +7,5 @@ __pycache__/
 target/
 dbt_internal_packages/
 output/*.parquet
+output/*.csv
+logs/*.log

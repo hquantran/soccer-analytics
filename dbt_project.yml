@@ -10,7 +10,9 @@ clean-targets: ["target", "dbt_packages"]
 
 models:
   soccer_analytics:
-    +post-hook: "COPY (SELECT * FROM {{ this }}) TO 'output/{{ model.name }}.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);"
+    +post-hook:
+      - "COPY (SELECT * FROM {{ this }}) TO 'output/{{ model.name }}.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);"
+      - "COPY (SELECT * FROM {{ this }}) TO 'output/{{ model.name }}.csv' (HEADER, DELIMITER ',');"
     staging:
       +materialized: view
     marts:
