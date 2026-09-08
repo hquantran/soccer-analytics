@@ -5,7 +5,7 @@ from typing import Any, Iterator, Optional
 
 import requests
 
-from config import get_api_settings, load_config
+from ingestion.settings import get_api_settings, load_config
 
 DEFAULT_BASE_URL = "https://v3.football.api-sports.io"
 

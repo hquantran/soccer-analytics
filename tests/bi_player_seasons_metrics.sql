@@ -1,0 +1,19 @@
+select *
+from {{ ref('bi_player_seasons') }}
+where minutes < 300
+   or goals_per90 < 0
+   or assists_per90 < 0
+   or goal_involvements_per90 < 0
+   or key_passes_per90 < 0
+   or tackles_per90 < 0
+   or dribbles_per90 < 0
+   or shot_accuracy_pct < 0
+   or shot_accuracy_pct > 100
+   or goal_conversion_pct < 0
+   or duel_success_pct < 0
+   or duel_success_pct > 100
+   or dribble_success_pct < 0
+   or dribble_success_pct > 100
+   or pass_accuracy_pct < 0
+   or pass_accuracy_pct > 100
+   or fouls_per_tackle < 0

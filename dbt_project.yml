@@ -5,15 +5,23 @@ config-version: 2
 profile: 'soccer_analytics'
 
 model-paths: ["models"]
+test-paths: ["tests"]
 target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
+# Layering (analytics engineering):
+#   raw (dlt source) → staging → marts (dimensions / facts) → bi (presentation)
 models:
   soccer_analytics:
-    +post-hook:
-      - "COPY (SELECT * FROM {{ this }}) TO 'output/{{ model.name }}.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);"
-      - "COPY (SELECT * FROM {{ this }}) TO 'output/{{ model.name }}.csv' (HEADER, DELIMITER ',');"
     staging:
       +materialized: view
     marts:
+      dimensions:
+        +materialized: table
+      facts:
+        +materialized: table
+    bi:
       +materialized: table
+      +post-hook:
+        - "COPY (SELECT * FROM {{ this }}) TO 'data/exports/{{ model.name }}.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);"
+        - "COPY (SELECT * FROM {{ this }}) TO 'data/exports/{{ model.name }}.csv' (HEADER, DELIMITER ',');"

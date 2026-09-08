@@ -10,14 +10,14 @@ dlt auto-normalizes the nested JSON into related tables on load:
     players_raw__statistics   -- one row per team/competition stint, linked
                                   back to players_raw via _dlt_parent_id
 
-All cleaning (minutes filter, per-90 calculations) happens afterward, in SQL,
-in transform/models/ (dbt) — not here.
+All cleaning (minutes filter, per-90 calculations) happens afterward in dbt
+(`models/staging` → `models/marts` → `models/bi`) — not here.
 """
 
 import dlt
 
-from api_client import fetch_all_pages
-from config import get_headers, load_config
+from ingestion.api_client import fetch_all_pages
+from ingestion.settings import get_headers, load_config
 
 
 @dlt.resource(

@@ -1,0 +1,23 @@
+select *
+from {{ ref('fct_player_seasons') }}
+where minutes < 300
+   or goals < 0
+   or assists < 0
+   or shots_total < 0
+   or shots_on_target < 0
+   or shots_on_target > shots_total
+   or passes_total < 0
+   or passes_completed < 0
+   or passes_completed > passes_total
+   or passes_key < 0
+   or tackles_total < 0
+   or duels_total < 0
+   or duels_won < 0
+   or duels_won > duels_total
+   or dribbles_attempts < 0
+   or dribbles_success < 0
+   or dribbles_success > dribbles_attempts
+   or fouls_drawn < 0
+   or fouls_committed < 0
+   or cards_yellow < 0
+   or cards_red < 0

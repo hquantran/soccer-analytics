@@ -1,11 +1,15 @@
 # Local config and runtime artifacts
-config.toml
+config/config.toml
 *.duckdb
+data/warehouse/*.duckdb
 __pycache__/
 *.pyc
 .venv/
 target/
 dbt_internal_packages/
-output/*.parquet
-output/*.csv
+data/exports/*.parquet
+data/exports/*.csv
+!data/exports/.gitkeep
+!data/warehouse/.gitkeep
 logs/*.log
+.DS_Store

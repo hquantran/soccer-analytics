@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: fct_player_seasons
+    columns:
+      - name: player_season_id
+        tests:
+          - unique
+          - not_null
+      - name: player_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_players')
+                field: player_id
+      - name: team_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_teams')
+                field: team_id
+      - name: league_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_leagues')
+                field: league_id
+      - name: season
+        tests:
+          - not_null
+      - name: minutes
+        tests:
+          - not_null
+          - is_between:
+              arguments:
+                min_value: 300
+      - name: goals
+        tests:
+          - non_negative
+      - name: assists
+        tests:
+          - non_negative
+      - name: passes_completed
+        tests:
+          - non_negative
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - player_id
+              - team_id
+              - league_id
+              - season
