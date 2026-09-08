@@ -1,12 +1,5 @@
 version: 2
 
-sources:
-  - name: raw
-    schema: soccer_analytics_data
-    tables:
-      - name: players_raw
-      - name: players_raw__statistics
-
 models:
   - name: stg_players
     columns:
@@ -105,32 +98,3 @@ models:
           arguments:
             column_name: league_id
             values: [39, 61, 78, 135, 140]
-
-  - name: player_features
-    columns:
-      - name: player_season_id
-        tests:
-          - not_null
-      - name: goals_per90
-        tests:
-          - non_negative
-      - name: assists_per90
-        tests:
-          - non_negative
-      - name: key_passes_per90
-        tests:
-          - non_negative
-      - name: tackles_per90
-        tests:
-          - non_negative
-      - name: dribbles_per90
-        tests:
-          - non_negative
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - player_id
-              - team_id
-              - league_id
-              - season

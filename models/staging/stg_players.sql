@@ -1,10 +1,23 @@
--- Staging model for raw player statistics loaded by dlt.
+-- Cleaned player × team × league × season grain from raw dlt tables.
 
 with player as (
     select
         _dlt_id as player_row_id,
         player__id as player_id,
-        player__name as name,
+        -- API short names are often "C. Romero"; prefer Firstname + short surname.
+        case
+            when regexp_matches(player__name, '^[A-Za-zÀ-ÖØ-öø-ÿ]\. ')
+                and nullif(trim(player__firstname), '') is not null
+            then trim(
+                split_part(trim(player__firstname), ' ', 1)
+                || ' '
+                || regexp_replace(player__name, '^[A-Za-zÀ-ÖØ-öø-ÿ]\. ', '')
+            )
+            else coalesce(
+                nullif(trim(player__name), ''),
+                nullif(trim(player__firstname || ' ' || player__lastname), '')
+            )
+        end as name,
         date_diff('year', cast(player__birth__date as date), current_date) as age,
         player__nationality as nationality,
         nullif(regexp_replace(player__height, '[^0-9]', '', 'g'), '')::int as height_cm,

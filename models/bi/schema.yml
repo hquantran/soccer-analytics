@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: bi_player_seasons
+    description: Wide Streamlit serving table with additives and season-grain rates.
+    columns:
+      - name: player_season_id
+        tests:
+          - unique
+          - not_null
+      - name: season
+        tests:
+          - not_null
+      - name: minutes
+        tests:
+          - not_null
+          - is_between:
+              arguments:
+                min_value: 300
+      - name: goals_per90
+        tests:
+          - non_negative
+      - name: assists_per90
+        tests:
+          - non_negative
+      - name: goal_involvements_per90
+        tests:
+          - non_negative
+      - name: key_passes_per90
+        tests:
+          - non_negative
+      - name: tackles_per90
+        tests:
+          - non_negative
+      - name: dribbles_per90
+        tests:
+          - non_negative
+      - name: shot_accuracy_pct
+        tests:
+          - is_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: goal_conversion_pct
+        tests:
+          - non_negative
+      - name: duel_success_pct
+        tests:
+          - is_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: dribble_success_pct
+        tests:
+          - is_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: pass_accuracy_pct
+        tests:
+          - is_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: fouls_per_tackle
+        tests:
+          - non_negative
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - player_id
+              - team_id
+              - league_id
+              - season

@@ -1,8 +1,0 @@
-version: 2
-
-sources:
-  - name: raw
-    schema: soccer_analytics_data   # matches dataset_name in run_players.py
-    tables:
-      - name: players_raw
-      - name: players_raw__statistics

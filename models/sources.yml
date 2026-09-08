@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    description: API-Football payloads landed by dlt into DuckDB.
+    schema: soccer_analytics_data
+    tables:
+      - name: players_raw
+        description: One row per player API response item.
+      - name: players_raw__statistics
+        description: Nested statistics rows (team/league/season stints).

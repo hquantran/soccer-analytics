@@ -1,3 +1,5 @@
+"""Export a sample of bi_player_seasons to Excel."""
+
 from __future__ import annotations
 
 from argparse import ArgumentParser
@@ -5,13 +7,18 @@ from pathlib import Path
 
 import duckdb
 
+from ingestion.settings import PROJECT_ROOT
+
+DEFAULT_DB = PROJECT_ROOT / "data" / "warehouse" / "api_sports.duckdb"
+DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "exports" / "bi_player_seasons_sample.xlsx"
+
 
 def export_sample(db_path: Path, output_path: Path, limit: int) -> None:
     if not db_path.exists():
         raise FileNotFoundError(f"DuckDB file not found: {db_path}")
 
     with duckdb.connect(str(db_path)) as conn:
-        table_name = "main.player_features"
+        table_name = "main.bi_player_seasons"
         try:
             conn.execute(f"SELECT 1 FROM {table_name} LIMIT 1").fetchone()
         except Exception as exc:  # pragma: no cover - user-facing error path
@@ -31,10 +38,15 @@ def export_sample(db_path: Path, output_path: Path, limit: int) -> None:
 
 
 def parse_args() -> ArgumentParser:
-    parser = ArgumentParser(description="Export a sample of the dbt-built player_features table to Excel.")
-    parser.add_argument("--db-path", default="api_sports.duckdb", help="Path to the DuckDB file.")
-    parser.add_argument("--output", default="player_features_sample.xlsx", help="Output Excel file path.")
-    parser.add_argument("--limit", type=int, default=0, help="Number of rows to include in the sample; 0 or negative exports all rows.")
+    parser = ArgumentParser(description="Export a sample of bi_player_seasons to Excel.")
+    parser.add_argument("--db-path", default=str(DEFAULT_DB), help="Path to the DuckDB file.")
+    parser.add_argument("--output", default=str(DEFAULT_OUTPUT), help="Output Excel file path.")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Number of rows to include; 0 or negative exports all rows.",
+    )
     return parser
 
 

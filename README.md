@@ -1,56 +1,72 @@
 # Soccer analytics ELT pipeline
 
 This project extracts player and season-statistics data from the API-Football API,
-lands the response in DuckDB with `dlt`, transforms it with dbt, and exports
-analysis-ready player features. It is an **ELT** pipeline:
+lands the response in DuckDB with `dlt`, transforms it with dbt, and serves a
+Streamlit scouting dashboard. It is an **ELT** pipeline:
 
-1. **Extract and load:** Python requests the API and `dlt` writes the response in
-	 its raw, nested shape to DuckDB.
-2. **Transform:** dbt reads the raw tables, cleans and joins them, filters out
-	 low-minute rows, and calculates per-90 metrics.
-3. **Export:** Python writes CSV and Excel extracts from the loaded or transformed
-	 relations.
+1. **Extract and load:** `ingestion/` requests the API and `dlt` writes raw nested JSON to DuckDB.
+2. **Transform:** dbt models under `models/` clean, join, and build marts + BI tables.
+3. **Serve:** `dashboard/` reads `bi_player_seasons`; dbt also exports Parquet/CSV under `data/exports/`.
+
+## Repository layout
+
+```text
+config/                 # TOML settings + league/season constants
+ingestion/              # API client, dlt resource, orchestrator, Excel export
+models/
+  sources.yml           # dlt raw tables as dbt sources
+  staging/              # stg_* cleaned joins
+  marts/
+    dimensions/         # dim_players, dim_teams, dim_leagues
+    facts/              # fct_player_seasons
+  bi/                   # bi_player_seasons (Streamlit / export grain)
+dashboard/              # Streamlit app
+tests/                  # dbt singular + generic tests
+data/
+  warehouse/            # data/warehouse/api_sports.duckdb (gitignored)
+  exports/              # Parquet/CSV from dbt post-hooks (gitignored)
+dbt_project.yml
+profiles.yml
+requirements.txt
+run_players.py          # thin shim → python -m ingestion.run_players
+```
 
 ## Important security note
 
-Never commit an API key. The local `config.toml` contains a credential and must
+Never commit an API key. Local `config/config.toml` contains a credential and must
 remain ignored. Rotate the key in the API-Football dashboard if it has ever been
 shared or exposed, then put the replacement only in the local file. Use
-`config.example.toml` as the safe template.
+`config/config.example.toml` as the safe template.
 
 ## End-to-end flow
 
 ```text
 API-Football /players endpoint
-				|
-				v
-api_client.py  (HTTP, pagination, retries, pacing, quota protection)
-				|
-				v
-players.py + dlt
-				|
-				v
-api_sports.duckdb
-				|
-				+--> soccer_analytics_data_staging (temporary latest load package)
-				|
-				+--> soccer_analytics_data (merged historical raw data)
-					players_raw                  one row per player response item
-					players_raw__statistics      one row per player/team/competition stint
-				|
-				|  sources.yml tells dbt where these two tables are
-				v
-models/staging/stg_players.sql (view in main)
-	join player profile to statistics
-	clean height/weight and position
-	keep rows with at least 300 minutes
-				|
-				v
-models/marts/player_features.sql (table in main)
-	calculate goals, assists, key passes, tackles, and dribbles per 90
-				|
-				+--> player_features.csv
-				+--> export_sample.py --> player_features_sample.xlsx
+        |
+        v
+ingestion/api_client.py  (HTTP, pagination, retries, pacing, quota)
+        |
+        v
+ingestion/players.py + dlt
+        |
+        v
+data/warehouse/api_sports.duckdb
+        |
+        +--> soccer_analytics_data (raw)
+        |      players_raw
+        |      players_raw__statistics
+        |
+        v
+models/staging/stg_players.sql
+        |
+        +--> models/marts/dimensions/*
+        +--> models/marts/facts/fct_player_seasons.sql
+        |
+        v
+models/bi/bi_player_seasons.sql
+        |
+        +--> data/exports/bi_player_seasons.{parquet,csv}
+        +--> dashboard/ (Streamlit)
 ```
 
 The configured scope is five leagues and seasons 2020 through 2026 inclusive:
@@ -70,52 +86,46 @@ remaining daily quota reaches `quota_reserve`.
 
 ## Project files
 
-### Python ingestion and export
+### Config and ingestion
 
-| File | Purpose |
+| Path | Purpose |
 | --- | --- |
-| `api_client.py` | Low-level HTTP client. Builds request URLs, sends GET requests, retries HTTP 429 and 5xx responses, checks API errors, tracks request counts, reads rate-limit headers, pauses between calls, and yields every paginated response item. |
-| `config.py` | Loads local TOML settings, validates that a real API key exists, creates the API header, and supplies defaults for request pacing, retries, pagination, and quota protection. |
-| `config.example.toml` | Safe configuration template. Copy it to `config.toml`, then add the real key locally. |
-| `config.toml` | Local runtime configuration. It is secret-bearing and should not be committed. |
-| `constants.py` | Defines the five league IDs and the inclusive season list used by the loader. |
-| `players.py` | Defines the `dlt` resource. It calls the API client and adds the requested league and season to each raw response item. It intentionally does not clean or calculate metrics. |
-| `run_players.py` | Main orchestrator. It optionally loads the API, runs dbt, and lets dbt write the model exports under `output/`. It uses `api_sports.duckdb`. If that file already exists, it skips API ingestion and only reruns dbt and exports. |
-| `export_sample.py` | Command-line Excel exporter for `main.player_features`. It can export all rows or a limited sample. |
-| `requirements.txt` | Python dependencies: dbt core and DuckDB adapter, `dlt` with DuckDB support, HTTP requests, and certificates. |
+| `config/config.example.toml` | Safe configuration template. Copy to `config/config.toml` and add the real key. |
+| `config/config.toml` | Local runtime configuration (gitignored). |
+| `config/constants.py` | League IDs and season list for the loader. |
+| `ingestion/settings.py` | Loads TOML settings and builds API headers. |
+| `ingestion/api_client.py` | Low-level HTTP client (retries, pacing, pagination). |
+| `ingestion/players.py` | `dlt` resource that lands raw `/players` responses. |
+| `ingestion/run_players.py` | Orchestrator: optional API load + `dbt run`. |
+| `ingestion/export_sample.py` | Excel sample export from `main.bi_player_seasons`. |
+| `run_players.py` | Root shim for `python -m ingestion.run_players`. |
+| `requirements.txt` | Python dependencies. |
 
-### dbt project files
+### dbt
 
-| File | Purpose |
+| Path | Purpose |
 | --- | --- |
-| `dbt_project.yml` | Names the dbt project and declares that staging models are views while mart models are physical tables. |
-| `profiles.yml` | Points dbt at `api_sports.duckdb` and the `main` schema. This is why raw data is in `soccer_analytics_data` but dbt models are in `main`. |
-| `packages.yml` | Requests the `dbt-labs/dbt_utils` package, used for the surrogate key and combination uniqueness test. |
-| `package-lock.yml` | Pins the resolved dbt package version and checksum. |
-| `sources.yml` | Gives dbt the logical source name `raw` for the two `dlt` tables in `soccer_analytics_data`. `{{ source('raw', ...) }}` in SQL resolves through this file. |
-| `models/staging/stg_players.sql` | Joins player profile rows to statistics using `_dlt_id` and `_dlt_parent_id`, normalizes names and units, renames API fields, maps `Forward` to `Attacker`, and keeps only rows with at least 300 minutes. It is a view. |
-| `models/marts/player_features.sql` | Selects the useful analysis columns from `stg_players` and computes per-90 metrics as `metric * 90 / minutes`. It is a table. |
-| `models/schema.yml` | Documents model columns and declares dbt data-quality tests such as not-null, unique, accepted league IDs, valid season/minute/rating ranges, and non-negative counting statistics. |
-| `tests/generic/is_between.sql` | Reusable dbt test that returns values below a minimum or above a maximum. |
-| `tests/generic/non_negative.sql` | Reusable dbt test that returns negative non-null values. |
-| `tests/stg_players_scope.sql` | Singular dbt test that fails if a staging row is outside the configured league or season scope. |
-| `tests/player_features_metrics.sql` | Singular dbt test that fails if a final feature row has fewer than 300 minutes or a negative per-90 metric. |
-| `models/` | SQL model definitions. dbt compiles them into `target/` and materializes them in DuckDB. |
-| `dbt_packages/dbt_utils/` | Installed third-party dbt macros and tests. It is dependency output, not project-owned business logic. |
-| `target/` | Generated dbt artifacts: manifest, compiled SQL, run results, graph metadata, and intermediate files. It can be regenerated. |
-| `logs/` | Generated dbt logs. |
+| `dbt_project.yml` | Project config and materializations by layer. |
+| `profiles.yml` | DuckDB connection → `data/warehouse/api_sports.duckdb`. |
+| `packages.yml` / `package-lock.yml` | `dbt_utils` dependency pin. |
+| `models/sources.yml` | Maps `source('raw', ...)` to dlt tables. |
+| `models/staging/` | Cleaned player-season staging view. |
+| `models/marts/dimensions/` | Player, team, and league dimensions. |
+| `models/marts/facts/` | Additive player-season facts. |
+| `models/bi/` | Wide presentation table for Streamlit / BI tools. |
+| `tests/` | Singular and generic data-quality tests. |
 
-### Data files
+### Dashboard and data
 
-| File | Purpose |
+| Path | Purpose |
 | --- | --- |
-| `api_sports.duckdb` | Active DuckDB warehouse used by both `run_players.py` and dbt. |
-| `soccer_analytics.duckdb` | An older/unused DuckDB file. In the current workspace it has no project tables; use `api_sports.duckdb`. |
-| `output/` | Generated CSV and Parquet exports written by dbt post-hooks. `output/player_features.parquet` is the recommended Power BI source. |
+| `dashboard/` | Streamlit navigation app (Top Players, Profile, Compare). |
+| `data/warehouse/api_sports.duckdb` | Active DuckDB warehouse (gitignored). |
+| `data/exports/` | Parquet/CSV exports from dbt post-hooks (gitignored). |
 
 ## DuckDB tables and views
 
-The active file is `api_sports.duckdb`. A DuckDB file contains schemas, and a
+The active file is `data/warehouse/api_sports.duckdb`. A DuckDB file contains schemas, and a
 schema groups relations. The project uses `soccer_analytics_data` for `dlt` raw
 data and `main` for dbt models.
 
@@ -291,8 +301,8 @@ python export_sample.py --limit 20
 dbt run --project-dir . --profiles-dir .
 ```
 
-On later runs, `run_players.py` sees the existing `api_sports.duckdb` and skips
-the API load. It still runs dbt and refreshes the `output/` exports. To intentionally
+On later runs, `run_players.py` sees the existing `data/warehouse/api_sports.duckdb` and skips
+the API load. It still runs dbt and refreshes the `data/exports/` exports. To intentionally
 rebuild from the API, remove the active database and the matching `dlt` pipeline
 state, then run the script again. `run_players.py` contains the reset helper,
 but it is not called automatically.
@@ -302,7 +312,7 @@ Useful DuckDB checks from Python are:
 ```python
 import duckdb
 
-with duckdb.connect("api_sports.duckdb", read_only=True) as conn:
+with duckdb.connect("data/warehouse/api_sports.duckdb", read_only=True) as conn:
 		print(conn.sql("SHOW TABLES").df())
 		print(conn.sql("SELECT * FROM main.player_features LIMIT 5").df())
 ```
@@ -320,15 +330,15 @@ terminal.
 The dbt project has a post-hook that runs after each model succeeds:
 
 ```text
-output/{{ model.name }}.parquet
+data/exports/{{ model.name }}.parquet
 ```
 
 The current outputs are:
 
 | File | Contents |
 | --- | --- |
-| `output/stg_players.parquet` | Cleaned and joined staging rows. Useful for troubleshooting or detailed analysis. |
-| `output/player_features.parquet` | Final analysis-ready mart. This is the recommended Power BI source. |
+| `data/exports/stg_players.parquet` | Cleaned and joined staging rows. Useful for troubleshooting or detailed analysis. |
+| `data/exports/bi_player_seasons.parquet` | Final analysis-ready mart. This is the recommended Power BI source. |
 
 The Parquet files are generated from the DuckDB relations after dbt builds them,
 so they contain the same rows and columns as `main.stg_players` and
@@ -339,14 +349,14 @@ The dbt run writes these four Power BI-ready files without running the API
 ingestion:
 
 ```text
-output/stg_players.csv
-output/stg_players.parquet
-output/player_features.csv
-output/player_features.parquet
+data/exports/stg_players.csv
+data/exports/stg_players.parquet
+data/exports/bi_player_seasons.csv
+data/exports/bi_player_seasons.parquet
 ```
 
 For Power BI Desktop, connect to the final file using **Get Data > Parquet** and
-select `output/player_features.parquet`. Build reports from this file rather
+select `data/exports/bi_player_seasons.parquet`. Build reports from this file rather
 than the staging export unless you specifically need the lower-level columns.
 After refreshing the pipeline, run `dbt run` again and refresh the Power BI
 dataset to read the updated file.
@@ -372,7 +382,7 @@ python run_players.py
 dbt run --project-dir . --profiles-dir .
 ```
 
-Then refresh Power BI from `output/player_features.parquet`. Do not edit the
+Then refresh Power BI from `data/exports/bi_player_seasons.parquet`. Do not edit the
 Parquet file manually; change the source or dbt model and regenerate it.
 
 Common points of confusion:
@@ -384,9 +394,9 @@ Common points of confusion:
 - `soccer_analytics_data_staging` is a temporary `dlt` load area. It is not the
 	complete historical dataset and it is not where cleaning happens.
 - `stg_players` is a view, while `player_features` is a table.
-- The files under `output/` are exports and are not the source dbt reads.
+- The files under `data/exports/` are exports and are not the source dbt reads.
 - `soccer_analytics.duckdb` is not the configured target. The configured target
-	is `api_sports.duckdb` in `profiles.yml`.
+	is `data/warehouse/api_sports.duckdb` in `profiles.yml`.
 - If a raw schema change causes a `dlt` schema-evolution error, inspect the
 	existing pipeline state under the user's `.dlt/pipelines` directory and use a
 	deliberate clean rebuild rather than deleting files at random.
