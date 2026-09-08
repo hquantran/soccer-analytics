@@ -30,6 +30,37 @@ from dashboard.ui import inject_theme_css, render_metric_grid, render_profile_si
 
 inject_theme_css()
 
+
+@st.fragment
+def render_profile_scatter(peer_table, position: str, player_id: int, player_name: str, applied: dict) -> None:
+    views = scatter_views_for_position(position)
+    view_labels = {view.id: view.title for view in views}
+    default_view = applied.get("scatter_view_id") if applied.get("scatter_view_id") in view_labels else views[0].id
+    view_id = st.selectbox(
+        "Scatter view",
+        options=list(view_labels.keys()),
+        format_func=lambda value: view_labels[value],
+        index=list(view_labels.keys()).index(default_view),
+        key="profile_scatter_view",
+    )
+    view = scatter_view_by_id(position, view_id)
+    st.session_state.setdefault("filters_profile", {})
+    st.session_state["filters_profile"]["scatter_view_id"] = view_id
+
+    st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
+    st.plotly_chart(
+        build_scatter_from_view(
+            peer_table,
+            view,
+            position,
+            highlights=[(player_id, player_name, ACCENT_A)],
+        ),
+        width="stretch",
+        config={"displayModeBar": False},
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(f'<p class="insight">{view.insight}</p>', unsafe_allow_html=True)
+
 st.title("Player profile")
 st.caption("Position-aware scouting metrics, season trends, peer percentiles, and tactical scatters.")
 
@@ -148,33 +179,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 st.markdown('<h3 class="section-title">Position scatter</h3>', unsafe_allow_html=True)
-
-views = scatter_views_for_position(profile["position"])
-view_labels = {v.id: v.title for v in views}
-default_view = applied.get("scatter_view_id") if applied.get("scatter_view_id") in view_labels else views[0].id
-view_id = st.selectbox(
-    "Scatter view",
-    options=list(view_labels.keys()),
-    format_func=lambda vid: view_labels[vid],
-    index=list(view_labels.keys()).index(default_view),
-)
-view = scatter_view_by_id(profile["position"], view_id)
-st.session_state.setdefault("filters_profile", {})
-st.session_state["filters_profile"]["scatter_view_id"] = view_id
-
-st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
-st.plotly_chart(
-    build_scatter_from_view(
-        peer_table,
-        view,
-        profile["position"],
-        highlights=[(player_id, profile["player_name"], ACCENT_A)],
-    ),
-    width="stretch",
-    config={"displayModeBar": False},
-)
-st.markdown("</div>", unsafe_allow_html=True)
-st.markdown(f'<p class="insight">{view.insight}</p>', unsafe_allow_html=True)
+render_profile_scatter(peer_table, profile["position"], player_id, profile["player_name"], applied)
 
 with st.expander("Underlying season rows"):
     show_cols = [

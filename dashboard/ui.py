@@ -168,7 +168,6 @@ def inject_theme_css() -> None:
     )
 
 
-@st.cache_data(show_spinner=False)
 def get_data():
     return load_player_seasons()
 
@@ -236,6 +235,39 @@ def _scope_player_lookup(lookup, *, position: str, leagues, age_range, teams):
     return scoped.sort_values("player_name").reset_index(drop=True)
 
 
+def _searchable_player_select(scoped, *, state_key: str, label: str) -> tuple[int | None, str | None]:
+    """Search first, then serialize only a small player candidate list."""
+    query = (st.text_input(
+        f"Find {label.lower()}",
+        key=f"{state_key}_search",
+        placeholder="Type a player name",
+    ) or "").strip().lower()
+    candidates = scoped
+    if query:
+        candidates = candidates[candidates["player_name"].str.lower().str.contains(query, regex=False, na=False)]
+    candidates = candidates.head(75)
+    if candidates.empty:
+        st.caption("No matching players.")
+        return None, None
+
+    id_to_label = {
+        int(row.player_id): f"{row.player_name} · {row.team_name}"
+        for row in candidates.itertuples(index=False)
+    }
+    options = list(id_to_label)
+    selection_key = f"{state_key}_id"
+    if st.session_state.get(selection_key) not in options:
+        st.session_state[selection_key] = options[0]
+    player_id = st.selectbox(
+        label,
+        options=options,
+        format_func=lambda pid: id_to_label[pid],
+        key=selection_key,
+    )
+    player_name = str(candidates.loc[candidates["player_id"] == player_id, "player_name"].iloc[0])
+    return int(player_id), player_name
+
+
 def render_profile_sidebar(lookup, dims: dict) -> dict | None:
     """Sidebar with player select first, then filter controls."""
     leagues_all = dims["leagues"]
@@ -263,26 +295,11 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
         )
 
         st.markdown("### Player")
-        if scoped.empty:
-            st.warning("No players match the filters below.")
-            player_id = None
-            player_name = None
-        else:
-            id_to_label = {
-                int(r.player_id): f"{r.player_name} · {r.team_name}"
-                for r in scoped.itertuples(index=False)
-            }
-            options = list(id_to_label.keys())
-            # Drop stale selection if filters removed that player.
-            if st.session_state.get("profile_sb_player_id") not in options:
-                st.session_state["profile_sb_player_id"] = options[0]
-            player_id = st.selectbox(
-                "Search player",
-                options=options,
-                format_func=lambda pid: id_to_label[pid],
-                key="profile_sb_player_id",
-            )
-            player_name = str(scoped.loc[scoped["player_id"] == player_id, "player_name"].iloc[0])
+        player_id, player_name = _searchable_player_select(
+            scoped,
+            state_key="profile_sb_player",
+            label="Player",
+        )
 
         st.markdown("### Filters")
         leagues = st.multiselect(
@@ -442,35 +459,19 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
         )
 
         st.markdown("### Players")
-        if scoped.empty:
-            st.warning("No players match the filters below.")
-            id_a = id_b = None
-            name_a = name_b = None
-        else:
-            id_to_label = {
-                int(r.player_id): f"{r.player_name} · {r.team_name}"
-                for r in scoped.itertuples(index=False)
-            }
-            options = list(id_to_label.keys())
-            if st.session_state.get("compare_sb_player_a_id") not in options:
-                st.session_state["compare_sb_player_a_id"] = options[0]
-            if st.session_state.get("compare_sb_player_b_id") not in options:
-                st.session_state["compare_sb_player_b_id"] = options[min(1, len(options) - 1)]
-
-            id_a = st.selectbox(
-                "Player A",
-                options=options,
-                format_func=lambda pid: id_to_label[pid],
-                key="compare_sb_player_a_id",
+        left, right = st.columns(2, gap="small")
+        with left:
+            id_a, name_a = _searchable_player_select(
+                scoped,
+                state_key="compare_sb_player_a",
+                label="Player A",
             )
-            id_b = st.selectbox(
-                "Player B",
-                options=options,
-                format_func=lambda pid: id_to_label[pid],
-                key="compare_sb_player_b_id",
+        with right:
+            id_b, name_b = _searchable_player_select(
+                scoped,
+                state_key="compare_sb_player_b",
+                label="Player B",
             )
-            name_a = str(scoped.loc[scoped["player_id"] == id_a, "player_name"].iloc[0])
-            name_b = str(scoped.loc[scoped["player_id"] == id_b, "player_name"].iloc[0])
 
         st.markdown("### Filters")
         leagues = st.multiselect(

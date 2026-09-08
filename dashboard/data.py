@@ -24,6 +24,38 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = PROJECT_ROOT / "data" / "warehouse" / "api_sports.duckdb"
 PARQUET_PATH = PROJECT_ROOT / "data" / "exports" / "bi_player_seasons.parquet"
 
+# Keep the dashboard payload narrow. Rates are recomputed for multi-season
+# views, while the stored rates provide the single-row fast path.
+DASHBOARD_COLUMNS = [
+    "player_season_id",
+    "player_id",
+    "player_name",
+    "nationality",
+    "photo",
+    "age",
+    "team_id",
+    "team_name",
+    "league_id",
+    "league_name",
+    "season",
+    "position",
+    "injured",
+    "rating",
+    *ADDITIVE_COLS,
+    "goals_per90",
+    "assists_per90",
+    "goal_involvements_per90",
+    "key_passes_per90",
+    "tackles_per90",
+    "dribbles_per90",
+    "shot_accuracy_pct",
+    "goal_conversion_pct",
+    "pass_accuracy_pct",
+    "dribble_success_pct",
+    "duel_success_pct",
+    "fouls_per_tackle",
+]
+
 
 def format_season(year: int | float | str) -> str:
     """API season start year → football season label (2022 → 2022/2023)."""
@@ -171,22 +203,25 @@ def load_peer_season_rows(
         return conn.execute(sql, params).df()
 
 
+@st.cache_data(show_spinner=False)
 def load_player_seasons() -> pd.DataFrame:
-    """Prefer DuckDB table; fall back to parquet export."""
+    """Load the dashboard payload from the columnar export."""
+    if PARQUET_PATH.exists():
+        return pd.read_parquet(PARQUET_PATH, columns=DASHBOARD_COLUMNS)
     if DB_PATH.exists():
         with duckdb.connect(str(DB_PATH), read_only=True) as conn:
             try:
-                return conn.execute("select * from main.bi_player_seasons").df()
+                columns = ", ".join(f'"{column}"' for column in DASHBOARD_COLUMNS)
+                return conn.execute(f"select {columns} from main.bi_player_seasons").df()
             except duckdb.Error:
                 pass
-    if PARQUET_PATH.exists():
-        return pd.read_parquet(PARQUET_PATH)
     raise FileNotFoundError(
         "No bi_player_seasons data found. Run `dbt run` to build main.bi_player_seasons "
         f"or generate {PARQUET_PATH.name}."
     )
 
 
+@st.cache_data(show_spinner=False)
 def filter_frame(
     df: pd.DataFrame,
     *,
@@ -244,6 +279,7 @@ def _row_sums(rows: pd.DataFrame) -> dict[str, float]:
     return {col: float(rows[col].fillna(0).sum()) for col in ADDITIVE_COLS if col in rows.columns}
 
 
+@st.cache_data(show_spinner=False)
 def aggregate_player_rows(rows: pd.DataFrame) -> dict:
     """Collapse one or more season rows for a player into identity + recomputed metrics."""
     if rows.empty:
@@ -265,7 +301,14 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
     metric_blocks = metrics_for_position(position)
     computed: dict[str, dict[str, float | None]] = {}
     for block_name, specs in metric_blocks.items():
-        computed[block_name] = {spec.key: compute_metric(sums, spec) for spec in specs}
+        computed[block_name] = {
+            spec.key: (
+                float(first[spec.key])
+                if len(rows) == 1 and spec.key in rows.columns and pd.notna(first[spec.key])
+                else compute_metric(sums, spec)
+            )
+            for spec in specs
+        }
 
     return {
         "player_id": int(first["player_id"]),
@@ -286,6 +329,7 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
     }
 
 
+@st.cache_data(show_spinner=False)
 def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     """One aggregated row per player with position metrics and all scatter axes."""
     peers = df[df["position"] == position]
@@ -296,7 +340,7 @@ def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     scatter_keys = all_scatter_metric_keys(position)
     records: list[dict] = []
 
-    for player_id, rows in peers.groupby("player_id"):
+    for player_id, rows in peers.groupby("player_id", sort=False):
         first = rows.iloc[0]
         sums = _row_sums(rows)
         record: dict = {
@@ -315,7 +359,10 @@ def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
             "leagues": ", ".join(sorted(rows["league_name"].dropna().unique().tolist())),
         }
         for spec in specs:
-            record[spec.key] = compute_metric(sums, spec)
+            if len(rows) == 1 and spec.key in rows.columns and pd.notna(first[spec.key]):
+                record[spec.key] = float(first[spec.key])
+            else:
+                record[spec.key] = compute_metric(sums, spec)
         for view in scatter_views_for_position(position):
             x_val, y_val = compute_xy(sums, view.axes)
             record[view.axes.x_key] = x_val
@@ -327,6 +374,7 @@ def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     return pd.DataFrame.from_records(records)
 
 
+@st.cache_data(show_spinner=False)
 def top_players_table(
     df: pd.DataFrame,
     position: str,
@@ -362,6 +410,7 @@ def top_players_table(
     return peers.sort_values(sort_key, ascending=False).head(limit).reset_index(drop=True)
 
 
+@st.cache_data(show_spinner=False)
 def position_averages(peer_table: pd.DataFrame, specs: list[MetricSpec]) -> dict[str, float | None]:
     """Mean of selected metrics across the peer table (league/position scope)."""
     out: dict[str, float | None] = {}
@@ -378,6 +427,7 @@ def position_averages(peer_table: pd.DataFrame, specs: list[MetricSpec]) -> dict
     return out
 
 
+@st.cache_data(show_spinner=False)
 def percentile_scores(
     peer_table: pd.DataFrame,
     player_id: int,
@@ -409,6 +459,7 @@ def percentile_scores(
     return labels, values
 
 
+@st.cache_data(show_spinner=False)
 def metric_percentile_map(
     peer_table: pd.DataFrame,
     player_id: int,
@@ -435,6 +486,7 @@ def metric_percentile_map(
     return out
 
 
+@st.cache_data(show_spinner=False)
 def build_season_trend_frame(player_rows: pd.DataFrame, position: str) -> pd.DataFrame:
     """One row per season for dual-axis trend chart."""
     if player_rows.empty:
