@@ -28,6 +28,40 @@ from dashboard.ui import inject_theme_css, render_compare_sidebar, render_metric
 
 inject_theme_css()
 
+
+@st.fragment
+def render_compare_scatter(peer_table, position: str, id_a: int, name_a: str, id_b: int, name_b: str, applied: dict) -> None:
+    views = scatter_views_for_position(position)
+    view_labels = {view.id: view.title for view in views}
+    default_view = applied.get("scatter_view_id") if applied.get("scatter_view_id") in view_labels else views[0].id
+    view_id = st.selectbox(
+        "Scatter view",
+        options=list(view_labels.keys()),
+        format_func=lambda value: view_labels[value],
+        index=list(view_labels.keys()).index(default_view),
+        key="compare_scatter_view",
+    )
+    view = scatter_view_by_id(position, view_id)
+    st.session_state.setdefault("filters_compare", {})
+    st.session_state["filters_compare"]["scatter_view_id"] = view_id
+
+    st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
+    st.plotly_chart(
+        build_scatter_from_view(
+            peer_table,
+            view,
+            position,
+            highlights=[
+                (id_a, name_a, ACCENT_A),
+                (id_b, name_b, ACCENT_B),
+            ],
+        ),
+        width="stretch",
+        config={"displayModeBar": False},
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(f'<p class="insight">{view.insight}</p>', unsafe_allow_html=True)
+
 st.title("Player comparison")
 st.caption("Same-position head-to-head: percentile radar (0–100) and dual-highlight scatter.")
 
@@ -182,32 +216,12 @@ if len(shared_labels) < 3:
     st.caption("Radar needs at least three shared rate metrics — widen filters if axes are missing.")
 
 st.markdown('<h3 class="section-title">Position scatter</h3>', unsafe_allow_html=True)
-views = scatter_views_for_position(position)
-view_labels = {v.id: v.title for v in views}
-default_view = applied.get("scatter_view_id") if applied.get("scatter_view_id") in view_labels else views[0].id
-view_id = st.selectbox(
-    "Scatter view",
-    options=list(view_labels.keys()),
-    format_func=lambda vid: view_labels[vid],
-    index=list(view_labels.keys()).index(default_view),
+render_compare_scatter(
+    peer_table,
+    position,
+    id_a,
+    profile_a["player_name"],
+    id_b,
+    profile_b["player_name"],
+    applied,
 )
-view = scatter_view_by_id(position, view_id)
-st.session_state.setdefault("filters_compare", {})
-st.session_state["filters_compare"]["scatter_view_id"] = view_id
-
-st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
-st.plotly_chart(
-    build_scatter_from_view(
-        peer_table,
-        view,
-        position,
-        highlights=[
-            (id_a, profile_a["player_name"], ACCENT_A),
-            (id_b, profile_b["player_name"], ACCENT_B),
-        ],
-    ),
-    width="stretch",
-    config={"displayModeBar": False},
-)
-st.markdown("</div>", unsafe_allow_html=True)
-st.markdown(f'<p class="insight">{view.insight}</p>', unsafe_allow_html=True)

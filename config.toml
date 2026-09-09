@@ -1,0 +1,8 @@
+[api_sports]
+key = "90a724b0623093a5ea46a191468cd6ff"
+base_url = "https://v3.football.api-sports.io"
+
+[api]
+safe_pause_seconds = 2.0
+max_retries = 3
+quota_reserve = 5

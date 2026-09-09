@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
 
 from dashboard.metrics_config import ScatterAxes, ScatterView
 
@@ -31,6 +32,7 @@ def _base_layout(**kwargs) -> dict:
     return layout
 
 
+@st.cache_data(show_spinner=False)
 def build_radar_chart(labels: list[str], percentiles: list[float], player_name: str) -> go.Figure:
     if not labels or not percentiles:
         fig = go.Figure()
@@ -90,6 +92,7 @@ def build_radar_chart(labels: list[str], percentiles: list[float], player_name: 
     return fig
 
 
+@st.cache_data(show_spinner=False)
 def build_comparison_radar(
     labels: list[str],
     values_a: list[float],
@@ -168,6 +171,7 @@ def build_comparison_radar(
     return fig
 
 
+@st.cache_data(show_spinner=False)
 def build_quadrant_scatter(
     peer_table: pd.DataFrame,
     axes: ScatterAxes,
@@ -235,7 +239,7 @@ def build_quadrant_scatter(
             continue
         row = selected.iloc[0]
         fig.add_trace(
-            go.Scatter(
+            go.Scattergl(
                 x=[row[axes.x_key]],
                 y=[row[axes.y_key]],
                 mode="markers+text",
@@ -302,6 +306,7 @@ def build_quadrant_scatter(
     return fig
 
 
+@st.cache_data(show_spinner=False)
 def build_scatter_from_view(
     peer_table: pd.DataFrame,
     view: ScatterView,
@@ -318,6 +323,7 @@ def build_scatter_from_view(
     )
 
 
+@st.cache_data(show_spinner=False)
 def build_metric_distribution(
     peer_table: pd.DataFrame,
     metric_key: str,
@@ -356,7 +362,7 @@ def build_metric_distribution(
         tops = peer_table[peer_table["player_id"].isin(highlight_ids)]
         if not tops.empty and metric_key in tops.columns:
             fig.add_trace(
-                go.Scatter(
+                go.Scattergl(
                     x=tops[metric_key],
                     y=[0] * len(tops),
                     mode="markers",
@@ -380,6 +386,7 @@ def build_metric_distribution(
     return fig
 
 
+@st.cache_data(show_spinner=False)
 def build_season_trend_chart(trend_df: pd.DataFrame, player_name: str) -> go.Figure:
     """Dual-axis: minutes (bars/left) vs primary per-90 metric (line/right)."""
     fig = go.Figure()

@@ -223,7 +223,6 @@ def inject_theme_css() -> None:
     )
 
 
-@st.cache_data(show_spinner=False)
 def get_data():
     return load_player_seasons()
 
@@ -347,6 +346,39 @@ def _scope_player_lookup(lookup, *, position: str | None, leagues, age_range, te
     if teams:
         scoped = scoped[scoped["team_name"].isin(teams)]
     return scoped.sort_values("player_name").reset_index(drop=True)
+
+
+def _searchable_player_select(scoped, *, state_key: str, label: str) -> tuple[int | None, str | None]:
+    """Search first, then serialize only a small player candidate list."""
+    query = (st.text_input(
+        f"Find {label.lower()}",
+        key=f"{state_key}_search",
+        placeholder="Type a player name",
+    ) or "").strip().lower()
+    candidates = scoped
+    if query:
+        candidates = candidates[candidates["player_name"].str.lower().str.contains(query, regex=False, na=False)]
+    candidates = candidates.head(75)
+    if candidates.empty:
+        st.caption("No matching players.")
+        return None, None
+
+    id_to_label = {
+        int(row.player_id): f"{row.player_name} · {row.team_name}"
+        for row in candidates.itertuples(index=False)
+    }
+    options = list(id_to_label)
+    selection_key = f"{state_key}_id"
+    if st.session_state.get(selection_key) not in options:
+        st.session_state[selection_key] = options[0]
+    player_id = st.selectbox(
+        label,
+        options=options,
+        format_func=lambda pid: id_to_label[pid],
+        key=selection_key,
+    )
+    player_name = str(candidates.loc[candidates["player_id"] == player_id, "player_name"].iloc[0])
+    return int(player_id), player_name
 
 
 def render_profile_sidebar(lookup, dims: dict) -> dict | None:
@@ -569,14 +601,12 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
                 format_func=lambda pid: id_to_label[pid],
                 key="compare_sb_player_a_id",
             )
-            id_b = st.selectbox(
-                "Player B",
-                options=options,
-                format_func=lambda pid: id_to_label[pid],
-                key="compare_sb_player_b_id",
+        with right:
+            id_b, name_b = _searchable_player_select(
+                scoped,
+                state_key="compare_sb_player_b",
+                label="Player B",
             )
-            name_a = str(scoped.loc[scoped["player_id"] == id_a, "player_name"].iloc[0])
-            name_b = str(scoped.loc[scoped["player_id"] == id_b, "player_name"].iloc[0])
 
         st.markdown("### Filters")
         leagues = st.multiselect(
