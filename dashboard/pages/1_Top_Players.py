@@ -13,8 +13,7 @@ if str(ROOT) not in sys.path:
 
 from dashboard.charts import build_metric_distribution
 from dashboard.data import (
-    build_peer_table,
-    filter_frame,
+    cached_peer_table,
     format_metric_value,
     format_season,
     load_filter_dimension_values,
@@ -22,7 +21,7 @@ from dashboard.data import (
     top_players_table,
 )
 from dashboard.metrics_config import MetricSpec, metrics_for_position
-from dashboard.ui import get_data, inject_theme_css, render_overview_sidebar
+from dashboard.ui import inject_theme_css, render_overview_sidebar
 
 inject_theme_css()
 
@@ -30,13 +29,11 @@ st.title("Top players")
 st.caption("Tactical leaderboards by position — filtered by minutes, league, and season.")
 
 try:
-    df = get_data()
     dims = load_filter_dimension_values()
 except FileNotFoundError as exc:
     st.error(str(exc))
     st.stop()
 
-df = df[df["position"] != "Goalkeeper"].copy()
 applied = render_overview_sidebar(dims)
 
 age_min, age_max = applied["age_range"]
@@ -44,28 +41,29 @@ position = applied["position"]
 sort_key = applied["sort_key"]
 sort_label = applied["sort_label"]
 min_minutes = float(applied["min_minutes"])
-
-filtered = filter_frame(
-    df,
-    leagues=applied["leagues"] or None,
-    seasons=applied["seasons"] or None,
-    teams=applied["teams"] or None,
-    positions=[position],
-    age_min=age_min,
-    age_max=age_max,
-)
+seasons_t = tuple(applied["seasons"]) if applied["seasons"] else None
+leagues_t = tuple(applied["leagues"]) if applied["leagues"] else None
+teams_t = tuple(applied["teams"]) if applied["teams"] else None
 
 if applied.get("seasons") and 2026 in applied["seasons"]:
-    n_all = len(filtered)
-    if n_all < 50:
-        st.info(
-            f"Season **{format_season(2026)}** is still early under the 300' staging filter "
-            f"({n_all} rows). Try {format_season(2025)} for a fuller sample."
-        )
+    st.info(
+        f"Season **{format_season(2026)}** may still be early under the 300' staging filter. "
+        f"Try {format_season(2025)} for a fuller sample if rankings look thin."
+    )
 
-peer_table = build_peer_table(filtered, position)
+# Position-scoped query + cached aggregation (avoids loading the full BI table)
+peer_table = cached_peer_table(
+    position,
+    seasons_t,
+    leagues_t,
+    float(age_min),
+    float(age_max),
+    min_minutes=0.0,
+    teams=teams_t,
+)
+
 top = top_players_table(
-    filtered,
+    peer_table,
     position,
     limit=5,
     sort_key=sort_key,
@@ -121,7 +119,9 @@ display[sort_label] = display[sort_label].map(lambda x: format_metric_value(x, s
 display["Minutes"] = display["Minutes"].map(lambda x: f"{x:.0f}")
 display["Apps"] = display["Apps"].map(lambda x: f"{x:.0f}")
 if "Age" in display.columns:
-    display["Age"] = display["Age"].map(lambda x: f"{x:.0f}" if x == x else "—")
+    from dashboard.data import format_age
+
+    display["Age"] = display["Age"].map(format_age)
 
 st.dataframe(display, width="stretch", hide_index=True)
 

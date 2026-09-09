@@ -10,6 +10,7 @@ import streamlit as st
 
 from dashboard.metrics_config import (
     ADDITIVE_COLS,
+    BI_RATE_KEYS,
     MetricSpec,
     all_metric_specs,
     all_scatter_metric_keys,
@@ -39,6 +40,21 @@ def format_season_range(seasons: list[int] | list[float]) -> str:
     if len(years) == 1:
         return format_season(years[0])
     return f"{format_season(years[0])}–{format_season(years[-1])} ({len(years)} seasons)"
+
+
+def format_age(age) -> str:
+    """Safe age display — handles None, NaN, and pandas NA."""
+    if age is None:
+        return "—"
+    try:
+        if pd.isna(age):
+            return "—"
+    except (TypeError, ValueError):
+        return "—"
+    try:
+        return f"{float(age):.0f}"
+    except (TypeError, ValueError):
+        return "—"
 
 
 def _connect() -> duckdb.DuckDBPyConnection:
@@ -144,6 +160,7 @@ def load_peer_season_rows(
     position: str,
     seasons: tuple[int, ...] | None = None,
     leagues: tuple[str, ...] | None = None,
+    teams: tuple[str, ...] | None = None,
     age_min: float | None = None,
     age_max: float | None = None,
 ) -> pd.DataFrame:
@@ -159,6 +176,10 @@ def load_peer_season_rows(
         placeholders = ", ".join(["?"] * len(leagues))
         clauses.append(f"league_name in ({placeholders})")
         params.extend(leagues)
+    if teams:
+        placeholders = ", ".join(["?"] * len(teams))
+        clauses.append(f"team_name in ({placeholders})")
+        params.extend(teams)
     if age_min is not None:
         clauses.append("age >= ?")
         params.append(float(age_min))
@@ -244,34 +265,90 @@ def _row_sums(rows: pd.DataFrame) -> dict[str, float]:
     return {col: float(rows[col].fillna(0).sum()) for col in ADDITIVE_COLS if col in rows.columns}
 
 
+def _metric_from_rows(rows: pd.DataFrame, spec: MetricSpec) -> float | None:
+    """
+    Single BI row: reuse precomputed season rates when formulas match.
+    Multi-row (multi-season or multi-stint): sum additives, then recompute.
+    """
+    if len(rows) == 1 and spec.key in BI_RATE_KEYS and spec.key in rows.columns:
+        raw = rows.iloc[0][spec.key]
+        if pd.notna(raw):
+            return float(raw)
+    return compute_metric(_row_sums(rows), spec)
+
+
+def resolve_majority_position(rows: pd.DataFrame) -> tuple[str, pd.DataFrame, dict]:
+    """
+    Pick the position the player spent the most seasons in (within `rows`).
+
+    Tie-break: more minutes, then most recent season. Returns
+    (position, rows_filtered_to_that_position, info_dict).
+    Single-season / single-position inputs pass through unchanged.
+    """
+    if rows.empty:
+        raise ValueError("No rows to resolve position")
+
+    usable = rows[rows["position"].notna() & (rows["position"] != "Goalkeeper")].copy()
+    if usable.empty:
+        raise ValueError("No non-GK position rows")
+
+    # Distinct seasons played at each position
+    season_counts = usable.groupby("position")["season"].nunique()
+    minutes = usable.groupby("position")["minutes"].sum() if "minutes" in usable.columns else season_counts * 0
+    latest = usable.groupby("position")["season"].max()
+
+    rank = pd.DataFrame(
+        {
+            "seasons": season_counts,
+            "minutes": minutes,
+            "latest": latest,
+        }
+    ).sort_values(["seasons", "minutes", "latest"], ascending=[False, False, False])
+
+    position = str(rank.index[0])
+    filtered = usable[usable["position"] == position].copy()
+    info = {
+        "position": position,
+        "season_counts": {str(k): int(v) for k, v in season_counts.items()},
+        "used_majority": int(season_counts.max()) < int(usable["season"].nunique())
+        or usable["position"].nunique() > 1,
+    }
+    return position, filtered, info
+
+
 def aggregate_player_rows(rows: pd.DataFrame) -> dict:
-    """Collapse one or more season rows for a player into identity + recomputed metrics."""
+    """Collapse one or more season rows for a player into identity + metrics.
+
+    Uses majority-position seasons when the player switched positions across
+    the selected window; metrics/specs match that position only.
+    """
     if rows.empty:
         raise ValueError("No rows to aggregate")
 
-    first = rows.iloc[0]
-    position = first["position"]
-    sums = _row_sums(rows)
+    position, pos_rows, pos_info = resolve_majority_position(rows)
+    first = pos_rows.sort_values("season").iloc[-1]
+    sums = _row_sums(pos_rows)
 
-    if "rating" in rows.columns and sums.get("minutes", 0) > 0:
-        rating = float((rows["rating"].fillna(0) * rows["minutes"].fillna(0)).sum() / sums["minutes"])
+    if "rating" in pos_rows.columns and sums.get("minutes", 0) > 0:
+        rating = float((pos_rows["rating"].fillna(0) * pos_rows["minutes"].fillna(0)).sum() / sums["minutes"])
     else:
         rating = float(first.get("rating") or 0)
 
-    seasons = sorted(rows["season"].dropna().unique().tolist())
-    teams = sorted(rows["team_name"].dropna().unique().tolist())
-    leagues = sorted(rows["league_name"].dropna().unique().tolist())
+    seasons = sorted(pos_rows["season"].dropna().unique().tolist())
+    teams = sorted(pos_rows["team_name"].dropna().unique().tolist())
+    leagues = sorted(pos_rows["league_name"].dropna().unique().tolist())
 
     metric_blocks = metrics_for_position(position)
     computed: dict[str, dict[str, float | None]] = {}
     for block_name, specs in metric_blocks.items():
-        computed[block_name] = {spec.key: compute_metric(sums, spec) for spec in specs}
+        computed[block_name] = {spec.key: _metric_from_rows(pos_rows, spec) for spec in specs}
 
     return {
         "player_id": int(first["player_id"]),
         "player_name": first["player_name"],
         "photo": first.get("photo"),
         "position": position,
+        "position_info": pos_info,
         "nationality": first.get("nationality"),
         "age": first.get("age"),
         "rating": rating,
@@ -283,48 +360,155 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
         "metrics": computed,
         "metric_specs": metric_blocks,
         "sums": sums,
+        "used_bi_rates": len(pos_rows) == 1,
+        "rows": pos_rows,
     }
 
 
 def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
-    """One aggregated row per player with position metrics and all scatter axes."""
+    """One aggregated row per player with position metrics and all scatter axes.
+
+    Always sum additive columns then recompute rates (correct for 1+ rows and
+    matches BI season-grain formulas). Vectorized for dashboard performance.
+    """
     peers = df[df["position"] == position]
     if peers.empty:
         return pd.DataFrame()
 
+    additive = [c for c in ADDITIVE_COLS if c in peers.columns]
+    grouped = peers.groupby("player_id", sort=False)
+    sums = grouped[additive].sum().reset_index()
+
+    # Latest stint for display identity (name / age)
+    latest_idx = peers.groupby("player_id", sort=False)["season"].idxmax()
+    identity = peers.loc[latest_idx, ["player_id", "player_name", "age"]].reset_index(drop=True)
+
+    teams = (
+        grouped["team_name"]
+        .agg(lambda s: ", ".join(sorted({str(x) for x in s.dropna()})))
+        .rename("teams")
+        .reset_index()
+    )
+    leagues = (
+        grouped["league_name"]
+        .agg(lambda s: ", ".join(sorted({str(x) for x in s.dropna()})))
+        .rename("leagues")
+        .reset_index()
+    )
+
+    out = identity.merge(sums, on="player_id").merge(teams, on="player_id").merge(leagues, on="player_id")
+    out["position"] = position
+
+    if "rating" in peers.columns and "minutes" in peers.columns:
+        weighted = peers.assign(
+            _rw=peers["rating"].fillna(0) * peers["minutes"].fillna(0),
+            _mins=peers["minutes"].fillna(0),
+        )
+        rating = weighted.groupby("player_id", sort=False).agg(_rw=("_rw", "sum"), _mins=("_mins", "sum"))
+        rating["rating"] = rating["_rw"] / rating["_mins"].replace(0, pd.NA)
+        out = out.merge(rating[["rating"]].reset_index(), on="player_id", how="left")
+    else:
+        out["rating"] = None
+
     specs = all_metric_specs(position)
-    scatter_keys = all_scatter_metric_keys(position)
-    records: list[dict] = []
+    scatter_specs: list[MetricSpec] = []
+    seen_keys = {s.key for s in specs}
+    for view in scatter_views_for_position(position):
+        for key, label, num, den, scale in (
+            (view.axes.x_key, view.axes.x_label, view.axes.x_numerator, view.axes.x_denominator, view.axes.x_scale),
+            (view.axes.y_key, view.axes.y_label, view.axes.y_numerator, view.axes.y_denominator, view.axes.y_scale),
+        ):
+            if key not in seen_keys:
+                scatter_specs.append(MetricSpec(key, label, num, den, scale))
+                seen_keys.add(key)
 
-    for player_id, rows in peers.groupby("player_id"):
-        first = rows.iloc[0]
-        sums = _row_sums(rows)
-        record: dict = {
-            "player_id": int(player_id),
-            "player_name": first["player_name"],
-            "position": position,
-            "rating": float(
-                (rows["rating"].fillna(0) * rows["minutes"].fillna(0)).sum() / sums["minutes"]
-            )
-            if sums.get("minutes", 0) > 0
-            else float(first.get("rating") or 0),
-            "age": float(rows["age"].dropna().iloc[-1]) if rows["age"].notna().any() else None,
-            "minutes": sums.get("minutes", 0.0),
-            "appearances": sums.get("appearances", 0.0),
-            "teams": ", ".join(sorted(rows["team_name"].dropna().unique().tolist())),
-            "leagues": ", ".join(sorted(rows["league_name"].dropna().unique().tolist())),
-        }
-        for spec in specs:
-            record[spec.key] = compute_metric(sums, spec)
-        for view in scatter_views_for_position(position):
-            x_val, y_val = compute_xy(sums, view.axes)
-            record[view.axes.x_key] = x_val
-            record[view.axes.y_key] = y_val
-        for key in scatter_keys:
-            record.setdefault(key, None)
-        records.append(record)
+    for spec in list(specs) + scatter_specs:
+        out[spec.key] = _metric_series_from_sums(out, spec)
 
-    return pd.DataFrame.from_records(records)
+    for key in all_scatter_metric_keys(position):
+        if key not in out.columns:
+            out[key] = None
+
+    return out.reset_index(drop=True)
+
+
+def _metric_series_from_sums(sums_df: pd.DataFrame, spec: MetricSpec) -> pd.Series:
+    """Vectorized MetricSpec over a frame of summed additive columns."""
+    if spec.key == "goal_involvements_per90":
+        goals = pd.to_numeric(sums_df.get("goals"), errors="coerce").fillna(0)
+        assists = pd.to_numeric(sums_df.get("assists"), errors="coerce").fillna(0)
+        minutes = pd.to_numeric(sums_df.get("minutes"), errors="coerce")
+        return ((goals + assists) * 90.0 / minutes.where(minutes != 0)).astype("float64")
+
+    if spec.numerator not in sums_df.columns:
+        return pd.Series(float("nan"), index=sums_df.index, dtype="float64")
+    num = pd.to_numeric(sums_df[spec.numerator], errors="coerce")
+    if spec.denominator is None:
+        return num.astype("float64")
+    if spec.denominator not in sums_df.columns:
+        return pd.Series(float("nan"), index=sums_df.index, dtype="float64")
+    den = pd.to_numeric(sums_df[spec.denominator], errors="coerce")
+    result = num * float(spec.scale) / den.where(den != 0)
+    return result.astype("float64")
+
+
+@st.cache_data(show_spinner=False)
+def cached_peer_table(
+    position: str,
+    seasons: tuple[int, ...] | None,
+    leagues: tuple[str, ...] | None,
+    age_min: float | None,
+    age_max: float | None,
+    min_minutes: float = 0.0,
+    teams: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    """Cached peer aggregation for dashboard pages."""
+    peer_source = load_peer_season_rows(
+        position,
+        seasons=seasons,
+        leagues=leagues,
+        teams=teams,
+        age_min=age_min,
+        age_max=age_max,
+    )
+    peers = build_peer_table(peer_source, position)
+    if peers.empty:
+        return peers
+    if min_minutes and "minutes" in peers.columns:
+        peers = peers[peers["minutes"] >= float(min_minutes)].reset_index(drop=True)
+    return peers
+
+
+def ensure_players_in_peer_table(
+    peer_table: pd.DataFrame,
+    player_frames: list[pd.DataFrame],
+    position: str,
+) -> pd.DataFrame:
+    """
+    Guarantee selected players appear in the peer pool (needed for radar/scatter
+    highlights when age/league filters exclude their lookup stint).
+    """
+    if not player_frames:
+        return peer_table
+
+    extra = pd.concat([f for f in player_frames if f is not None and not f.empty], ignore_index=True)
+    if extra.empty:
+        return peer_table
+
+    extra = extra[extra["position"] == position]
+    if extra.empty:
+        return peer_table
+
+    extra_peers = build_peer_table(extra, position)
+    if extra_peers.empty:
+        return peer_table
+    if peer_table.empty:
+        return extra_peers.reset_index(drop=True)
+
+    missing = ~extra_peers["player_id"].isin(peer_table["player_id"])
+    if not missing.any():
+        return peer_table
+    return pd.concat([peer_table, extra_peers.loc[missing]], ignore_index=True)
 
 
 def top_players_table(
@@ -337,7 +521,11 @@ def top_players_table(
     defender_profile: str | None = None,
 ) -> pd.DataFrame:
     """Top N players ranked by a tactical metric (DESC), with optional min minutes."""
-    peers = build_peer_table(df, position)
+    # Accept either raw season rows or an already-aggregated peer table.
+    if "player_id" in df.columns and sort_key in df.columns and "minutes" in df.columns and df["player_id"].is_unique:
+        peers = df.copy()
+    else:
+        peers = build_peer_table(df, position)
     if peers.empty:
         return peers
     if min_minutes and "minutes" in peers.columns:
@@ -449,7 +637,7 @@ def build_season_trend_frame(player_rows: pd.DataFrame, position: str) -> pd.Dat
                 "season": int(season),
                 "season_label": format_season(season),
                 "minutes": sums.get("minutes", 0.0),
-                "primary_value": compute_metric(sums, primary),
+                "primary_value": _metric_from_rows(rows, primary),
                 "primary_label": primary.label,
                 "primary_key": primary.key,
             }
