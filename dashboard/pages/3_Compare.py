@@ -14,11 +14,13 @@ if str(ROOT) not in sys.path:
 from dashboard.charts import ACCENT_A, ACCENT_B, build_comparison_radar, build_scatter_from_view
 from dashboard.data import (
     aggregate_player_rows,
-    build_peer_table,
+    cached_peer_table,
+    ensure_players_in_peer_table,
+    format_age,
     load_filter_dimension_values,
-    load_peer_season_rows,
     load_player_lookup,
     load_player_seasons_by_id,
+    metric_percentile_map,
     percentile_scores,
 )
 from dashboard.metrics_config import radar_metric_specs, scatter_view_by_id, scatter_views_for_position
@@ -64,12 +66,12 @@ st.title("Player comparison")
 st.caption("Same-position head-to-head: percentile radar (0–100) and dual-highlight scatter.")
 
 
-def _player_header_card(profile: dict, accent_hex: str, eyebrow: str) -> None:
+def _player_header_card(profile: dict, name_class: str = "player-name compare") -> None:
     photo = profile.get("photo")
-    age = profile.get("age")
-    age_txt = f"{age:.0f}" if age is not None and age == age else "—"
+    age_txt = format_age(profile.get("age"))
     teams = ", ".join(profile.get("teams") or []) or "—"
-    left, right = st.columns([1, 3], gap="medium")
+    # Wider text column so long club names (e.g. Paris Saint Germain) can wrap cleanly
+    left, right = st.columns([1, 4.2], gap="medium")
     with left:
         if photo:
             st.image(photo, width=120)
@@ -78,9 +80,10 @@ def _player_header_card(profile: dict, accent_hex: str, eyebrow: str) -> None:
     with right:
         st.markdown(
             f"""
-            <div class="hero" style="margin-bottom:0;">
-              <div class="eyebrow" style="color:{accent_hex};">{eyebrow}</div>
-              <p class="player-name">{profile['player_name']}</p>
+            <div class="hero compare-hero">
+              <p class="{name_class}" style="font-size:2.75rem !important;font-weight:700 !important;font-family:'Space Grotesk',sans-serif !important;margin:0 !important;line-height:1.15 !important;color:#E7D8C6 !important;">
+                {profile['player_name']}
+              </p>
               <div class="meta">
                 <strong>{profile['position']}</strong>
                 · {teams}
@@ -106,7 +109,6 @@ if not applied:
     st.stop()
 
 age_min, age_max = applied["age_range"]
-position = applied["position"]
 seasons_t = tuple(applied["seasons"]) if applied["seasons"] else None
 leagues_t = tuple(applied["leagues"]) if applied["leagues"] else None
 teams_t = tuple(applied["teams"]) if applied["teams"] else None
@@ -124,30 +126,66 @@ if rows_a.empty or rows_b.empty:
     st.warning("One or both players are missing under the applied filters.")
     st.stop()
 
-if rows_a.iloc[0]["position"] != rows_b.iloc[0]["position"]:
-    st.error("Players must share the same position. Adjust filters and re-select.")
-    st.stop()
-
-position = str(rows_a.iloc[0]["position"])
-peer_source = load_peer_season_rows(
-    position,
-    seasons=seasons_t,
-    leagues=leagues_t,
-    age_min=age_min,
-    age_max=age_max,
-)
-peer_table = build_peer_table(peer_source, position)
-
 profile_a = aggregate_player_rows(rows_a)
 profile_b = aggregate_player_rows(rows_b)
 
+if profile_a["position"] != profile_b["position"]:
+    st.error(
+        f"Players resolve to different majority positions "
+        f"({profile_a['player_name']}: {profile_a['position']} vs "
+        f"{profile_b['player_name']}: {profile_b['position']}). "
+        "Pick players who share the same majority position, or narrow seasons."
+    )
+    st.stop()
+
+position = profile_a["position"]
+pos_rows_a = profile_a["rows"]
+pos_rows_b = profile_b["rows"]
+
+peer_table = cached_peer_table(
+    position,
+    seasons_t,
+    leagues_t,
+    float(age_min),
+    float(age_max),
+)
+peer_table = ensure_players_in_peer_table(peer_table, [pos_rows_a, pos_rows_b], position)
+
+pct_a = metric_percentile_map(peer_table, id_a, profile_a["metric_specs"]["primary"])
+pct_b = metric_percentile_map(peer_table, id_b, profile_b["metric_specs"]["primary"])
+
 c1, c2 = st.columns(2, gap="large")
 with c1:
-    _player_header_card(profile_a, "#C36A4A", "Player A")
-    render_metric_grid(profile_a["metric_specs"]["primary"], profile_a["metrics"]["primary"])
+    _player_header_card(profile_a)
 with c2:
-    _player_header_card(profile_b, "#4A90A4", "Player B")
-    render_metric_grid(profile_b["metric_specs"]["primary"], profile_b["metrics"]["primary"])
+    _player_header_card(profile_b)
+
+st.markdown('<div style="height:1.15rem;"></div>', unsafe_allow_html=True)
+
+m1, m2 = st.columns(2, gap="large")
+with m1:
+    render_metric_grid(
+        profile_a["metric_specs"]["primary"],
+        profile_a["metrics"]["primary"],
+        percentiles=pct_a,
+    )
+with m2:
+    render_metric_grid(
+        profile_b["metric_specs"]["primary"],
+        profile_b["metrics"]["primary"],
+        percentiles=pct_b,
+    )
+
+if profile_a.get("position_info", {}).get("used_majority") or profile_b.get("position_info", {}).get("used_majority"):
+    st.caption(
+        "Position uses majority seasons played within the selected window; "
+        "metrics only include rows at that position."
+    )
+if profile_a.get("used_bi_rates") and profile_b.get("used_bi_rates"):
+    st.caption("Both players: single season/stint rates reuse BI-layer values.")
+else:
+    st.caption("Rates reuse BI when a player has one season/stint row; otherwise sum volume then recompute.")
+st.caption("P## badges = percentile vs same-position peers in the selected filters.")
 
 radar_specs = radar_metric_specs(position)
 labels_a, values_a = percentile_scores(peer_table, id_a, radar_specs)
@@ -174,6 +212,8 @@ st.plotly_chart(
     config={"displayModeBar": False},
 )
 st.markdown("</div>", unsafe_allow_html=True)
+if len(shared_labels) < 3:
+    st.caption("Radar needs at least three shared rate metrics — widen filters if axes are missing.")
 
 st.markdown('<h3 class="section-title">Position scatter</h3>', unsafe_allow_html=True)
 render_compare_scatter(

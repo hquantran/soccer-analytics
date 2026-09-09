@@ -14,18 +14,19 @@ if str(ROOT) not in sys.path:
 from dashboard.charts import ACCENT_A, build_radar_chart, build_scatter_from_view, build_season_trend_chart
 from dashboard.data import (
     aggregate_player_rows,
-    build_peer_table,
     build_season_trend_frame,
+    cached_peer_table,
+    ensure_players_in_peer_table,
+    format_age,
     format_season,
     format_season_range,
     load_filter_dimension_values,
-    load_peer_season_rows,
     load_player_lookup,
     load_player_seasons_by_id,
     metric_percentile_map,
     percentile_scores,
 )
-from dashboard.metrics_config import all_metric_specs, scatter_view_by_id, scatter_views_for_position
+from dashboard.metrics_config import radar_metric_specs, scatter_view_by_id, scatter_views_for_position
 from dashboard.ui import inject_theme_css, render_metric_grid, render_profile_sidebar
 
 inject_theme_css()
@@ -81,7 +82,6 @@ seasons_t = tuple(applied["seasons"]) if applied["seasons"] else None
 leagues_t = tuple(applied["leagues"]) if applied["leagues"] else None
 teams_t = tuple(applied["teams"]) if applied["teams"] else None
 age_min, age_max = applied["age_range"]
-position = applied["position"]
 
 # Exact player_id extraction — no name ILIKE / full-table scan in Python
 player_rows = load_player_seasons_by_id(
@@ -97,21 +97,19 @@ if player_rows.empty:
     st.warning("Selected player has no rows for the applied season filters.")
     st.stop()
 
-# Use the player's actual position from data when available
-if "position" in player_rows.columns and not player_rows["position"].dropna().empty:
-    position = str(player_rows["position"].dropna().iloc[-1])
-
-peer_source = load_peer_season_rows(
-    position,
-    seasons=seasons_t,
-    leagues=leagues_t,
-    age_min=age_min,
-    age_max=age_max,
-)
-peer_table = build_peer_table(peer_source, position)
-
 profile = aggregate_player_rows(player_rows)
+position = profile["position"]
+pos_rows = profile["rows"]
 season_label = format_season_range(profile["seasons"])
+
+peer_table = cached_peer_table(
+    position,
+    seasons_t,
+    leagues_t,
+    float(age_min),
+    float(age_max),
+)
+peer_table = ensure_players_in_peer_table(peer_table, [pos_rows], position)
 primary_pct = metric_percentile_map(peer_table, player_id, profile["metric_specs"]["primary"])
 
 left, right = st.columns([1, 4], gap="large")
@@ -124,8 +122,9 @@ with right:
     st.markdown(
         f"""
         <div class="hero">
-          <div class="eyebrow">Soccer Analytics · Position profile</div>
-          <p class="player-name">{profile['player_name']}</p>
+          <p class="player-name" style="font-size:2.75rem !important;font-weight:700 !important;font-family:'Space Grotesk',sans-serif !important;margin:0 !important;line-height:1.15 !important;color:#E7D8C6 !important;">
+            {profile['player_name']}
+          </p>
           <div class="meta">
             <strong>{profile['position']}</strong>
             · {", ".join(profile["leagues"])}
@@ -136,12 +135,22 @@ with right:
         """,
         unsafe_allow_html=True,
     )
-    # No API rating — scouting header uses playing-time context only
+    st.markdown('<div style="height:0.55rem;"></div>', unsafe_allow_html=True)
     m1, m2, m3 = st.columns(3, gap="medium")
     m1.metric("Minutes", f"{profile['minutes']:.0f}")
     m2.metric("Appearances", f"{profile['appearances']:.0f}")
-    age = profile.get("age")
-    m3.metric("Age", f"{age:.0f}" if age is not None and age == age else "—")
+    m3.metric("Age", format_age(profile.get("age")))
+    if profile.get("position_info", {}).get("used_majority"):
+        counts = profile["position_info"].get("season_counts", {})
+        breakdown = ", ".join(f"{pos}: {n} season{'s' if n != 1 else ''}" for pos, n in counts.items())
+        st.caption(
+            f"Position resolved by majority seasons played → **{position}** ({breakdown}). "
+            "Metrics use only rows at that position."
+        )
+    if profile.get("used_bi_rates"):
+        st.caption("Rates for this single season/stint reuse BI-layer values.")
+    else:
+        st.caption("Rates recomputed from summed volume across the selected seasons/stints.")
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 specs = profile["metric_specs"]
@@ -152,10 +161,10 @@ st.caption("P## badges = percentile vs same-position peers in the selected seaso
 st.markdown('<h3 class="section-title">Secondary metrics</h3>', unsafe_allow_html=True)
 render_metric_grid(specs["secondary"], profile["metrics"]["secondary"])
 
-# Multi-season trajectory
+# Multi-season trajectory (majority-position rows only)
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 st.markdown('<h3 class="section-title">Season trajectory</h3>', unsafe_allow_html=True)
-trend_df = build_season_trend_frame(player_rows, profile["position"])
+trend_df = build_season_trend_frame(pos_rows, profile["position"])
 st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
 st.plotly_chart(
     build_season_trend_chart(trend_df, profile["player_name"]),
@@ -168,7 +177,7 @@ if len(trend_df) < 2:
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 st.markdown('<h3 class="section-title">Radar · peer percentiles</h3>', unsafe_allow_html=True)
-radar_labels, radar_values = percentile_scores(peer_table, player_id, all_metric_specs(profile["position"]))
+radar_labels, radar_values = percentile_scores(peer_table, player_id, radar_metric_specs(profile["position"]))
 st.markdown('<div class="chart-panel">', unsafe_allow_html=True)
 st.plotly_chart(
     build_radar_chart(radar_labels, radar_values, profile["player_name"]),
@@ -176,6 +185,8 @@ st.plotly_chart(
     config={"displayModeBar": False},
 )
 st.markdown("</div>", unsafe_allow_html=True)
+if len(radar_labels) < 3:
+    st.caption("Radar needs at least three rate metrics with peer coverage — widen filters if axes are missing.")
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 st.markdown('<h3 class="section-title">Position scatter</h3>', unsafe_allow_html=True)
@@ -197,9 +208,9 @@ with st.expander("Underlying season rows"):
             "passes_total",
             "tackles_total",
         ]
-        if c in player_rows.columns
+        if c in pos_rows.columns
     ]
-    display_rows = player_rows[show_cols].sort_values("season").copy()
+    display_rows = pos_rows[show_cols].sort_values("season").copy()
     if "season" in display_rows.columns:
         display_rows["season"] = display_rows["season"].map(format_season)
     st.dataframe(display_rows, width="stretch", hide_index=True)

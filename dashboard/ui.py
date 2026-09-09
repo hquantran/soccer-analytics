@@ -73,7 +73,7 @@ def inject_theme_css() -> None:
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 1.45rem 1.6rem;
-            margin-bottom: 0.6rem;
+            margin-bottom: 1.35rem !important;
           }
           .hero .eyebrow {
             text-transform: uppercase;
@@ -82,30 +82,85 @@ def inject_theme_css() -> None:
             letter-spacing: 0.1em;
             margin-bottom: 0.35rem;
           }
-          .player-name { font-size: 2rem; font-weight: 700; margin: 0; color: var(--text); }
-          .meta { color: var(--muted); margin-top: 0.45rem; font-size: 0.98rem; }
+          /* Streamlit resets <p> font-size — force hero names large */
+          .hero .player-name,
+          .hero p.player-name,
+          div.hero p {
+            font-family: 'Space Grotesk', sans-serif !important;
+            font-size: 2.75rem !important;
+            font-weight: 700 !important;
+            margin: 0 !important;
+            line-height: 1.15 !important;
+            color: var(--text) !important;
+            letter-spacing: -0.02em !important;
+          }
+          .meta,
+          .hero .meta,
+          .hero div.meta {
+            color: var(--muted) !important;
+            margin-top: 0.5rem !important;
+            font-size: 0.98rem !important;
+            font-weight: 400 !important;
+            line-height: 1.45 !important;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+          }
+          .hero.compare-hero {
+            min-height: 7.5rem;
+            padding: 1.25rem 1.35rem;
+            margin-bottom: 1.35rem !important;
+          }
+          .compare-header-gap {
+            height: 0.35rem;
+            margin-bottom: 0.85rem;
+          }
+          /* Keep multiselect chips readable instead of truncating mid-label */
+          [data-baseweb="tag"] {
+            max-width: 100% !important;
+          }
+          [data-baseweb="tag"] span {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+          }
+          [data-testid="stMultiSelect"] div[data-baseweb="select"] > div {
+            max-height: none !important;
+            flex-wrap: wrap !important;
+          }
           .metric-card {
             background: var(--card);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 1rem 1.05rem;
+            padding: 0.95rem 1rem 1rem 1rem;
             height: 100%;
+            min-height: 6.75rem;
             margin-bottom: 0.55rem;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
           }
           .metric-label {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: var(--muted);
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.45rem;
+            min-height: 2.4em;
+            line-height: 1.2;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
-            gap: 0.5rem;
+            gap: 0.45rem;
+          }
+          .metric-label > span:first-child {
+            flex: 1;
+            min-width: 0;
           }
           .metric-value {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.45rem;
             font-weight: 700;
             color: var(--text);
+            margin-top: auto;
+            line-height: 1.1;
           }
           .pct-badge {
             font-family: 'Space Grotesk', sans-serif;
@@ -181,7 +236,7 @@ def default_filters(df) -> dict:
     age_hi = int(ages.max()) if not ages.empty else 40
     return {
         "leagues": leagues,
-        "seasons": seasons[-1:] if seasons else [],
+        "seasons": seasons,  # Select All by default
         "position": "Midfielder" if "Midfielder" in positions else (positions[0] if positions else None),
         "teams": [],
         "age_range": (age_lo, age_hi),
@@ -193,12 +248,68 @@ def default_filters(df) -> dict:
     }
 
 
+def _selection_caption(label: str, values: list, *, empty: str = "All") -> None:
+    """Show the full selected filter list (multiselect chips often truncate)."""
+    if not values:
+        st.caption(f"{label}: {empty}")
+        return
+    shown = ", ".join(str(v) for v in values)
+    st.caption(f"{label}: {shown}")
+
+
+def _render_season_filter(prefix: str, seasons_all: list[int]) -> list[int]:
+    """
+    Single vs multi season toggle shared by all sidebars.
+    Single → selectbox (latest default). Multi → multiselect (all selected).
+    """
+    season_labels = [format_season(s) for s in seasons_all]
+    label_to_season = {format_season(s): int(s) for s in seasons_all}
+    latest_label = season_labels[-1] if season_labels else None
+
+    mode = st.radio(
+        "Season mode",
+        options=["Single season", "Multi season"],
+        horizontal=True,
+        key=f"{prefix}_season_mode_v2",
+        help="Single season uses one BI season row path; multi aggregates volume across seasons.",
+    )
+
+    if mode == "Single season":
+        if not season_labels:
+            st.caption("Seasons: None")
+            return []
+        default_idx = season_labels.index(latest_label) if latest_label in season_labels else 0
+        pick = st.selectbox(
+            "Season",
+            season_labels,
+            index=default_idx,
+            key=f"{prefix}_season_single",
+            help="API season year = season start (e.g. 2022/2023).",
+        )
+        seasons = [label_to_season[pick]]
+        _selection_caption("Season", [pick], empty="None")
+        return seasons
+
+    season_pick = st.multiselect(
+        "Season",
+        season_labels,
+        default=season_labels,
+        key=f"{prefix}_seasons_multi",
+        help="API season year = season start (e.g. 2022/2023). Default: all seasons.",
+    )
+    seasons = [label_to_season[s] for s in season_pick]
+    _selection_caption("Seasons", season_pick, empty="None")
+    return seasons
+
+
 def render_metric_grid(specs, values: dict, percentiles: dict | None = None) -> None:
     if not specs:
         return
-    cols = st.columns(min(4, len(specs)), gap="medium")
+    # Prefer even rows so values line up across compare columns
+    n_cols = 3 if len(specs) >= 5 else min(4, len(specs))
+    cols = st.columns(n_cols, gap="medium")
     for i, spec in enumerate(specs):
-        with cols[i % len(cols)]:
+        with cols[i % n_cols]:
             from dashboard.data import format_metric_value
 
             display = format_metric_value(values.get(spec.key), spec)
@@ -224,8 +335,10 @@ def _default_position(positions_all: list[str]) -> str:
     return positions_all[0] if positions_all else "Midfielder"
 
 
-def _scope_player_lookup(lookup, *, position: str, leagues, age_range, teams):
-    scoped = lookup[lookup["position"] == position].copy()
+def _scope_player_lookup(lookup, *, position: str | None, leagues, age_range, teams):
+    scoped = lookup.copy()
+    if position:
+        scoped = scoped[scoped["position"] == position]
     age = scoped["age"]
     scoped = scoped[age.isna() | ((age >= age_range[0]) & (age <= age_range[1]))]
     if leagues:
@@ -275,31 +388,47 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
     positions_all = dims["positions"]
     age_lo, age_hi = dims["age_min"], dims["age_max"]
     default_pos = _default_position(positions_all)
-    season_labels = [format_season(s) for s in seasons_all]
-    label_to_season = {format_season(s): int(s) for s in seasons_all}
-    default_season = [format_season(seasons_all[-1])] if seasons_all else []
 
     with st.sidebar:
         # Scope from prior filter widget state so Player can sit at the top.
-        position_pre = st.session_state.get("profile_sb_position", default_pos)
+        # Position is advanced-only and does not gate the player list (profile uses the player's recorded position).
         leagues_pre = st.session_state.get("profile_sb_leagues", leagues_all)
         age_pre = st.session_state.get("profile_sb_age", (age_lo, age_hi))
         teams_pre = st.session_state.get("profile_sb_teams", [])
 
         scoped = _scope_player_lookup(
             lookup,
-            position=position_pre,
+            position=None,
             leagues=leagues_pre,
             age_range=age_pre,
             teams=teams_pre,
         )
 
         st.markdown("### Player")
-        player_id, player_name = _searchable_player_select(
-            scoped,
-            state_key="profile_sb_player",
-            label="Player",
-        )
+        name_q = (st.text_input("Filter by name", key="profile_sb_name_q", placeholder="Type to narrow list…") or "").strip()
+        if name_q and not scoped.empty:
+            scoped = scoped[scoped["player_name"].str.contains(name_q, case=False, na=False)]
+
+        if scoped.empty:
+            st.warning("No players match the filters below.")
+            player_id = None
+            player_name = None
+        else:
+            id_to_label = {
+                int(r.player_id): f"{r.player_name} · {r.team_name}"
+                for r in scoped.itertuples(index=False)
+            }
+            options = list(id_to_label.keys())
+            # Drop stale selection if filters removed that player.
+            if st.session_state.get("profile_sb_player_id") not in options:
+                st.session_state["profile_sb_player_id"] = options[0]
+            player_id = st.selectbox(
+                "Select player",
+                options=options,
+                format_func=lambda pid: id_to_label[pid],
+                key="profile_sb_player_id",
+            )
+            player_name = str(scoped.loc[scoped["player_id"] == player_id, "player_name"].iloc[0])
 
         st.markdown("### Filters")
         leagues = st.multiselect(
@@ -308,36 +437,34 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
             default=leagues_all,
             key="profile_sb_leagues",
         )
-        season_pick = st.multiselect(
-            "Season",
-            season_labels,
-            default=default_season,
-            key="profile_sb_seasons",
-            help="API season year = season start (e.g. 2022/2023).",
-        )
-        seasons = [label_to_season[s] for s in season_pick]
-        position = st.selectbox(
-            "Position",
-            positions_all,
-            index=positions_all.index(default_pos) if default_pos in positions_all else 0,
-            key="profile_sb_position",
-        )
-        age_range = st.slider(
-            "Age range",
-            min_value=age_lo,
-            max_value=age_hi,
-            value=(age_lo, age_hi),
-            key="profile_sb_age",
-        )
-        team_pool = _scope_player_lookup(
-            lookup,
-            position=position,
-            leagues=leagues,
-            age_range=age_range,
-            teams=[],
-        )
-        teams_all = sorted(team_pool["team_name"].dropna().unique().tolist())
-        teams = st.multiselect("Team", teams_all, default=[], key="profile_sb_teams")
+        _selection_caption("Leagues", leagues, empty="None")
+        seasons = _render_season_filter("profile_sb", seasons_all)
+
+        with st.expander("Advanced filters", expanded=False):
+            position = st.selectbox(
+                "Peer position override",
+                positions_all,
+                index=positions_all.index(default_pos) if default_pos in positions_all else 0,
+                key="profile_sb_position",
+                help="Only used if the player's BI rows lack a position. Charts normally use the player's recorded position.",
+            )
+            age_range = st.slider(
+                "Age range",
+                min_value=age_lo,
+                max_value=age_hi,
+                value=(age_lo, age_hi),
+                key="profile_sb_age",
+            )
+            team_pool = _scope_player_lookup(
+                lookup,
+                position=None,
+                leagues=leagues,
+                age_range=age_range,
+                teams=[],
+            )
+            teams_all = sorted(team_pool["team_name"].dropna().unique().tolist())
+            teams = st.multiselect("Team", teams_all, default=[], key="profile_sb_teams")
+            _selection_caption("Teams", teams, empty="All teams")
 
         if player_id is None:
             return None
@@ -372,16 +499,8 @@ def render_overview_sidebar(dims: dict) -> dict:
             default=leagues_all,
             key="overview_sb_leagues",
         )
-        season_labels = [format_season(s) for s in seasons_all]
-        label_to_season = {format_season(s): int(s) for s in seasons_all}
-        default_season = [format_season(seasons_all[-1])] if seasons_all else []
-        season_pick = st.multiselect(
-            "Season",
-            season_labels,
-            default=default_season,
-            key="overview_sb_seasons",
-        )
-        seasons = [label_to_season[s] for s in season_pick]
+        _selection_caption("Leagues", leagues, empty="None")
+        seasons = _render_season_filter("overview_sb", seasons_all)
         position = st.selectbox(
             "Position",
             positions_all,
@@ -396,6 +515,7 @@ def render_overview_sidebar(dims: dict) -> dict:
             key="overview_sb_age",
         )
         teams = st.multiselect("Team", teams_all, default=[], key="overview_sb_teams")
+        _selection_caption("Teams", teams, empty="All teams")
         min_minutes = st.slider(
             "Minimum minutes played",
             min_value=300,
@@ -440,9 +560,6 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
     positions_all = dims["positions"]
     age_lo, age_hi = dims["age_min"], dims["age_max"]
     default_pos = _default_position(positions_all)
-    season_labels = [format_season(s) for s in seasons_all]
-    label_to_season = {format_season(s): int(s) for s in seasons_all}
-    default_season = [format_season(seasons_all[-1])] if seasons_all else []
 
     with st.sidebar:
         position_pre = st.session_state.get("compare_sb_position", default_pos)
@@ -459,12 +576,30 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
         )
 
         st.markdown("### Players")
-        left, right = st.columns(2, gap="small")
-        with left:
-            id_a, name_a = _searchable_player_select(
-                scoped,
-                state_key="compare_sb_player_a",
-                label="Player A",
+        name_q = (st.text_input("Filter by name", key="compare_sb_name_q", placeholder="Type to narrow list…") or "").strip()
+        if name_q and not scoped.empty:
+            scoped = scoped[scoped["player_name"].str.contains(name_q, case=False, na=False)]
+
+        if scoped.empty:
+            st.warning("No players match the filters below.")
+            id_a = id_b = None
+            name_a = name_b = None
+        else:
+            id_to_label = {
+                int(r.player_id): f"{r.player_name} · {r.team_name}"
+                for r in scoped.itertuples(index=False)
+            }
+            options = list(id_to_label.keys())
+            if st.session_state.get("compare_sb_player_a_id") not in options:
+                st.session_state["compare_sb_player_a_id"] = options[0]
+            if st.session_state.get("compare_sb_player_b_id") not in options:
+                st.session_state["compare_sb_player_b_id"] = options[min(1, len(options) - 1)]
+
+            id_a = st.selectbox(
+                "Player A",
+                options=options,
+                format_func=lambda pid: id_to_label[pid],
+                key="compare_sb_player_a_id",
             )
         with right:
             id_b, name_b = _searchable_player_select(
@@ -480,36 +615,33 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
             default=leagues_all,
             key="compare_sb_leagues",
         )
-        season_pick = st.multiselect(
-            "Season",
-            season_labels,
-            default=default_season,
-            key="compare_sb_seasons",
-            help="API season year = season start (e.g. 2022/2023).",
-        )
-        seasons = [label_to_season[s] for s in season_pick]
-        position = st.selectbox(
-            "Position",
-            positions_all,
-            index=positions_all.index(default_pos) if default_pos in positions_all else 0,
-            key="compare_sb_position",
-        )
-        age_range = st.slider(
-            "Age range",
-            min_value=age_lo,
-            max_value=age_hi,
-            value=(age_lo, age_hi),
-            key="compare_sb_age",
-        )
-        team_pool = _scope_player_lookup(
-            lookup,
-            position=position,
-            leagues=leagues,
-            age_range=age_range,
-            teams=[],
-        )
-        teams_all = sorted(team_pool["team_name"].dropna().unique().tolist())
-        teams = st.multiselect("Team", teams_all, default=[], key="compare_sb_teams")
+        _selection_caption("Leagues", leagues, empty="None")
+        seasons = _render_season_filter("compare_sb", seasons_all)
+
+        with st.expander("Advanced filters", expanded=False):
+            position = st.selectbox(
+                "Position",
+                positions_all,
+                index=positions_all.index(default_pos) if default_pos in positions_all else 0,
+                key="compare_sb_position",
+            )
+            age_range = st.slider(
+                "Age range",
+                min_value=age_lo,
+                max_value=age_hi,
+                value=(age_lo, age_hi),
+                key="compare_sb_age",
+            )
+            team_pool = _scope_player_lookup(
+                lookup,
+                position=position,
+                leagues=leagues,
+                age_range=age_range,
+                teams=[],
+            )
+            teams_all = sorted(team_pool["team_name"].dropna().unique().tolist())
+            teams = st.multiselect("Team", teams_all, default=[], key="compare_sb_teams")
+            _selection_caption("Teams", teams, empty="All teams")
 
         if id_a is None or id_b is None:
             return None

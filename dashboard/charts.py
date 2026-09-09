@@ -44,8 +44,10 @@ def build_radar_chart(labels: list[str], percentiles: list[float], player_name: 
         )
         return fig
 
+    # Short angular labels reduce overlap / compression
+    short = [lab.replace(" / 90", "/90").replace(" conversion", " conv.") for lab in labels]
     r = percentiles + [percentiles[0]]
-    theta = labels + [labels[0]]
+    theta = short + [short[0]]
     fig = go.Figure()
     fig.add_trace(
         go.Scatterpolar(
@@ -56,28 +58,33 @@ def build_radar_chart(labels: list[str], percentiles: list[float], player_name: 
             line=dict(color=ACCENT_A, width=2.5),
             marker=dict(size=7, color=ACCENT_A),
             name=player_name,
-            hovertemplate="%{theta}<br>Percentile: %{r:.0f}<extra></extra>",
+            customdata=labels + [labels[0]],
+            hovertemplate="%{customdata}<br>Percentile: %{r:.0f}<extra></extra>",
         )
     )
     fig.update_layout(
         **_base_layout(
             title=dict(text="Position percentile profile", font=dict(size=16, color=TEXT)),
-            height=540,
+            height=580,
             showlegend=False,
+            margin=dict(l=80, r=80, t=64, b=80),
             polar=dict(
                 bgcolor=PLOT_BG,
+                domain=dict(x=[0.08, 0.92], y=[0.08, 0.92]),
                 radialaxis=dict(
                     visible=True,
                     range=[0, 100],
                     tickvals=[0, 25, 50, 75, 100],
                     gridcolor=GRID,
                     linecolor=GRID,
-                    tickfont=dict(color=MUTED, size=11),
+                    tickfont=dict(color=MUTED, size=10),
                 ),
                 angularaxis=dict(
                     gridcolor=GRID,
                     linecolor=GRID,
-                    tickfont=dict(color=TEXT, size=12),
+                    rotation=90,
+                    direction="clockwise",
+                    tickfont=dict(color=TEXT, size=11),
                 ),
             ),
         )
@@ -98,7 +105,8 @@ def build_comparison_radar(
         fig.update_layout(**_base_layout(height=540, title=dict(text="Radar unavailable", font=dict(color=MUTED))))
         return fig
 
-    theta = labels + [labels[0]]
+    theta_labels = [lab.replace(" / 90", "/90").replace(" conversion", " conv.") for lab in labels]
+    theta = theta_labels + [theta_labels[0]]
     fig.add_trace(
         go.Scatterpolar(
             r=values_a + [values_a[0]],
@@ -107,7 +115,8 @@ def build_comparison_radar(
             fillcolor=ACCENT_A_FILL,
             line=dict(color=ACCENT_A, width=2.5),
             name=name_a,
-            hovertemplate="%{theta}<br>" + name_a + " percentile: %{r:.0f}<extra></extra>",
+            customdata=labels + [labels[0]],
+            hovertemplate="%{customdata}<br>" + name_a + " percentile: %{r:.0f}<extra></extra>",
         )
     )
     fig.add_trace(
@@ -118,13 +127,14 @@ def build_comparison_radar(
             fillcolor=ACCENT_B_FILL,
             line=dict(color=ACCENT_B, width=2.5),
             name=name_b,
-            hovertemplate="%{theta}<br>" + name_b + " percentile: %{r:.0f}<extra></extra>",
+            customdata=labels + [labels[0]],
+            hovertemplate="%{customdata}<br>" + name_b + " percentile: %{r:.0f}<extra></extra>",
         )
     )
     fig.update_layout(
         **_base_layout(
             title=dict(text=f"{name_a} vs {name_b} · positional percentiles", font=dict(size=16, color=TEXT)),
-            height=560,
+            height=600,
             legend=dict(
                 orientation="v",
                 yanchor="middle",
@@ -134,9 +144,10 @@ def build_comparison_radar(
                 font=dict(color=MUTED),
                 bgcolor="rgba(0,0,0,0)",
             ),
-            margin=dict(l=56, r=140, t=64, b=56),
+            margin=dict(l=80, r=140, t=64, b=80),
             polar=dict(
                 bgcolor=PLOT_BG,
+                domain=dict(x=[0.05, 0.85], y=[0.08, 0.92]),
                 radialaxis=dict(
                     visible=True,
                     range=[0, 100],
@@ -145,12 +156,14 @@ def build_comparison_radar(
                     title=dict(text="Percentile", font=dict(size=11, color=MUTED)),
                     gridcolor=GRID,
                     linecolor=GRID,
-                    tickfont=dict(color=MUTED, size=11),
+                    tickfont=dict(color=MUTED, size=10),
                 ),
                 angularaxis=dict(
                     gridcolor=GRID,
                     linecolor=GRID,
-                    tickfont=dict(color=TEXT, size=12),
+                    rotation=90,
+                    direction="clockwise",
+                    tickfont=dict(color=TEXT, size=11),
                 ),
             ),
         )
@@ -172,7 +185,10 @@ def build_quadrant_scatter(
     if peer_table.empty or axes.x_key not in peer_table.columns or axes.y_key not in peer_table.columns:
         fig.update_layout(
             **_base_layout(
-                title=dict(text="Quadrant chart unavailable", font=dict(size=14, color=MUTED)),
+                title=dict(
+                    text="Scatter unavailable — missing axis data for this peer pool",
+                    font=dict(size=14, color=MUTED),
+                ),
                 height=560,
             )
         )
@@ -180,29 +196,46 @@ def build_quadrant_scatter(
 
     plot_df = peer_table.dropna(subset=[axes.x_key, axes.y_key]).copy()
     if plot_df.empty:
-        fig.update_layout(**_base_layout(height=560))
+        fig.update_layout(
+            **_base_layout(
+                title=dict(
+                    text="Scatter unavailable — no peers with both axis metrics",
+                    font=dict(size=14, color=MUTED),
+                ),
+                height=560,
+            )
+        )
         return fig
 
+    # Sparse pools (few complete peers) look "broken"; still plot but flag in title.
+    sparse = len(plot_df) < 8
     x_mean = float(plot_df[axes.x_key].mean())
     y_mean = float(plot_df[axes.y_key].mean())
     highlight_ids = {h[0] for h in (highlights or [])}
     others = plot_df[~plot_df["player_id"].isin(highlight_ids)]
 
-    fig.add_trace(
-        go.Scattergl(
-            x=others[axes.x_key],
-            y=others[axes.y_key],
-            mode="markers",
-            marker=dict(size=8, color=PEER_DOT, line=dict(width=0)),
-            name=f"Other {position.lower()}s",
-            hovertemplate="%{text}<br>" + axes.x_label + ": %{x:.2f}<br>" + axes.y_label + ": %{y:.2f}<extra></extra>",
-            text=others["player_name"],
+    if not others.empty:
+        fig.add_trace(
+            go.Scatter(
+                x=others[axes.x_key],
+                y=others[axes.y_key],
+                mode="markers",
+                marker=dict(size=8, color=PEER_DOT, line=dict(width=0)),
+                name=f"Other {position.lower()}s",
+                hovertemplate="%{text}<br>"
+                + axes.x_label
+                + ": %{x:.2f}<br>"
+                + axes.y_label
+                + ": %{y:.2f}<extra></extra>",
+                text=others["player_name"],
+            )
         )
-    )
 
+    missing_highlights: list[str] = []
     for player_id, label, color in highlights or []:
         selected = plot_df[plot_df["player_id"] == player_id]
         if selected.empty:
+            missing_highlights.append(label)
             continue
         row = selected.iloc[0]
         fig.add_trace(
@@ -215,17 +248,32 @@ def build_quadrant_scatter(
                 textposition="top center",
                 textfont=dict(color=TEXT, size=12, family="Space Grotesk, sans-serif"),
                 name=label,
-                hovertemplate="%{text}<br>" + axes.x_label + ": %{x:.2f}<br>" + axes.y_label + ": %{y:.2f}<extra></extra>",
+                hovertemplate="%{text}<br>"
+                + axes.x_label
+                + ": %{x:.2f}<br>"
+                + axes.y_label
+                + ": %{y:.2f}<extra></extra>",
             )
         )
 
     fig.add_vline(x=x_mean, line_dash="dot", line_color=MUTED, line_width=1.5)
     fig.add_hline(y=y_mean, line_dash="dot", line_color=MUTED, line_width=1.5)
 
+    # Pad ranges so single/sparse points aren't stuck on the edge
+    x_vals = plot_df[axes.x_key].astype(float)
+    y_vals = plot_df[axes.y_key].astype(float)
+    x_pad = max((x_vals.max() - x_vals.min()) * 0.08, abs(x_vals.mean()) * 0.05 + 0.05)
+    y_pad = max((y_vals.max() - y_vals.min()) * 0.08, abs(y_vals.mean()) * 0.05 + 0.05)
+
     chart_title = title or f"{position} quadrant · {axes.x_label} vs {axes.y_label}"
+    if sparse:
+        chart_title = f"{chart_title} · limited peer sample ({len(plot_df)})"
+    if missing_highlights:
+        chart_title = f"{chart_title} · missing: {', '.join(missing_highlights)}"
+
     fig.update_layout(
         **_base_layout(
-            title=dict(text=chart_title, font=dict(size=16, color=TEXT)),
+            title=dict(text=chart_title, font=dict(size=15, color=TEXT)),
             height=560,
             legend=dict(
                 orientation="v",
@@ -236,9 +284,10 @@ def build_quadrant_scatter(
                 font=dict(color=MUTED),
                 bgcolor="rgba(0,0,0,0)",
             ),
-            margin=dict(l=56, r=160, t=64, b=56),
+            margin=dict(l=56, r=160, t=72, b=56),
             xaxis=dict(
                 title=axes.x_label,
+                range=[float(x_vals.min()) - x_pad, float(x_vals.max()) + x_pad],
                 gridcolor=GRID,
                 zeroline=False,
                 color=MUTED,
@@ -246,6 +295,7 @@ def build_quadrant_scatter(
             ),
             yaxis=dict(
                 title=axes.y_label,
+                range=[float(y_vals.min()) - y_pad, float(y_vals.max()) + y_pad],
                 gridcolor=GRID,
                 zeroline=False,
                 color=MUTED,
