@@ -601,12 +601,14 @@ def render_compare_sidebar(lookup, dims: dict) -> dict | None:
                 format_func=lambda pid: id_to_label[pid],
                 key="compare_sb_player_a_id",
             )
-        with right:
-            id_b, name_b = _searchable_player_select(
-                scoped,
-                state_key="compare_sb_player_b",
-                label="Player B",
+            id_b = st.selectbox(
+                "Player B",
+                options=options,
+                format_func=lambda pid: id_to_label[pid],
+                key="compare_sb_player_b_id",
             )
+            name_a = str(scoped.loc[scoped["player_id"] == id_a, "player_name"].iloc[0])
+            name_b = str(scoped.loc[scoped["player_id"] == id_b, "player_name"].iloc[0])
 
         st.markdown("### Filters")
         leagues = st.multiselect(
