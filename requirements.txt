@@ -1,4 +1,8 @@
-
+# Prefer uv for installs (locked versions in uv.lock):
+#   uv sync
+#   source .venv/bin/activate
+# Legacy pip fallback (may resolve newer versions than the lockfile):
+#
 # ELT transform layer (SQL models run against the DuckDB warehouse post-load).
 dbt-core>=1.8.0
 dbt-duckdb>=1.8.0
@@ -15,3 +19,9 @@ pyarrow>=14.0.0
 openpyxl>=3.1.0
 plotly>=5.18.0
 streamlit-keyup>=0.2.0
+
+# Recommendation / notebooks
+scikit-learn>=1.4.0
+jupyter>=1.0.0
+ipykernel>=6.29.0
+duckdb>=1.0.0
