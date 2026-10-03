@@ -1,402 +1,496 @@
-# Soccer analytics ELT pipeline
+# Soccer Scouting & Player Analytics Platform
 
-This project extracts player and season-statistics data from the API-Football API,
-lands the response in DuckDB with `dlt`, transforms it with dbt, and serves a
-Streamlit scouting dashboard. It is an **ELT** pipeline:
+## The Business Problem
 
-1. **Extract and load:** `ingestion/` requests the API and `dlt` writes raw nested JSON to DuckDB.
-2. **Transform:** dbt models under `models/` clean, join, and build marts + BI tables.
-3. **Serve:** `dashboard/` reads `bi_player_seasons`; dbt also exports Parquet/CSV under `data/exports/`.
+Professional soccer clubs need to evaluate players across leagues, teams, and seasons when making scouting and recruitment decisions. The challenge is not simply having player statistics available. It is turning large amounts of raw performance data into a consistent dataset that allows analysts to quickly compare players, understand player profiles, and identify potential talent.
 
-## Repository layout
+A typical scouting workflow can require analysts to collect data from different competitions, work with inconsistent statistics, account for differences in playing time, and manually compare players across positions and teams.
 
-```text
-config/                 # TOML settings + league/season constants
-ingestion/              # API client, dlt resource, orchestrator, Excel export
-models/
-  sources.yml           # dlt raw tables as dbt sources
-  staging/              # stg_* cleaned joins
-  marts/
-    dimensions/         # dim_players, dim_teams, dim_leagues
-    facts/              # fct_player_seasons
-  bi/                   # bi_player_seasons (Streamlit / export grain)
-dashboard/              # Streamlit app
-tests/                  # dbt singular + generic tests
-data/
-  warehouse/            # data/warehouse/api_sports.duckdb (gitignored)
-  exports/              # Parquet/CSV from dbt post-hooks (gitignored)
-dbt_project.yml
-profiles.yml
-requirements.txt
-run_players.py          # thin shim → python -m ingestion.run_players
-```
+We built this project to make that process more systematic and data-driven.
 
-## Important security note
+### Business Question
 
-Never commit an API key. Local `config/config.toml` contains a credential and must
-remain ignored. Rotate the key in the API-Football dashboard if it has ever been
-shared or exposed, then put the replacement only in the local file. Use
-`config/config.example.toml` as the safe template.
+> How can we turn large-scale soccer performance data into an analysis-ready scouting tool that helps analysts identify, compare, and discover players more efficiently?
 
-## End-to-end flow
+---
 
-```text
-API-Football /players endpoint
-        |
-        v
-ingestion/api_client.py  (HTTP, pagination, retries, pacing, quota)
-        |
-        v
-ingestion/players.py + dlt
-        |
-        v
-data/warehouse/api_sports.duckdb
-        |
-        +--> soccer_analytics_data (raw)
-        |      players_raw
-        |      players_raw__statistics
-        |
-        v
-models/staging/stg_players.sql
-        |
-        +--> models/marts/dimensions/*
-        +--> models/marts/facts/fct_player_seasons.sql
-        |
-        v
-models/bi/bi_player_seasons.sql
-        |
-        +--> data/exports/bi_player_seasons.{parquet,csv}
-        +--> dashboard/ (Streamlit)
-```
+## Our Solution
 
-The configured scope is five leagues and seasons 2020 through 2026 inclusive:
+We built an end-to-end soccer analytics and scouting platform that automatically collects player statistics from **API-Football**, transforms the raw data into a structured analytical dataset, and delivers the results through an interactive **Streamlit** application.
 
-| League | API-Football ID |
-| --- | ---: |
-| Premier League | 39 |
-| Ligue 1 | 61 |
-| Bundesliga | 78 |
-| Serie A | 135 |
-| La Liga | 140 |
+The platform combines:
 
-That is 35 league-season combinations. Pagination is unlimited unless
-`max_pages` is added to the `[api]` section. Requests are paced by
-`safe_pause_seconds`, retried up to `max_retries` times, and stop before the
-remaining daily quota reaches `quota_reserve`.
+* Automated data collection and transformation
+* Exploratory data analysis
+* Standardized player performance metrics
+* Player profiles and comparisons
+* Player discovery through a recommendation system
+* Interactive scouting dashboards
 
-## Project files
+Instead of treating raw API data as the final product, we designed the workflow around the types of questions a scouting or analytics team would need to answer.
 
-### Config and ingestion
+### What Users Can Do
 
-| Path | Purpose |
-| --- | --- |
-| `config/config.example.toml` | Safe configuration template. Copy to `config/config.toml` and add the real key. |
-| `config/config.toml` | Local runtime configuration (gitignored). |
-| `config/constants.py` | League IDs and season list for the loader. |
-| `ingestion/settings.py` | Loads TOML settings and builds API headers. |
-| `ingestion/api_client.py` | Low-level HTTP client (retries, pacing, pagination). |
-| `ingestion/players.py` | `dlt` resource that lands raw `/players` responses. |
-| `ingestion/run_players.py` | Orchestrator: optional API load + `dbt run`. |
-| `ingestion/export_sample.py` | Excel sample export from `main.bi_player_seasons`. |
-| `run_players.py` | Root shim for `python -m ingestion.run_players`. |
-| `requirements.txt` | Python dependencies. |
+The platform allows users to:
 
-### dbt
+* Explore top-performing players
+* View individual player profiles
+* Compare players across performance metrics
+* Analyze players across teams, leagues, and seasons
+* Examine player distributions and performance patterns
+* Discover players with similar performance profiles
+* Use standardized per-90 statistics for more meaningful comparisons
 
-| Path | Purpose |
-| --- | --- |
-| `dbt_project.yml` | Project config and materializations by layer. |
-| `profiles.yml` | DuckDB connection → `data/warehouse/api_sports.duckdb`. |
-| `packages.yml` / `package-lock.yml` | `dbt_utils` dependency pin. |
-| `models/sources.yml` | Maps `source('raw', ...)` to dlt tables. |
-| `models/staging/` | Cleaned player-season staging view. |
-| `models/marts/dimensions/` | Player, team, and league dimensions. |
-| `models/marts/facts/` | Additive player-season facts. |
-| `models/bi/` | Wide presentation table for Streamlit / BI tools. |
-| `tests/` | Singular and generic data-quality tests. |
+---
 
-### Dashboard and data
+# From Raw Data to Scouting Decisions
 
-| Path | Purpose |
-| --- | --- |
-| `dashboard/` | Streamlit navigation app (Top Players, Profile, Compare). |
-| `data/warehouse/api_sports.duckdb` | Active DuckDB warehouse (gitignored). |
-| `data/exports/` | Parquet/CSV exports from dbt post-hooks (gitignored). |
-
-## DuckDB tables and views
-
-The active file is `data/warehouse/api_sports.duckdb`. A DuckDB file contains schemas, and a
-schema groups relations. The project uses `soccer_analytics_data` for `dlt` raw
-data and `main` for dbt models.
-
-### Raw source relations: `soccer_analytics_data`
-
-#### `players_raw` (26,132 rows)
-
-This is the player-profile side of the API response. It contains fields such as
-`player__id`, `player__name`, age, nationality, height, weight, injury status,
-birth details, and the requested `league__id` and `league__season`. The double
-underscore names come from `dlt` flattening nested JSON. `_dlt_id` is the row ID
-used to connect this table to its child statistics rows; `_dlt_load_id` identifies
-the load batch.
-
-#### `players_raw__statistics` (27,412 rows)
-
-This is the child table created when `dlt` normalizes the API's nested
-`statistics` array. A row represents a player's stint for a team and
-competition in a season. It contains team, league, games, goals, shots, passes,
-tackles, duels, dribbles, fouls, cards, and penalty fields. `_dlt_parent_id`
-points back to the parent `_dlt_id` in `players_raw`; `_dlt_list_idx` records the
-position in the original array.
-
-The raw tables are intentionally wide and close to the API shape. They are not
-the tables to use for analysis because values still have API names and types,
-and they include low-minute rows and fields that the feature model does not need.
-
-### What `dlt` cleans, and what it does not
-
-It is important to separate **structural normalization** from **analytical
-cleaning**. `dlt` does the first one. dbt does the second one.
-
-`dlt` performs these loading tasks:
-
-- Sends the records produced by `players.py` to DuckDB.
-- Flattens nested JSON keys. For example, `player.id` becomes `player__id` and
-	`games.minutes` becomes `games__minutes`.
-- Splits the nested `statistics` array into the child table
-	`players_raw__statistics`.
-- Adds `_dlt_id`, `_dlt_parent_id`, `_dlt_load_id`, and related metadata so rows
-	can be connected and load batches can be tracked.
-- Merges records from the different league-season requests into the final raw
-	tables according to the resource's configured keys.
-
-`dlt` does **not** decide whether the data is useful for analysis. It does not
-apply the 300-minute threshold, calculate per-90 rates, rename fields into the
-project's preferred vocabulary, or guarantee that API values are in the final
-numeric format. Raw values can therefore look like this:
-
-| Raw value | Why it is still raw |
-| --- | --- |
-| `player__height = '173'` | Height arrived as text and still has the API field name. |
-| `games__rating = '6.79'` | Rating is stored as text in the source relation. |
-| `games__position = 'Forward'` | The project later standardizes this label to `Attacker`. |
-| `passes__accuracy = NULL` | The API did not provide a value for that record; `dlt` preserves the null. |
-| `games__minutes = 209` | The row is valid source data but is excluded from the analytical layer because it is below 300 minutes. |
-
-The cleanup happens in `models/staging/stg_players.sql`. That model:
-
-- Converts height and weight text to integer centimeters and kilograms.
-- Casts rating and pass accuracy to numeric types.
-- Renames fields such as `games__appearences` to `appearances`.
-- Changes `Forward` to `Attacker`.
-- Joins player profile rows to their statistics rows.
-- Keeps only statistics rows where `games__minutes >= 300`.
-
-The next model, `models/marts/player_features.sql`, calculates goals, assists,
-key passes, tackles, and successful dribbles per 90 minutes. Therefore, raw
-tables are not broken or unfinished; they preserve the source faithfully so the
-transformation logic can be inspected, changed, and rerun.
-
-#### `_dlt_loads`, `_dlt_pipeline_state`, and `_dlt_version`
-
-These are `dlt` bookkeeping tables. They record load metadata, pipeline state,
-and the `dlt` schema version. They support ingestion and schema evolution; they
-are not analytical datasets.
-
-### Transient dlt relations: `soccer_analytics_data_staging`
-
-This schema contains temporary `dlt` copies used while a load package is being
-prepared and merged. It currently has `players_raw` and
-`players_raw__statistics` staging tables plus `_dlt_version`. In this workspace,
-each staging table has 511 rows because the latest load was the 2026 La Liga
-request, which returned 511 player records. That does **not** mean the pipeline
-only loaded 511 players: the merged final tables contain 26,132 player rows and
-27,412 statistics rows across all 35 league-season loads.
-
-The staging rows are raw source rows, not failed cleaning attempts. They are a
-load buffer or recent package snapshot. `dlt` may keep the latest staging
-relations after a successful load, and their contents can change or disappear
-on a later load. dbt does not read this schema; `sources.yml` points to the
-merged `soccer_analytics_data` schema instead.
-
-To inspect the difference directly:
-
-```sql
-select count(*) from soccer_analytics_data_staging.players_raw;
--- Current result: 511
-
-select count(*) from soccer_analytics_data.players_raw;
--- Current result: 26,132
-```
-
-### dbt relations: `main`
-
-#### `stg_players` (12,731 rows, view)
-
-This is the cleaned relational layer. It joins `players_raw` to
-`players_raw__statistics` with:
-
-```sql
-players_raw._dlt_id = players_raw__statistics._dlt_parent_id
-```
-
-It converts height and weight text into integers, casts rating and pass
-accuracy to numeric values, renames API fields, normalizes the position label,
-and filters `games__minutes >= 300`. `player_season_id` is a surrogate key based
-on player, team, league, and season. Because it is a view, its results are
-computed from the raw tables when queried.
-
-#### `player_features` (12,731 rows, table)
-
-This is the analysis-ready mart. It keeps identity, team, league, season,
-position, minutes, rating, pass accuracy, and five per-90 measures:
-
-| Column | Formula |
-| --- | --- |
-| `goals_per90` | `goals * 90 / minutes` |
-| `assists_per90` | `assists * 90 / minutes` |
-| `key_passes_per90` | `passes_key * 90 / minutes` |
-| `tackles_per90` | `tackles_total * 90 / minutes` |
-| `dribbles_per90` | `dribbles_success * 90 / minutes` |
-
-The `minutes >= 300` filter in staging prevents division by zero and keeps the
-feature set focused on players with a meaningful amount of playing time.
-
-## How the joins and names work
-
-The API response is nested. `dlt` flattens nested keys by joining parent and
-child names with `__`, so `player.id` becomes `player__id` and a nested statistic
-such as `games.minutes` becomes `games__minutes`.
-
-The relationship is not a join on the public player ID alone. The reliable
-`dlt` relationship is:
+The project follows an end-to-end workflow:
 
 ```text
-players_raw._dlt_id
-				^
-				|
-players_raw__statistics._dlt_parent_id
+API-Football
+     │
+     ▼
+Data Collection
+     │
+     ▼
+dlt + DuckDB
+     │
+     ▼
+Raw Player & Statistics Data
+     │
+     ▼
+dbt Transformation
+     │
+     ▼
+Analysis-Ready Player Features
+     │
+     ├───────────────┐
+     ▼               ▼
+Exploratory       Recommendation
+Analysis          System
+     │               │
+     └───────┬───────┘
+             ▼
+        Streamlit
+        Application
+             │
+             ▼
+   Player Analysis & Scouting
 ```
 
-The public `player__id` identifies the player, while the combination of player,
-team, league, and season identifies the analytical player-season record. A
-player can therefore have multiple rows across seasons, leagues, or teams.
+---
 
-## Running the project
+# 1. Data Collection
 
-Run these commands from the project root with the project virtual environment
-activated. Python 3.13 is the recommended environment for dbt in this project.
+We collected player and season statistics from **API-Football** across five major European leagues:
+
+| League         | API-Football ID |
+| -------------- | --------------: |
+| Premier League |              39 |
+| Ligue 1        |              61 |
+| Bundesliga     |              78 |
+| Serie A        |             135 |
+| La Liga        |             140 |
+
+The dataset covers seasons from **2020 through 2026**, resulting in:
+
+* **5 leagues**
+* **7 seasons**
+* **35 league-season combinations**
+
+The ingestion workflow was designed to handle the challenges of working with a paginated sports API, including:
+
+* API pagination
+* Request pacing
+* Retry handling
+* Load tracking
+* Nested player statistics
+* Incremental data loading
+
+### Why This Matters
+
+Automating collection makes it possible to build a repeatable scouting dataset instead of relying on manually downloaded or manually maintained statistics.
+
+---
+
+# 2. ELT Pipeline
+
+The project uses an **ELT architecture** built with Python, `dlt`, DuckDB, and dbt.
+
+### Extract & Load
+
+The ingestion process retrieves player data from API-Football and loads the raw responses into DuckDB using `dlt`.
+
+The raw data contains both player-level information and nested statistics associated with a player's team, league, and season.
+
+This produces raw tables including:
+
+* `players_raw`
+* `players_raw__statistics`
+
+The raw dataset contains:
+
+* Player information
+* Team
+* League
+* Season
+* Games played
+* Minutes
+* Goals
+* Assists
+* Shots
+* Passes
+* Tackles
+* Duels
+* Dribbles
+* Fouls
+* Cards
+* Penalties
+
+### Transform
+
+After loading the raw API data, dbt transforms it into an analysis-ready player dataset.
+
+The transformation process includes:
+
+* Converting height and weight into numeric values
+* Converting ratings and pass accuracy into numeric fields
+* Renaming API fields into more consistent analytical names
+* Standardizing player positions
+* Joining player profiles with performance statistics
+* Filtering players with fewer than 300 minutes
+* Creating player-season records
+* Calculating standardized performance metrics
+
+The **300-minute threshold** helps prevent players with very limited playing time from distorting performance comparisons.
+
+---
+
+# 3. Exploratory Data Analysis
+
+Before using the data for player analysis and recommendations, we conducted exploratory data analysis to understand the composition and patterns of the player dataset.
+
+The analysis examined:
+
+### Players by Position
+
+We examined the **number of players represented in each position** to understand the composition of the overall player pool.
+
+This provides context for player comparisons and helps identify how the dataset is distributed across different positions.
+
+### Minutes Played
+
+We analyzed the distribution of minutes played to understand how playing time varies across the player pool.
+
+### Missing Values
+
+We examined missing values across features to identify fields that required attention during the transformation process.
+
+### Goals vs. Total Shots
+
+We compared total shots with goals, using player position as a dimension, to explore scoring patterns and identify unusual observations.
+
+Together, these analyses helped us understand the player population and performance data before building the downstream scouting workflows.
+
+---
+
+# 4. Analysis-Ready Player Dataset
+
+After transformation, the project produces a structured player-season dataset containing **12,731 analysis-ready records**.
+
+Each record represents a player's performance for a specific:
+
+* Player
+* Team
+* League
+* Season
+
+A player can therefore appear multiple times when they play across different seasons, teams, or competitions.
+
+### Standardized Performance Metrics
+
+To make comparisons more meaningful, we calculate several performance metrics on a per-90-minute basis:
+
+| Metric          | Definition                         |
+| --------------- | ---------------------------------- |
+| Goals / 90      | Goals × 90 / Minutes               |
+| Assists / 90    | Assists × 90 / Minutes             |
+| Key Passes / 90 | Key Passes × 90 / Minutes          |
+| Tackles / 90    | Total Tackles × 90 / Minutes       |
+| Dribbles / 90   | Successful Dribbles × 90 / Minutes |
+
+The analysis-ready dataset also includes information such as:
+
+* Player position
+* Team
+* League
+* Season
+* Minutes
+* Rating
+* Pass accuracy
+* Goals
+* Assists
+* Shots
+* Tackles
+* Dribbles
+* Other performance statistics
+
+### Why Per-90 Metrics?
+
+Raw totals can favor players simply because they played more minutes.
+
+Per-90 metrics provide a more consistent way to compare players with different amounts of playing time, making them more useful for player evaluation and discovery.
+
+---
+
+# 5. Player Analysis & Recommendation System
+
+Beyond simply displaying statistics, the project includes a **player recommendation system** designed to support player discovery.
+
+The recommendation workflow uses player performance characteristics to identify players with similar profiles.
+
+This creates a more practical scouting workflow:
+
+```text
+Known Player
+     │
+     ▼
+Analyze Performance Profile
+     │
+     ▼
+Find Similar Player Profiles
+     │
+     ▼
+Explore Recommended Players
+     │
+     ▼
+Further Scouting / Evaluation
+```
+
+For example, instead of searching through thousands of players manually, an analyst can start with a player whose profile fits a particular role and use the recommendation system to discover other players with similar characteristics.
+
+The recommendation system therefore extends the platform from **player reporting** into **player discovery**.
+
+---
+
+# 6. Streamlit Scouting Application
+
+The analysis and recommendation workflows are delivered through an interactive Streamlit application.
+
+The application is designed to make the underlying data easier to explore without requiring users to interact directly with the database or transformation pipeline.
+
+### Top Players
+
+Users can explore players based on their performance metrics and identify high-performing players within the available dataset.
+
+### Player Profile
+
+Users can examine an individual player's:
+
+* Performance statistics
+* Per-90 metrics
+* Team
+* League
+* Season
+* Position
+* Playing time
+
+### Player Comparison
+
+Users can compare players across relevant performance metrics to better understand differences between player profiles.
+
+### Player Discovery
+
+The recommendation workflow allows users to move from a known player to other players with similar performance characteristics.
+
+---
+
+# 7. Business Impact
+
+The project demonstrates how a large and complex sports dataset can be converted into a repeatable scouting and player analysis workflow.
+
+### Scale
+
+The platform processes data across:
+
+* **5 major European leagues**
+* **35 league-season combinations**
+* **2020–2026 seasons**
+* **26,132 raw player records**
+* **27,412 raw player-statistic records**
+* **12,731 analysis-ready player-season records**
+
+### More Consistent Player Evaluation
+
+Standardized player-season records and per-90 metrics make it easier to compare players across different levels of playing time, teams, leagues, and seasons.
+
+### Faster Analysis Workflow
+
+The automated pipeline creates a repeatable path from:
+
+```text
+Data Collection
+      ↓
+Data Transformation
+      ↓
+Feature Engineering
+      ↓
+Exploratory Analysis
+      ↓
+Player Recommendations
+      ↓
+Interactive Scouting
+```
+
+This reduces the amount of manual work required to move from raw player statistics to analysis.
+
+### From Reporting to Discovery
+
+The project goes beyond displaying player statistics. The recommendation system allows analysts to use existing player profiles as a starting point for discovering other players worth investigating.
+
+---
+
+# 8. Technology Stack
+
+| Area            | Technologies                       |
+| --------------- | ---------------------------------- |
+| Data Source     | API-Football                       |
+| Programming     | Python                             |
+| Data Ingestion  | dlt                                |
+| Data Warehouse  | DuckDB                             |
+| Transformation  | dbt                                |
+| Analysis        | Pandas, NumPy, Seaborn, Matplotlib |
+| Application     | Streamlit                          |
+| Version Control | Git / GitHub                       |
+
+---
+
+# 9. Project Architecture
+
+```text
+soccer-analytics/
+│
+├── config/
+│   └── configuration files
+│
+├── ingestion/
+│   ├── api_client.py
+│   └── players.py
+│
+├── models/
+│   ├── staging/
+│   │   └── stg_players.sql
+│   │
+│   ├── dimensions/
+│   ├── facts/
+│   ├── marts/
+│   │
+│   └── bi/
+│       └── bi_player_seasons.sql
+│
+├── dashboard/
+│   └── Streamlit application
+│
+├── rec_system/
+│   └── player recommendation workflow
+│
+├── tests/
+│   └── data quality tests
+│
+├── data/
+│   ├── warehouse/
+│   │   └── api_sports.duckdb
+│   │
+│   └── exports/
+│
+├── dbt_project.yml
+├── profiles.yml
+└── run_players.py
+```
+
+---
+
+# 10. Running the Project
+
+## 1. Clone the Repository
 
 ```bash
-# First run: fetch API data, build models, and write CSV files
-python run_players.py
-
-# Validate the configured dbt tests
-dbt test --project-dir . --profiles-dir .
-
-# Export an Excel sample from the final mart
-python export_sample.py --limit 20
-
-# Rebuild dbt models and refresh only dbt CSV and Parquet outputs
-dbt run --project-dir . --profiles-dir .
+git clone https://github.com/hquantran/soccer-analytics.git
+cd soccer-analytics
 ```
 
-On later runs, `run_players.py` sees the existing `data/warehouse/api_sports.duckdb` and skips
-the API load. It still runs dbt and refreshes the `data/exports/` exports. To intentionally
-rebuild from the API, remove the active database and the matching `dlt` pipeline
-state, then run the script again. `run_players.py` contains the reset helper,
-but it is not called automatically.
+## 2. Install Dependencies
 
-Useful DuckDB checks from Python are:
+Install the required Python and dbt dependencies according to the project environment.
 
-```python
-import duckdb
+## 3. Configure API Access
 
-with duckdb.connect("data/warehouse/api_sports.duckdb", read_only=True) as conn:
-		print(conn.sql("SHOW TABLES").df())
-		print(conn.sql("SELECT * FROM main.player_features LIMIT 5").df())
-```
+Add the required API-Football credentials to the project configuration.
 
-## Generated output and troubleshooting
-
-`dbt run` creates or replaces the `main.stg_players` view and
-`main.player_features` table. `dbt test` runs the tests in `models/schema.yml`
-and the SQL files under `tests/`. A failing test returns the offending rows in a
-generated relation under the dbt test schema and reports the failure in the
-terminal.
-
-## Parquet exports and Power BI
-
-The dbt project has a post-hook that runs after each model succeeds:
-
-```text
-data/exports/{{ model.name }}.parquet
-```
-
-The current outputs are:
-
-| File | Contents |
-| --- | --- |
-| `data/exports/stg_players.parquet` | Cleaned and joined staging rows. Useful for troubleshooting or detailed analysis. |
-| `data/exports/bi_player_seasons.parquet` | Final analysis-ready mart. This is the recommended Power BI source. |
-
-The Parquet files are generated from the DuckDB relations after dbt builds them,
-so they contain the same rows and columns as `main.stg_players` and
-`main.player_features`. They are generated artifacts, are ignored by Git, and
-are replaced on the next successful `dbt run`.
-
-The dbt run writes these four Power BI-ready files without running the API
-ingestion:
-
-```text
-data/exports/stg_players.csv
-data/exports/stg_players.parquet
-data/exports/bi_player_seasons.csv
-data/exports/bi_player_seasons.parquet
-```
-
-For Power BI Desktop, connect to the final file using **Get Data > Parquet** and
-select `data/exports/bi_player_seasons.parquet`. Build reports from this file rather
-than the staging export unless you specifically need the lower-level columns.
-After refreshing the pipeline, run `dbt run` again and refresh the Power BI
-dataset to read the updated file.
-
-This is a good approach for a local project or a small scheduled workflow:
-Parquet is columnar, preserves types better than CSV, is compact, and is fast
-for Power BI to read. It also keeps Power BI separate from the raw API and the
-transformation logic.
-
-The main limitation is refresh location. A local path works in Power BI Desktop,
-but Power BI Service cannot normally refresh a file that exists only on your
-computer. For published dashboards, copy the Parquet output to a supported
-shared location such as OneDrive/SharePoint, Azure Blob Storage, Azure Data
-Lake, or another organization-approved data store, then connect Power BI to
-that shared location. Alternatively, configure an on-premises gateway if the
-file must remain on a local or network machine.
-
-The complete local workflow is:
+## 4. Run the Data Pipeline
 
 ```bash
 python run_players.py
-# or, when the raw DuckDB data already exists:
-dbt run --project-dir . --profiles-dir .
 ```
 
-Then refresh Power BI from `data/exports/bi_player_seasons.parquet`. Do not edit the
-Parquet file manually; change the source or dbt model and regenerate it.
+This runs the player data ingestion process and loads the raw data into DuckDB.
 
-Common points of confusion:
+## 5. Run dbt
 
-- `players_raw` is not the final player table. It is a flattened API parent
-	table; its statistics are in `players_raw__statistics`.
-- `soccer_analytics_data` is the raw source schema. `main` is where dbt models
-	are materialized.
-- `soccer_analytics_data_staging` is a temporary `dlt` load area. It is not the
-	complete historical dataset and it is not where cleaning happens.
-- `stg_players` is a view, while `player_features` is a table.
-- The files under `data/exports/` are exports and are not the source dbt reads.
-- `soccer_analytics.duckdb` is not the configured target. The configured target
-	is `data/warehouse/api_sports.duckdb` in `profiles.yml`.
-- If a raw schema change causes a `dlt` schema-evolution error, inspect the
-	existing pipeline state under the user's `.dlt/pipelines` directory and use a
-	deliberate clean rebuild rather than deleting files at random.
+Run the data quality tests:
+
+```bash
+dbt test
+```
+
+Then build the transformed models:
+
+```bash
+dbt run
+```
+
+## 6. Launch the Streamlit Application
+
+```bash
+streamlit run dashboard/app.py
+```
+
+The Streamlit application provides the interactive player analysis and scouting interface.
+
+---
+
+# 11. Team Contributions
+
+This was a collaborative project where each team member focused on different parts of the analytics workflow.
+
+### Ha Tran
+
+**ELT Pipeline · Exploratory Data Analysis · Streamlit**
+
+* Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
+* Built the data transformation workflow from raw API data to analysis-ready player features
+* Conducted exploratory data analysis to understand player distributions and performance patterns
+* Built the Streamlit application
+* Optimized the application to run faster and provide a more responsive user experience
+
+### Quan
+
+**Recommendation System · BI Layer · Streamlit**
+
+* Built the player recommendation system
+* Built the BI/presentation layer for the analytical outputs
+* Contributed to the Streamlit application
+
+---
+
+# 12. Key Takeaway
+
+This project demonstrates how data engineering, analytics, and interactive applications can work together to solve a practical business problem.
+
+Rather than building a dashboard around a static dataset, we built a repeatable pipeline that:
+
+**collects data → structures it → analyzes it → identifies similar players → delivers insights through an interactive scouting application.**
+
+The result is a scalable foundation for exploring player performance and supporting more efficient, data-driven soccer scouting and player discovery.
+
