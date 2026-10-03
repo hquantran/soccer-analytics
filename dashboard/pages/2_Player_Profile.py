@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,6 +28,7 @@ from dashboard.data import (
     percentile_scores,
 )
 from dashboard.metrics_config import radar_metric_specs, scatter_view_by_id, scatter_views_for_position
+from dashboard.recommender import DEFAULT_MIN_MINUTES, recommend_similar_players
 from dashboard.ui import inject_theme_css, render_metric_grid, render_profile_sidebar
 
 inject_theme_css()
@@ -160,6 +162,43 @@ st.caption("P## badges = percentile vs same-position peers in the selected seaso
 
 st.markdown('<h3 class="section-title">Secondary metrics</h3>', unsafe_allow_html=True)
 render_metric_grid(specs["secondary"], profile["metrics"]["secondary"])
+
+# Similar players — same sidebar season window; one vector per player_id
+st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
+st.markdown('<h3 class="section-title">Similar players</h3>', unsafe_allow_html=True)
+season_mode = "single season" if len(profile["seasons"]) == 1 else "multi-season window"
+st.caption(
+    f"Cosine similarity on standardized rate features vs same-position peers in the "
+    f"selected **{season_mode}**. One profile per player (same player never repeats). "
+    f"Candidates need ≥ {DEFAULT_MIN_MINUTES:.0f} minutes in the window."
+)
+similar = recommend_similar_players(
+    peer_table,
+    player_id,
+    top_n=8,
+    min_minutes=DEFAULT_MIN_MINUTES,
+)
+if similar.empty:
+    st.info("Not enough same-position peers to recommend similar players. Widen filters or lower minutes.")
+else:
+    show = similar[
+        [c for c in ["player_name", "teams", "leagues", "minutes", "age", "similarity"] if c in similar.columns]
+    ].copy()
+    show = show.rename(
+        columns={
+            "player_name": "Player",
+            "teams": "Team(s)",
+            "leagues": "League(s)",
+            "minutes": "Minutes",
+            "age": "Age",
+            "similarity": "Similarity",
+        }
+    )
+    show["Minutes"] = show["Minutes"].round(0).astype(int)
+    show["Similarity"] = show["Similarity"].map(lambda x: f"{x:.3f}")
+    if "Age" in show.columns:
+        show["Age"] = show["Age"].map(lambda x: "" if pd.isna(x) else f"{x:.0f}")
+    st.dataframe(show, width="stretch", hide_index=True)
 
 # Multi-season trajectory (majority-position rows only)
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
