@@ -13,3 +13,4 @@ data/exports/*.csv
 !data/warehouse/.gitkeep
 logs/*.log
 .DS_Store
+.agents/
