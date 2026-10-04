@@ -300,6 +300,16 @@ Users can examine an individual player's:
 
 Users can compare players across relevant performance metrics to better understand differences between player profiles.
 
+### AI-Assisted Scouting
+
+The Player Profile and Compare pages include an AI Profile & Chart Analyst. It can summarize profile metrics, interpret structured trend/radar/scatter chart data, explain deterministic scouting flags, and answer follow-up questions. In Compare, it can help weigh player trade-offs against the criteria supplied by the analyst.
+
+AI output is decision support, not a substitute for scouting judgment. The model receives selected profile metrics, peer summaries, chart values, and flags—not chart screenshots or the full underlying dataset. It must not be treated as evidence for facts that are not present in those inputs.
+
+Use **Summarize profile and charts** for a stakeholder-ready explanation, **Explain this flag in detail with AI** or **Explain all flags in detail** for rule findings, and the AI question field to ask follow-up questions. On Compare, **Ask AI to support this decision** uses both players’ profile metrics, peer comparisons, chart values, and flags to discuss criteria and trade-offs. It should not be treated as an automatic selection or a substitute for video, tactical, financial, or medical review.
+
+The current AI provider is Gemini. To enable AI explanations, set a newly rotated `GEMINI_API_KEY` in the ignored local `.streamlit/secrets.toml` file; optionally set `GEMINI_MODEL` as well, then restart Streamlit. Without a key, deterministic scouting flags remain available but AI explanations are disabled. Never commit or share populated secrets files.
+
 ### Player Discovery
 
 The recommendation workflow allows users to move from a known player to other players with similar performance characteristics.

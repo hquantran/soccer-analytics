@@ -1,4 +1,4 @@
-"""Shared Streamlit presentation for rules-based and Gemini scouting notes."""
+"""Shared Streamlit presentation for rules-based findings and AI scouting notes."""
 
 from __future__ import annotations
 
@@ -6,11 +6,11 @@ import pandas as pd
 import streamlit as st
 
 from dashboard.gemini_scout import (
-    ask_custom_scout_question,
-    explain_all_findings_with_gemini,
-    explain_finding_with_gemini,
-    init_gemini,
-    summarize_profile_and_charts_with_gemini,
+    ask_custom_scout_question as ask_ai_question,
+    explain_all_findings_with_gemini as explain_all_flags_with_ai,
+    explain_finding_with_gemini as explain_finding_with_ai,
+    init_gemini as is_ai_configured,
+    summarize_profile_and_charts_with_gemini as summarize_with_ai,
 )
 from dashboard.scout_engine import Finding, ScoutEngine
 
@@ -188,7 +188,7 @@ def render_scout_analysis(
         for profile, findings in results
         for finding in findings
     ]
-    gemini_ready = init_gemini()
+    ai_ready = is_ai_configured()
 
     tabs = st.tabs(
         [f"{profile['player_name']} · findings" for profile, _ in results]
@@ -212,21 +212,21 @@ def render_scout_analysis(
                         f"Performance confidence: {finding.confidence} · "
                         f"Sample: {finding.sample_size:.0f} minutes"
                     )
-                    if gemini_ready and st.button(
-                        "Explain this flag in detail with Gemini",
+                    if ai_ready and st.button(
+                        "Explain this flag in detail with AI",
                         key=f"{key_prefix}_explain_{profile['player_id']}_{index}",
                     ):
-                        with st.spinner("Gemini is reviewing the evidence…"):
-                            explanation = explain_finding_with_gemini(
+                        with st.spinner("AI is reviewing the evidence…"):
+                            explanation = explain_finding_with_ai(
                                 finding.to_dict(), profile["player_name"], profile["position"]
                             )
                         _render_ai_report(explanation)
 
     st.markdown("#### AI Profile & Chart Analyst")
-    if not gemini_ready:
+    if not ai_ready:
         st.info(
-            "Gemini is not connected yet. Add a newly rotated GEMINI_API_KEY to "
-            "your local .streamlit/secrets.toml (or the GEMINI_API_KEY environment variable) "
+            "AI assistance is not configured yet. Add your provider API key to "
+            "the local .streamlit/secrets.toml file (or the matching environment variable) "
             "and restart the app. Rule-based findings remain available."
         )
         return
@@ -237,8 +237,8 @@ def render_scout_analysis(
     )
     profile_context = [_profile_summary(profile, peer_table) for profile in profiles]
     if st.button("Summarize profile and charts", key=f"{key_prefix}_summarize_profile"):
-        with st.spinner("Gemini is summarizing the profile and charts…"):
-            summary = summarize_profile_and_charts_with_gemini(
+        with st.spinner("AI is summarizing the profile and charts…"):
+            summary = summarize_with_ai(
                 profile_context,
                 chart_context or {},
                 all_entries,
@@ -247,8 +247,8 @@ def render_scout_analysis(
 
     player_context = " vs ".join(profile["player_name"] for profile in profiles)
     if all_entries and st.button("Explain all flags in detail", key=f"{key_prefix}_explain_all"):
-        with st.spinner("Gemini is preparing a detailed scouting explanation…"):
-            explanation = explain_all_findings_with_gemini(all_entries, player_context)
+        with st.spinner("AI is preparing a detailed scouting explanation…"):
+            explanation = explain_all_flags_with_ai(all_entries, player_context)
         _render_ai_report(explanation)
 
     if comparison_mode:
@@ -263,19 +263,19 @@ def render_scout_analysis(
         question_label = "Ask about the profile, charts, or flags"
         question_placeholder = "Summarize the radar and explain the season trend."
         submit_label = "Ask AI"
-    with st.form(f"{key_prefix}_gemini_question_form"):
+    with st.form(f"{key_prefix}_ai_question_form"):
         question = st.text_input(
             question_label,
             placeholder=question_placeholder,
-            key=f"{key_prefix}_gemini_question",
+            key=f"{key_prefix}_ai_question",
         )
         submitted = st.form_submit_button(submit_label)
     if submitted:
         if not question.strip():
             st.warning("Enter a question first.")
         else:
-            with st.spinner("Gemini is reviewing the findings…"):
-                answer = ask_custom_scout_question(
+            with st.spinner("AI is reviewing the findings…"):
+                answer = ask_ai_question(
                     profile_context,
                     chart_context or {},
                     all_entries,
