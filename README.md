@@ -285,7 +285,7 @@ The current pipeline covers:
 This project was built by Ha Tran and Quan.
 
 ### Ha Tran
-**Data Engineering · Analytics · Streamlit · AI-Assisted Scouting**
+
 
 - Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
 - Built the transformation workflow from raw API responses to analysis-ready player-season data
@@ -296,9 +296,9 @@ This project was built by Ha Tran and Quan.
 - Optimized the application for a faster and more responsive user experience
 
 ### Quan
-**Recommendation System · BI Layer · Streamlit**
 
 - Built the player recommendation system using cosine similarity
+- Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
 - Developed the BI/presentation layer for analytical outputs
 - Built the Streamlit scouting application
 
