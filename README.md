@@ -1,403 +1,325 @@
-# Soccer Scouting & Player Analytics Platform
+# ⚽ Soccer Scouting & Player Analytics Platform
 
-## The Business Problem
+An end-to-end soccer scouting platform that turns large-scale player statistics into **searchable player profiles, statistical recommendations, interactive analysis, and AI-assisted scouting explanations**.
 
-Professional soccer clubs need to evaluate players across leagues, teams, and seasons when making scouting and recruitment decisions. The challenge is not simply having player statistics available. It is turning large amounts of raw performance data into a consistent dataset that allows analysts to quickly compare players, understand player profiles, and identify potential talent.
-
-A typical scouting workflow can require analysts to collect data from different competitions, work with inconsistent statistics, account for differences in playing time, and manually compare players across positions and teams.
-
-We built this project to make that process more systematic and data-driven.
-
-### Business Question
-
-> How can we turn large-scale soccer performance data into an analysis-ready scouting tool that helps analysts identify, compare, and discover players more efficiently?
+Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
 
 ---
 
-## Our Solution
+## Overview
 
-We built an end-to-end soccer analytics and scouting platform that automatically collects player statistics from **API-Football**, transforms the raw data into a structured analytical dataset, and delivers the results through an interactive **Streamlit** application.
+Scouting players across leagues and seasons is more difficult than simply looking at goals, assists, or ratings. Analysts need to work with different levels of playing time, teams, competitions, positions, and dozens of performance metrics.
 
-The platform combines:
+This project builds a data-driven workflow that helps answer questions such as:
 
-* Automated data collection and transformation
-* Exploratory data analysis
-* Standardized player performance metrics
-* Player profiles and comparisons
-* Player discovery through a recommendation system
-* Interactive scouting dashboards
+- Who are the strongest players in a given profile?
+- How does one player compare with another?
+- Which players have similar statistical profiles?
+- What do a player's performance patterns actually mean?
+- Why did a player receive a particular scouting flag?
+- What trade-offs should an analyst consider when comparing two players?
 
-Instead of treating raw API data as the final product, we designed the workflow around the types of questions a scouting or analytics team would need to answer.
-
-### What Users Can Do
-
-The platform allows users to:
-
-* Explore top-performing players
-* View individual player profiles
-* Compare players across performance metrics
-* Analyze players across teams, leagues, and seasons
-* Examine player distributions and performance patterns
-* Discover players with similar performance profiles
-* Use standardized per-90 statistics for more meaningful comparisons
+The platform combines a **data pipeline, analytical layer, recommendation system, interactive scouting application, and generative AI assistant** into one workflow.
 
 ---
 
-# From Raw Data to Scouting Decisions
+## What the Platform Does
 
-The project follows an end-to-end workflow:
+### 1. Builds an Analysis-Ready Player Dataset
+
+Player and season statistics are collected from **API-Football** across five major European leagues:
+
+- Premier League
+- Ligue 1
+- Bundesliga
+- Serie A
+- La Liga
+
+The current pipeline covers **2020–2026**, representing 35 league-season combinations.
+
+Raw API data is loaded into DuckDB using `dlt` and transformed with `dbt` into structured player-season records.
+
+The transformation layer handles:
+
+- Data type cleaning
+- Position standardization
+- Player/statistic joins
+- Playing-time filtering
+- Feature engineering
+- Per-90 performance metrics
+
+Players with fewer than 300 minutes are filtered out to reduce noise from extremely limited playing time.
+
+### 2. Standardizes Player Performance
+
+The analytical dataset contains **12,731 player-season records**.
+
+Instead of relying only on raw totals, the platform calculates standardized metrics such as:
+
+| Metric | Calculation |
+|---|---|
+| Goals / 90 | Goals × 90 / Minutes |
+| Assists / 90 | Assists × 90 / Minutes |
+| Key Passes / 90 | Key Passes × 90 / Minutes |
+| Tackles / 90 | Tackles × 90 / Minutes |
+| Dribbles / 90 | Successful Dribbles × 90 / Minutes |
+
+This makes player comparisons more meaningful when players have different amounts of playing time.
+
+---
+
+## 🤖 AI-Assisted Scouting
+
+The platform goes beyond displaying statistics by adding a **Gemini-powered AI scouting assistant** directly inside the player analysis workflow.
+
+The goal is not to have AI replace the underlying analytics. Instead, the application first calculates the structured statistics and scouting signals, then gives Gemini the relevant analytical context so it can **explain what the numbers mean in natural language**.
+
+### What the AI Can Do
+
+On a **Player Profile**, the AI can:
+
+- Summarize a player's statistical profile
+- Explain trends shown in the charts
+- Interpret radar/scatter chart values
+- Explain deterministic scouting flags
+- Answer follow-up questions about the player
+
+For example, instead of requiring a user to interpret several charts independently, the AI can turn the underlying metrics and detected flags into a concise scouting explanation.
+
+On the **Compare** page, the AI receives information about both players and can:
+
+- Explain major differences between their profiles
+- Identify strengths and weaknesses
+- Discuss trade-offs between the players
+- Evaluate the players against criteria supplied by the analyst
+- Help the analyst understand why one player may fit a particular profile better
+
+### AI + Analytics Architecture
+
+The important distinction is that the AI does **not** independently analyze the entire database.
+
+The workflow is:
 
 ```text
-API-Football
-     │
-     ▼
-Data Collection
-     │
-     ▼
-dlt + DuckDB
-     │
-     ▼
-Raw Player & Statistics Data
-     │
-     ▼
-dbt Transformation
-     │
-     ▼
-Analysis-Ready Player Features
-     │
-     ├───────────────┐
-     ▼               ▼
-Exploratory       Recommendation
-Analysis          System
-     │               │
-     └───────┬───────┘
-             ▼
-        Streamlit
-        Application
-             │
-             ▼
-   Player Analysis & Scouting
+Player Data
+    ↓
+dbt / Analytical Models
+    ↓
+Player Metrics & Features
+    ↓
+Deterministic Scouting Flags
+    ↓
+Charts & Player Comparisons
+    ↓
+Selected Analytical Context
+    ↓
+Gemini
+    ↓
+Natural-Language Scouting Explanation
 ```
 
----
+Gemini receives selected structured information such as player metrics, peer summaries, chart values, and scouting flags. It does not receive screenshots of the charts or the entire underlying dataset.
 
-# 1. Data Collection
+This keeps the AI layer grounded in the application's existing analytical results rather than asking a language model to independently invent conclusions from raw data.
 
-We collected player and season statistics from **API-Football** across five major European leagues:
+### AI as Decision Support
 
-| League         | API-Football ID |
-| -------------- | --------------: |
-| Premier League |              39 |
-| Ligue 1        |              61 |
-| Bundesliga     |              78 |
-| Serie A        |             135 |
-| La Liga        |             140 |
+The AI is designed as an analyst assistant, not an automated scout.
 
-The dataset covers seasons from **2020 through 2026**, resulting in:
+Its output can help explain patterns and surface trade-offs, but final player evaluation still requires human judgment and additional information such as:
 
-* **5 leagues**
-* **7 seasons**
-* **35 league-season combinations**
+- Video analysis
+- Tactical fit
+- Financial considerations
+- Medical information
+- Team needs
 
-The ingestion workflow was designed to handle the challenges of working with a paginated sports API, including:
-
-* API pagination
-* Request pacing
-* Retry handling
-* Load tracking
-* Nested player statistics
-* Incremental data loading
-
-### Why This Matters
-
-Automating collection makes it possible to build a repeatable scouting dataset instead of relying on manually downloaded or manually maintained statistics.
+The application therefore uses AI to make quantitative analysis easier to interpret rather than replacing the scouting process.
 
 ---
 
-# 2. ELT Pipeline
+## 🔎 Player Discovery
 
-The project uses an **ELT architecture** built with Python, `dlt`, DuckDB, and dbt.
+The platform also includes a statistical player recommendation system.
 
-### Extract & Load
-
-The ingestion process retrieves player data from API-Football and loads the raw responses into DuckDB using `dlt`.
-
-The raw data contains both player-level information and nested statistics associated with a player's team, league, and season.
-
-This produces raw tables including:
-
-* `players_raw`
-* `players_raw__statistics`
-
-The raw dataset contains:
-
-* Player information
-* Team
-* League
-* Season
-* Games played
-* Minutes
-* Goals
-* Assists
-* Shots
-* Passes
-* Tackles
-* Duels
-* Dribbles
-* Fouls
-* Cards
-* Penalties
-
-### Transform
-
-After loading the raw API data, dbt transforms it into an analysis-ready player dataset.
-
-The transformation process includes:
-
-* Converting height and weight into numeric values
-* Converting ratings and pass accuracy into numeric fields
-* Renaming API fields into more consistent analytical names
-* Standardizing player positions
-* Joining player profiles with performance statistics
-* Filtering players with fewer than 300 minutes
-* Creating player-season records
-* Calculating standardized performance metrics
-
-The **300-minute threshold** helps prevent players with very limited playing time from distorting performance comparisons.
-
----
-
-# 3. Exploratory Data Analysis
-
-Before using the data for player analysis and recommendations, we conducted exploratory data analysis to understand the composition and patterns of the player dataset.
-
-The analysis examined:
-
-### Players by Position
-
-We examined the **number of players represented in each position** to understand the composition of the overall player pool.
-
-This provides context for player comparisons and helps identify how the dataset is distributed across different positions.
-
-### Minutes Played
-
-We analyzed the distribution of minutes played to understand how playing time varies across the player pool.
-
-### Missing Values
-
-We examined missing values across features to identify fields that required attention during the transformation process.
-
-### Goals vs. Total Shots
-
-We compared total shots with goals, using player position as a dimension, to explore scoring patterns and identify unusual observations.
-
-Together, these analyses helped us understand the player population and performance data before building the downstream scouting workflows.
-
----
-
-# 4. Analysis-Ready Player Dataset
-
-After transformation, the project produces a structured player-season dataset containing **12,731 analysis-ready records**.
-
-Each record represents a player's performance for a specific:
-
-* Player
-* Team
-* League
-* Season
-
-A player can therefore appear multiple times when they play across different seasons, teams, or competitions.
-
-### Standardized Performance Metrics
-
-To make comparisons more meaningful, we calculate several performance metrics on a per-90-minute basis:
-
-| Metric          | Definition                         |
-| --------------- | ---------------------------------- |
-| Goals / 90      | Goals × 90 / Minutes               |
-| Assists / 90    | Assists × 90 / Minutes             |
-| Key Passes / 90 | Key Passes × 90 / Minutes          |
-| Tackles / 90    | Total Tackles × 90 / Minutes       |
-| Dribbles / 90   | Successful Dribbles × 90 / Minutes |
-
-The analysis-ready dataset also includes information such as:
-
-* Player position
-* Team
-* League
-* Season
-* Minutes
-* Rating
-* Pass accuracy
-* Goals
-* Assists
-* Shots
-* Tackles
-* Dribbles
-* Other performance statistics
-
-### Why Per-90 Metrics?
-
-Raw totals can favor players simply because they played more minutes.
-
-Per-90 metrics provide a more consistent way to compare players with different amounts of playing time, making them more useful for player evaluation and discovery.
-
----
-
-# 5. Player Analysis & Recommendation System
-
-Beyond simply displaying statistics, the project includes a **player recommendation system** designed to support player discovery.
-
-The recommendation workflow uses player performance characteristics to identify players with similar profiles.
-
-This creates a more practical scouting workflow:
+Given a known player, the system uses cosine similarity to identify players with similar performance profiles.
 
 ```text
 Known Player
-     │
-     ▼
-Analyze Performance Profile
-     │
-     ▼
-Find Similar Player Profiles
-     │
-     ▼
-Explore Recommended Players
-     │
-     ▼
-Further Scouting / Evaluation
+    ↓
+Statistical Profile
+    ↓
+Similarity Calculation
+    ↓
+Similar Player Profiles
+    ↓
+Potential Players to Investigate
 ```
 
-For example, instead of searching through thousands of players manually, an analyst can start with a player whose profile fits a particular role and use the recommendation system to discover other players with similar characteristics.
+This turns the platform from a simple reporting dashboard into a player discovery tool.
 
-The recommendation system therefore extends the platform from **player reporting** into **player discovery**.
+An analyst can start with a player they already know and use the system to identify other players who may be worth further scouting.
 
 ---
 
-# 6. Streamlit Scouting Application
+## 📊 Streamlit Scouting Application
 
-The analysis and recommendation workflows are delivered through an interactive Streamlit application.
-
-The application is designed to make the underlying data easier to explore without requiring users to interact directly with the database or transformation pipeline.
-
-### Top Players
-
-Users can explore players based on their performance metrics and identify high-performing players within the available dataset.
+The Streamlit application brings the analytical and AI components together.
 
 ### Player Profile
 
-Users can examine an individual player's:
+Users can explore:
 
-* Performance statistics
-* Per-90 metrics
-* Team
-* League
-* Season
-* Position
-* Playing time
+- Player information
+- Team and league
+- Position
+- Playing time
+- Performance statistics
+- Per-90 metrics
+- Visual performance charts
+- Statistical scouting flags
+- AI-generated explanations
 
 ### Player Comparison
 
-Users can compare players across relevant performance metrics to better understand differences between player profiles.
-
-### AI-Assisted Scouting
-
-The Player Profile and Compare pages include an AI Profile & Chart Analyst. It can summarize profile metrics, interpret structured trend/radar/scatter chart data, explain deterministic scouting flags, and answer follow-up questions. In Compare, it can help weigh player trade-offs against the criteria supplied by the analyst.
-
-AI output is decision support, not a substitute for scouting judgment. The model receives selected profile metrics, peer summaries, chart values, and flags—not chart screenshots or the full underlying dataset. It must not be treated as evidence for facts that are not present in those inputs.
-
-Use **Summarize profile and charts** for a stakeholder-ready explanation, **Explain this flag in detail with AI** or **Explain all flags in detail** for rule findings, and the AI question field to ask follow-up questions. On Compare, **Ask AI to support this decision** uses both players’ profile metrics, peer comparisons, chart values, and flags to discuss criteria and trade-offs. It should not be treated as an automatic selection or a substitute for video, tactical, financial, or medical review.
-
-The current AI provider is Gemini. To enable AI explanations, set a newly rotated `GEMINI_API_KEY` in the ignored local `.streamlit/secrets.toml` file; optionally set `GEMINI_MODEL` as well, then restart Streamlit. Without a key, deterministic scouting flags remain available but AI explanations are disabled. Never commit or share populated secrets files.
+Users can compare two players across their available performance metrics and use the AI assistant to help interpret the differences and trade-offs.
 
 ### Player Discovery
 
-The recommendation workflow allows users to move from a known player to other players with similar performance characteristics.
+Users can move from a known player to statistically similar players and continue the scouting workflow.
 
 ---
 
-# 7. Business Impact
-
-The project demonstrates how a large and complex sports dataset can be converted into a repeatable scouting and player analysis workflow.
-
-### Scale
-
-The platform processes data across:
-
-* **5 major European leagues**
-* **35 league-season combinations**
-* **2020–2026 seasons**
-* **26,132 raw player records**
-* **27,412 raw player-statistic records**
-* **12,731 analysis-ready player-season records**
-
-### More Consistent Player Evaluation
-
-Standardized player-season records and per-90 metrics make it easier to compare players across different levels of playing time, teams, leagues, and seasons.
-
-### Faster Analysis Workflow
-
-The automated pipeline creates a repeatable path from:
+## 🏗️ Data & Application Architecture
 
 ```text
-Data Collection
-      ↓
-Data Transformation
-      ↓
-Feature Engineering
-      ↓
-Exploratory Analysis
-      ↓
-Player Recommendations
-      ↓
-Interactive Scouting
+                    API-Football
+                         │
+                         ▼
+                 Python + dlt
+                         │
+                         ▼
+                      DuckDB
+                         │
+                         ▼
+                       dbt
+                         │
+                         ▼
+              Analysis-Ready Data
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+       Player Analytics      Similarity Engine
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                    Streamlit
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+       Scouting Analytics      Gemini AI
+                                    │
+                                    ▼
+                          Natural-Language
+                       Scouting Explanation
 ```
 
-This reduces the amount of manual work required to move from raw player statistics to analysis.
+---
 
-### From Reporting to Discovery
+## 📈 Dataset Scale
 
-The project goes beyond displaying player statistics. The recommendation system allows analysts to use existing player profiles as a starting point for discovering other players worth investigating.
+The current pipeline covers:
+
+| Metric | Scale |
+|---|---|
+| Leagues | 5 |
+| Seasons | 2020–2026 |
+| League-season combinations | 35 |
+| Raw player records | 26,132 |
+| Raw player-statistic records | 27,412 |
+| Analysis-ready player-season records | 12,731 |
 
 ---
 
-# 8. Technology Stack
+## 💡 Key Takeaways & Impact
 
-| Area            | Technologies                       |
-| --------------- | ---------------------------------- |
-| Data Source     | API-Football                       |
-| Programming     | Python                             |
-| Data Ingestion  | dlt                                |
-| Data Warehouse  | DuckDB                             |
-| Transformation  | dbt                                |
-| Analysis        | Pandas, NumPy, Seaborn, Matplotlib |
-| Application     | Streamlit                          |
-| Version Control | Git / GitHub                       |
+### How the Platform Helps
+
+| Scouting Need | How the Platform Helps |
+|---|---|
+| Find strong players for a profile | Per-90 metrics and standardized positions let analysts rank and filter players fairly, no matter how many minutes they played |
+| Compare two candidates | The Compare page puts both players side by side, and the AI explains the differences, strengths, weaknesses, and trade-offs |
+| Understand what the numbers mean | Charts, scouting flags, and AI explanations turn raw metrics into a plain-language read on a player |
+| Find alternatives to a known player | Similarity search surfaces statistically similar players, so an analyst can start from someone they know and keep scouting from there |
+| Trust the output | Metrics and flags are calculated first and the AI only explains them, so every explanation traces back to numbers the analyst can check |
+| Keep working without AI | If no Gemini key is configured, profiles, metrics, charts, and scouting flags still work |
+
+### Key Takeaways
+
+- **Less time on stats, more time on decisions.** Cleaning, standardizing, and joining the data is already done, so analysts can go straight to asking who is worth a closer look.
+- **Fair comparisons by default.** Per-90 rates and a 300-minute minimum keep small samples and uneven playing time from distorting a player's profile.
+- **AI that explains, not decides.** Gemini only sees selected metrics, peer summaries, chart values, and flags, which keeps its explanations grounded. Final evaluation still belongs to the analyst, alongside video, tactical fit, finances, medical information, and team needs.
+- **From reporting to discovery.** Looking up a player is only half the job. Similarity search helps analysts find players they would not have thought to check.
 
 ---
 
-# 9. Project Architecture
+## 🛠️ Technology Stack
+
+| Area | Technology |
+|---|---|
+| Data Source | API-Football |
+| Programming | Python |
+| Data Ingestion | dlt |
+| Analytical Database | DuckDB |
+| Transformation | dbt |
+| Analysis | Pandas, NumPy, Matplotlib, Seaborn |
+| Recommendation | Cosine Similarity |
+| Application | Streamlit |
+| Generative AI | Google Gemini |
+| Version Control | Git / GitHub |
+
+---
+
+## 👨‍💻 Contributions
+
+This project was built by Ha Tran and Quan.
+
+### Ha Tran
+**Data Engineering · Analytics · Streamlit · AI-Assisted Scouting**
+
+- Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
+- Built the transformation workflow from raw API responses to analysis-ready player-season data
+- Developed the standardized performance metrics used throughout the application
+- Conducted exploratory data analysis to understand player distributions and performance patterns
+- Built the Streamlit scouting application
+- Integrated the Gemini AI assistant into player profiles and player comparisons
+- Optimized the application for a faster and more responsive user experience
+
+### Quan
+**Recommendation System · BI Layer · Streamlit**
+
+- Built the player recommendation system using cosine similarity
+- Developed the BI/presentation layer for analytical outputs
+- Built the Streamlit scouting application
+
+---
+
+## 📁 Project Structure
 
 ```text
 soccer-analytics/
 │
 ├── config/
-│   └── configuration files
-│
 ├── ingestion/
 │   ├── api_client.py
 │   └── players.py
 │
 ├── models/
 │   ├── staging/
-│   │   └── stg_players.sql
-│   │
 │   ├── dimensions/
 │   ├── facts/
 │   ├── marts/
-│   │
 │   └── bi/
-│       └── bi_player_seasons.sql
 │
 ├── dashboard/
 │   └── Streamlit application
@@ -410,43 +332,47 @@ soccer-analytics/
 │
 ├── data/
 │   ├── warehouse/
-│   │   └── api_sports.duckdb
-│   │
 │   └── exports/
 │
+├── .streamlit/
 ├── dbt_project.yml
 ├── profiles.yml
+├── requirements.txt
 └── run_players.py
 ```
 
 ---
 
-# 10. Running the Project
+## 🚀 Running the Project
 
-## 1. Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/hquantran/soccer-analytics.git
 cd soccer-analytics
 ```
 
-## 2. Install Dependencies
+### 2. Install Dependencies
 
-Install the required Python and dbt dependencies according to the project environment.
+Install the required Python and dbt dependencies for the project environment.
 
-## 3. Configure API Access
+```bash
+pip install -r requirements.txt
+```
 
-Add the required API-Football credentials to the project configuration.
+### 3. Configure API Access
 
-## 4. Run the Data Pipeline
+Add the required API-Football credentials to the project configuration. Never commit a populated config file.
+
+### 4. Run the Data Pipeline
 
 ```bash
 python run_players.py
 ```
 
-This runs the player data ingestion process and loads the raw data into DuckDB.
+This collects player data and loads the raw results into DuckDB.
 
-## 5. Run dbt
+### 5. Run dbt
 
 Run the data quality tests:
 
@@ -454,53 +380,22 @@ Run the data quality tests:
 dbt test
 ```
 
-Then build the transformed models:
+Then build the analytical models:
 
 ```bash
 dbt run
 ```
 
-## 6. Launch the Streamlit Application
+### 6. Configure Gemini
+
+To enable the AI scouting features, add a valid `GEMINI_API_KEY` to the ignored local `.streamlit/secrets.toml` file. Optionally configure `GEMINI_MODEL`.
+
+Never commit or share populated secrets files.
+
+Without a Gemini API key, the deterministic analytics and scouting flags remain available, but AI explanations are disabled.
+
+### 7. Launch the Application
 
 ```bash
 streamlit run dashboard/app.py
 ```
-
-The Streamlit application provides the interactive player analysis and scouting interface.
-
----
-
-# 11. Team Contributions
-
-This was a collaborative project where each team member focused on different parts of the analytics workflow.
-
-### Ha Tran
-
-**ELT Pipeline · Exploratory Data Analysis · Streamlit**
-
-* Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
-* Built the data transformation workflow from raw API data to analysis-ready player features
-* Conducted exploratory data analysis to understand player distributions and performance patterns
-* Built the Streamlit application
-* Optimized the application to run faster and provide a more responsive user experience
-
-### Quan
-
-**Recommendation System · BI Layer · Streamlit**
-
-* Built the player recommendation system
-* Built the BI/presentation layer for the analytical outputs
-* Contributed to the Streamlit application
-
----
-
-# 12. Key Takeaway
-
-This project demonstrates how data engineering, analytics, and interactive applications can work together to solve a practical business problem.
-
-Rather than building a dashboard around a static dataset, we built a repeatable pipeline that:
-
-**collects data → structures it → analyzes it → identifies similar players → delivers insights through an interactive scouting application.**
-
-The result is a scalable foundation for exploring player performance and supporting more efficient, data-driven soccer scouting and player discovery.
-
