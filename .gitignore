@@ -1,6 +1,10 @@
 # Local config and runtime artifacts
+config.toml
 config/config.toml
 .streamlit/secrets.toml
+.env
+.env.*
+!.env.example
 *.duckdb
 data/warehouse/*.duckdb
 __pycache__/
