@@ -3510,3 +3510,285 @@ Processed: 6 models
 Summary: 6 total | 6 success
 07:08:18.172313 [info ]: Cached model count updated: 6 models (accurate)
 07:08:18.549034 [info ]: Loading profiles.yml
+==================== 2026-10-03T06:28:16.670604Z | 00000000-0000-0000-0000-000000000000 ====================
+==================== 2026-10-03T06:28:16.686831Z | a0a527e1-d432-4567-871c-69e57d0db41a ====================
+06:28:16.688339 [info ]: Starting dbt LSP server
+06:28:16.689356 [info ]: Connecting to LSP client on port 8000
+06:28:16.694640 [info ]: Successfully connected to LSP client
+06:28:16.695078 [info ]: Creating LSP service...
+06:28:16.719677 [info ]: Creating LSP server...
+06:28:16.719702 [info ]: Starting LSP server...
+01:18:15.706255 [info ]: Loading profiles.yml
+==================== 2026-10-04T02:51:55.818106Z | 00000000-0000-0000-0000-000000000000 ====================
+==================== 2026-10-04T02:51:55.825516Z | 33c1254d-2397-445a-b0d4-33f030b2e704 ====================
+02:51:55.826551 [info ]: Starting dbt LSP server
+02:51:55.827921 [info ]: Connecting to LSP client on port 8000
+02:51:55.830521 [info ]: Successfully connected to LSP client
+02:51:55.830548 [info ]: Creating LSP service...
+02:51:55.853821 [info ]: Creating LSP server...
+02:51:55.853848 [info ]: Starting LSP server...
+02:52:13.780171 [info ]: Loading profiles.yml
+==================== 2026-10-04T02:52:13.900379Z | 58420633-b131-4651-848a-a4a1ea9965f8 ====================
+02:52:13.904662 [info ]: Started loading project
+02:52:13.917456 [info ]: Loading profiles.yml
+02:52:14.002307 [info ]:    Started resolving packages from packages.yml
+02:52:14.534738 [info ]:     Failed [  0.53s] resolving packages from packages.yml (error: Operation cancelled)
+02:52:14.539545 [info ]: Finished loading project [  0.63s]
+02:52:14.540719 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully [640ms]
+==================== 2026-10-04T02:52:14.632593Z | 51892fbe-8e0a-4092-9e0a-845ada731fe7 ====================
+02:52:14.632669 [info ]: Started loading project
+02:52:14.633230 [info ]: Loading profiles.yml
+02:52:14.640310 [info ]:    Started resolving packages from packages.yml
+02:52:14.740621 [info ]:   Finished [  0.10s] resolving packages from packages.yml (1 items)
+02:52:14.778577 [debug]:    Started loading packages
+02:52:14.805982 [debug]:     Loaded [  0.03s] packages
+02:52:14.814233 [info ]: Finished loading project [  0.18s]
+02:52:14.819755 [info ]: Started parsing
+02:52:15.001111 [debug]: Finished parsing models/bi/schema.yml [  0.02s]
+02:52:15.001755 [debug]: Finished parsing models/marts/dimensions/schema.yml [  0.00s]
+02:52:15.003069 [debug]: Finished parsing models/marts/facts/schema.yml [  0.00s]
+02:52:15.006103 [debug]: Finished parsing models/sources.yml [  0.00s]
+02:52:15.006820 [debug]: Finished parsing models/staging/schema.yml [  0.00s]
+02:52:15.083884 [debug]: Finished parsing models/bi/bi_player_seasons.sql [  0.04s]
+02:52:15.085660 [debug]: Finished parsing models/marts/dimensions/dim_leagues.sql [  0.00s]
+02:52:15.090925 [debug]: Finished parsing models/marts/dimensions/dim_players.sql [  0.01s]
+02:52:15.091872 [debug]: Finished parsing models/marts/dimensions/dim_teams.sql [  0.00s]
+02:52:15.092539 [debug]: Finished parsing models/marts/facts/fct_player_seasons.sql [  0.00s]
+02:52:15.108185 [debug]: Finished parsing models/staging/stg_players.sql [  0.02s]
+02:52:15.129284 [debug]: Finished parsing tests/bi_player_seasons_metrics.sql [  0.00s]
+02:52:15.129889 [debug]: Finished parsing tests/fct_player_seasons_metrics.sql [  0.00s]
+02:52:15.131050 [debug]: Finished parsing tests/stg_players_scope.sql [  0.00s]
+02:52:15.456383 [info ]: Finished parsing [  0.64s]
+02:52:15.465768 [info ]: Cached model count updated: 6 models (estimate)
+02:52:15.465798 [info ]: Cached model count updated: 6 models (accurate)
+02:52:15.468826 [info ]: Started scheduling
+02:52:15.474253 [info ]: Finished scheduling [  0.01s]
+02:52:15.474531 [debug]: Compilation - 0 nodes selected: {}
+02:52:15.475475 [warn ]: [NoNodesForSelectionCriteria (dbt1092)]: The selection criterion '' does not match any enabled nodes
+02:52:15.476173 [warn ]: [NoNodesSelected (dbt1601)]: Nothing to do. Try checking your model configs and model specification args
+02:52:15.476882 [info ]: Started scheduling
+02:52:15.479056 [info ]: Finished scheduling [  0.00s]
+02:52:15.483204 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "api_sports", schema: "soccer_analytics_data", table: "players_raw" }) and interval: None
+02:52:15.483406 [debug]: Initializing schema store with entry: Frontier(CanonicalFqn { catalog: "api_sports", schema: "soccer_analytics_data", table: "players_raw__statistics" }) and interval: None
+02:52:15.569324 [info ]: Started building task graph
+02:52:15.572819 [info ]: Finished building task graph [  0.00s]
+02:52:16.160026 [info ]: Started scheduling
+02:52:16.160090 [info ]: Finished scheduling [  0.00s]
+02:52:16.161993 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' with 2 warnings for target 'dev' [1.5s]
+02:52:16.162165 [info ]: Cached model count updated: 6 models (accurate)
+==================== 2026-10-04T02:52:17.992514Z | 4a6ed071-bbfa-47a5-a015-9a5c96ce49c0 ====================
+02:52:17.992668 [info ]: Started loading project
+02:52:17.994341 [info ]: Loading profiles.yml
+02:52:18.037777 [info ]: Finished loading project [  0.05s]
+02:52:18.073721 [info ]: Cached model count updated: 6 models (estimate)
+02:52:18.073747 [info ]: Cached model count updated: 6 models (accurate)
+02:52:18.073789 [info ]: Started scheduling
+02:52:18.073884 [info ]: Finished scheduling [  0.00s]
+02:52:18.073903 [debug]: Compilation - 6 nodes selected: {"model.soccer_analytics.bi_player_seasons", "model.soccer_analytics.dim_leagues", "model.soccer_analytics.dim_players", "model.soccer_analytics.dim_teams", "model.soccer_analytics.fct_player_seasons", "model.soccer_analytics.stg_players"}
+02:52:18.133103 [info ]: Started building task graph
+02:52:18.138491 [info ]: Finished building task graph [  0.01s]
+02:52:18.598292 [info ]: Started rendering (6 nodes)
+02:52:18.599120 [info ]: Started model main.bi_player_seasons
+02:52:18.599490 [debug]: Started rendering model main.bi_player_seasons
+02:52:18.600055 [info ]: Started model main.fct_player_seasons
+02:52:18.600068 [debug]: Started rendering model main.fct_player_seasons
+02:52:18.600079 [info ]: Started model main.dim_teams
+02:52:18.600085 [debug]: Started rendering model main.dim_teams
+02:52:18.600093 [info ]: Started model main.dim_players
+02:52:18.600098 [debug]: Started rendering model main.dim_players
+02:52:18.600110 [info ]: Started model main.stg_players
+02:52:18.600115 [debug]: Started rendering model main.stg_players
+02:52:18.600122 [info ]: Started model main.dim_leagues
+02:52:18.600127 [debug]: Started rendering model main.dim_leagues
+02:52:18.621821 [debug]: Compiled SQL for node model.soccer_analytics.bi_player_seasons at target\.lsp\compiled\soccer_analytics\models\bi\bi_player_seasons.sql
+02:52:18.621897 [debug]: Compiled SQL for node model.soccer_analytics.fct_player_seasons at target\.lsp\compiled\soccer_analytics\models\marts\facts\fct_player_seasons.sql
+02:52:18.623352 [debug]: Compiled SQL for node model.soccer_analytics.dim_teams at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_teams.sql
+02:52:18.623423 [debug]: Compiled SQL for node model.soccer_analytics.dim_players at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_players.sql
+02:52:18.623596 [debug]: Compiled SQL for node model.soccer_analytics.dim_leagues at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_leagues.sql
+02:52:18.625317 [debug]: Finished rendering [  0.03s] model main.dim_leagues [success]
+02:52:18.628764 [info ]: Started analyzing (6 nodes)
+02:52:18.628790 [debug]: Started analyzing model main.dim_leagues
+02:52:18.629260 [debug]: Finished rendering [  0.03s] model main.fct_player_seasons [success]
+02:52:18.629286 [debug]: Started analyzing model main.fct_player_seasons
+02:52:18.629297 [debug]: Finished rendering [  0.03s] model main.dim_players [success]
+02:52:18.629306 [debug]: Started analyzing model main.dim_players
+02:52:18.629317 [debug]: Finished rendering [  0.03s] model main.dim_teams [success]
+02:52:18.629324 [debug]: Started analyzing model main.dim_teams
+02:52:18.629334 [debug]: Finished rendering [  0.03s] model main.bi_player_seasons [success]
+02:52:18.629340 [debug]: Started analyzing model main.bi_player_seasons
+02:52:18.674740 [debug]: Finished analyzing [  0.05s] model main.dim_leagues [success]
+02:52:18.674771 [info ]:  Succeeded model main.dim_leagues (table) [6 of 6 in 0.07s]
+02:52:18.674805 [debug]: Finished analyzing [  0.05s] model main.dim_teams [success]
+02:52:18.674812 [info ]:  Succeeded model main.dim_teams (table) [3 of 6 in 0.07s]
+02:52:18.674824 [debug]: Finished analyzing [  0.05s] model main.dim_players [success]
+02:52:18.674829 [info ]:  Succeeded model main.dim_players (table) [4 of 6 in 0.07s]
+02:52:18.675973 [debug]: Finished analyzing [  0.05s] model main.fct_player_seasons [success]
+02:52:18.675997 [info ]:  Succeeded model main.fct_player_seasons (table) [2 of 6 in 0.07s]
+02:52:18.677504 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+02:52:18.678225 [debug]: Finished rendering [  0.08s] model main.stg_players [success]
+02:52:18.678272 [info ]: Finished rendering [  0.08s] (6 nodes, 0 skipped, 0 errors)
+02:52:18.678304 [debug]: Started analyzing model main.stg_players
+02:52:18.687838 [debug]: Finished analyzing [  0.06s] model main.bi_player_seasons [success]
+02:52:18.687871 [info ]:  Succeeded model main.bi_player_seasons (table) [1 of 6 in 0.09s]
+02:52:18.749776 [debug]: Finished analyzing [  0.07s] model main.stg_players [success]
+02:52:18.749807 [info ]: Finished analyzing [  0.12s] (6 nodes, 0 skipped, 0 errors)
+02:52:18.749817 [info ]:  Succeeded model main.stg_players (view) [5 of 6 in 0.15s]
+02:52:18.755078 [info ]: Started scheduling
+02:52:18.755143 [info ]: Finished scheduling [  0.00s]
+02:52:18.755273 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [762ms]
+Processed: 6 models
+Summary: 6 total | 6 success
+02:52:18.756543 [info ]: Cached model count updated: 6 models (accurate)
+02:52:19.085754 [info ]: Loading profiles.yml
+==================== 2026-10-04T03:19:02.535400Z | 892c2abf-267f-4832-a6ae-467c71a44140 ====================
+03:19:02.536466 [info ]: Started loading project
+03:19:02.541421 [info ]: Loading profiles.yml
+03:19:02.574568 [info ]: Finished loading project [  0.04s]
+03:19:02.642544 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [107ms]
+03:19:02.642720 [info ]: Cached model count updated: 6 models (accurate)
+==================== 2026-10-04T03:19:04.543192Z | 55398270-8d80-4136-b895-a6b5b4b0b9ba ====================
+03:19:04.568682 [info ]: Started loading project
+03:19:04.570643 [info ]: Loading profiles.yml
+03:19:04.590258 [info ]: Finished loading project [  0.02s]
+03:19:04.663333 [info ]: Cached model count updated: 6 models (estimate)
+03:19:04.663496 [info ]: Cached model count updated: 6 models (accurate)
+03:19:04.663881 [info ]: Started scheduling
+03:19:04.664486 [info ]: Finished scheduling [  0.00s]
+03:19:04.664547 [debug]: Compilation - 6 nodes selected: {"model.soccer_analytics.bi_player_seasons", "model.soccer_analytics.dim_leagues", "model.soccer_analytics.dim_players", "model.soccer_analytics.dim_teams", "model.soccer_analytics.fct_player_seasons", "model.soccer_analytics.stg_players"}
+03:19:04.772837 [info ]: Started building task graph
+03:19:04.773056 [info ]: Finished building task graph [  0.00s]
+03:19:07.364838 [info ]: Started rendering (6 nodes)
+03:19:07.364934 [info ]: Started model main.bi_player_seasons
+03:19:07.364980 [debug]: Started rendering model main.bi_player_seasons
+03:19:07.365042 [info ]: Started model main.fct_player_seasons
+03:19:07.365052 [debug]: Started rendering model main.fct_player_seasons
+03:19:07.365068 [info ]: Started model main.dim_teams
+03:19:07.365080 [debug]: Started rendering model main.dim_teams
+03:19:07.365096 [info ]: Started model main.dim_players
+03:19:07.365105 [debug]: Started rendering model main.dim_players
+03:19:07.365122 [info ]: Started model main.stg_players
+03:19:07.365131 [debug]: Started rendering model main.stg_players
+03:19:07.365147 [info ]: Started model main.dim_leagues
+03:19:07.365156 [debug]: Started rendering model main.dim_leagues
+03:19:07.371373 [debug]: Compiled SQL for node model.soccer_analytics.dim_players at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_players.sql
+03:19:07.371534 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+03:19:07.371717 [debug]: Compiled SQL for node model.soccer_analytics.dim_leagues at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_leagues.sql
+03:19:07.371799 [debug]: Compiled SQL for node model.soccer_analytics.dim_teams at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_teams.sql
+03:19:07.371925 [debug]: Compiled SQL for node model.soccer_analytics.bi_player_seasons at target\.lsp\compiled\soccer_analytics\models\bi\bi_player_seasons.sql
+03:19:07.372291 [debug]: Finished rendering [  0.01s] model main.stg_players [success]
+03:19:07.372374 [info ]: Started analyzing (6 nodes)
+03:19:07.372391 [debug]: Started analyzing model main.stg_players
+03:19:07.372429 [debug]: Finished rendering [  0.01s] model main.dim_leagues [success]
+03:19:07.372549 [debug]: Started analyzing model main.dim_leagues
+03:19:07.372608 [debug]: Finished rendering [  0.01s] model main.dim_teams [success]
+03:19:07.372635 [debug]: Started analyzing model main.dim_teams
+03:19:07.372660 [debug]: Finished rendering [  0.01s] model main.bi_player_seasons [success]
+03:19:07.372676 [debug]: Started analyzing model main.bi_player_seasons
+03:19:07.376454 [debug]: Finished analyzing [  0.00s] model main.dim_leagues [success]
+03:19:07.376498 [info ]:  Succeeded model main.dim_leagues (table) [6 of 6 in 0.01s]
+03:19:07.377520 [debug]: Finished analyzing [  0.00s] model main.dim_teams [success]
+03:19:07.377567 [info ]:  Succeeded model main.dim_teams (table) [3 of 6 in 0.01s]
+03:19:07.378172 [debug]: Finished rendering [  0.01s] model main.dim_players [success]
+03:19:07.378215 [debug]: Started analyzing model main.dim_players
+03:19:07.378656 [debug]: Finished analyzing [  0.00s] model main.dim_players [success]
+03:19:07.378676 [info ]:  Succeeded model main.dim_players (table) [4 of 6 in 0.01s]
+03:19:07.384068 [debug]: Finished analyzing [  0.01s] model main.bi_player_seasons [success]
+03:19:07.384112 [info ]:  Succeeded model main.bi_player_seasons (table) [1 of 6 in 0.02s]
+03:19:07.385120 [debug]: Compiled SQL for node model.soccer_analytics.fct_player_seasons at target\.lsp\compiled\soccer_analytics\models\marts\facts\fct_player_seasons.sql
+03:19:07.386157 [debug]: Finished rendering [  0.02s] model main.fct_player_seasons [success]
+03:19:07.386193 [info ]: Finished rendering [  0.02s] (6 nodes, 0 skipped, 0 errors)
+03:19:07.386237 [debug]: Started analyzing model main.fct_player_seasons
+03:19:07.386920 [debug]: Finished analyzing [  0.00s] model main.fct_player_seasons [success]
+03:19:07.386952 [info ]:  Succeeded model main.fct_player_seasons (table) [2 of 6 in 0.02s]
+03:19:07.389616 [debug]: Finished analyzing [  0.02s] model main.stg_players [success]
+03:19:07.389661 [info ]: Finished analyzing [  0.02s] (6 nodes, 0 skipped, 0 errors)
+03:19:07.389675 [info ]:  Succeeded model main.stg_players (view) [5 of 6 in 0.02s]
+03:19:07.397276 [info ]: Started scheduling
+03:19:07.397373 [info ]: Finished scheduling [  0.00s]
+03:19:07.397772 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [2.9s]
+Processed: 6 models
+Summary: 6 total | 6 success
+03:19:07.398327 [info ]: Cached model count updated: 6 models (accurate)
+==================== 2026-10-04T03:20:57.690669Z | 3818371e-1f1c-45a4-ac03-d4dbca9d91ec ====================
+03:20:57.690828 [info ]: Started loading project
+03:20:57.692032 [info ]: Loading profiles.yml
+03:20:57.702910 [info ]: Finished loading project [  0.01s]
+03:20:57.749370 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [58ms]
+03:20:57.749454 [info ]: Cached model count updated: 6 models (accurate)
+==================== 2026-10-04T03:20:59.598696Z | f050758f-fc83-4db2-bd91-ca07a8865eba ====================
+03:20:59.598911 [info ]: Started loading project
+03:20:59.600686 [info ]: Loading profiles.yml
+03:20:59.615246 [info ]: Finished loading project [  0.02s]
+03:20:59.666291 [info ]: Cached model count updated: 6 models (estimate)
+03:20:59.666315 [info ]: Cached model count updated: 6 models (accurate)
+03:20:59.666360 [info ]: Started scheduling
+03:20:59.666483 [info ]: Finished scheduling [  0.00s]
+03:20:59.666558 [debug]: Compilation - 6 nodes selected: {"model.soccer_analytics.bi_player_seasons", "model.soccer_analytics.dim_leagues", "model.soccer_analytics.dim_players", "model.soccer_analytics.dim_teams", "model.soccer_analytics.fct_player_seasons", "model.soccer_analytics.stg_players"}
+03:20:59.743735 [info ]: Started building task graph
+03:20:59.744039 [info ]: Finished building task graph [  0.00s]
+03:21:00.192260 [info ]: Started rendering (6 nodes)
+03:21:00.192299 [info ]: Started model main.bi_player_seasons
+03:21:00.192313 [debug]: Started rendering model main.bi_player_seasons
+03:21:00.192404 [info ]: Started model main.fct_player_seasons
+03:21:00.192463 [debug]: Started rendering model main.fct_player_seasons
+03:21:00.192525 [info ]: Started model main.dim_teams
+03:21:00.192534 [debug]: Started rendering model main.dim_teams
+03:21:00.192544 [info ]: Started model main.dim_players
+03:21:00.192549 [debug]: Started rendering model main.dim_players
+03:21:00.192557 [info ]: Started model main.stg_players
+03:21:00.192659 [debug]: Started rendering model main.stg_players
+03:21:00.192709 [info ]: Started model main.dim_leagues
+03:21:00.192728 [debug]: Started rendering model main.dim_leagues
+03:21:00.193390 [debug]: Compiled SQL for node model.soccer_analytics.dim_players at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_players.sql
+03:21:00.193635 [debug]: Compiled SQL for node model.soccer_analytics.fct_player_seasons at target\.lsp\compiled\soccer_analytics\models\marts\facts\fct_player_seasons.sql
+03:21:00.193785 [debug]: Finished rendering [  0.00s] model main.dim_players [success]
+03:21:00.193842 [info ]: Started analyzing (6 nodes)
+03:21:00.193859 [debug]: Started analyzing model main.dim_players
+03:21:00.193955 [debug]: Finished rendering [  0.00s] model main.fct_player_seasons [success]
+03:21:00.193966 [debug]: Compiled SQL for node model.soccer_analytics.dim_teams at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_teams.sql
+03:21:00.193983 [debug]: Started analyzing model main.fct_player_seasons
+03:21:00.194008 [debug]: Compiled SQL for node model.soccer_analytics.stg_players at target\.lsp\compiled\soccer_analytics\models\staging\stg_players.sql
+03:21:00.194700 [debug]: Finished analyzing [  0.00s] model main.dim_players [success]
+03:21:00.194745 [info ]:  Succeeded model main.dim_players (table) [4 of 6 in 0.00s]
+03:21:00.194890 [debug]: Compiled SQL for node model.soccer_analytics.dim_leagues at target\.lsp\compiled\soccer_analytics\models\marts\dimensions\dim_leagues.sql
+03:21:00.195188 [debug]: Finished rendering [  0.00s] model main.dim_teams [success]
+03:21:00.195214 [debug]: Started analyzing model main.dim_teams
+03:21:00.195631 [debug]: Finished analyzing [  0.00s] model main.dim_teams [success]
+03:21:00.195667 [info ]:  Succeeded model main.dim_teams (table) [3 of 6 in 0.00s]
+03:21:00.195723 [debug]: Finished rendering [  0.00s] model main.stg_players [success]
+03:21:00.195747 [debug]: Started analyzing model main.stg_players
+03:21:00.195772 [debug]: Finished rendering [  0.00s] model main.dim_leagues [success]
+03:21:00.195784 [debug]: Started analyzing model main.dim_leagues
+03:21:00.196089 [debug]: Finished analyzing [  0.00s] model main.fct_player_seasons [success]
+03:21:00.196136 [info ]:  Succeeded model main.fct_player_seasons (table) [2 of 6 in 0.00s]
+03:21:00.196919 [debug]: Compiled SQL for node model.soccer_analytics.bi_player_seasons at target\.lsp\compiled\soccer_analytics\models\bi\bi_player_seasons.sql
+03:21:00.197263 [debug]: Finished rendering [  0.00s] model main.bi_player_seasons [success]
+03:21:00.197288 [info ]: Finished rendering [  0.01s] (6 nodes, 0 skipped, 0 errors)
+03:21:00.197306 [debug]: Started analyzing model main.bi_player_seasons
+03:21:00.204712 [debug]: Finished analyzing [  0.01s] model main.dim_leagues [success]
+03:21:00.204746 [info ]:  Succeeded model main.dim_leagues (table) [6 of 6 in 0.01s]
+03:21:00.206189 [debug]: Finished analyzing [  0.01s] model main.stg_players [success]
+03:21:00.206241 [info ]:  Succeeded model main.stg_players (view) [5 of 6 in 0.01s]
+03:21:00.207721 [debug]: Finished analyzing [  0.01s] model main.bi_player_seasons [success]
+03:21:00.207750 [info ]: Finished analyzing [  0.01s] (6 nodes, 0 skipped, 0 errors)
+03:21:00.207760 [info ]:  Succeeded model main.bi_player_seasons (table) [1 of 6 in 0.01s]
+03:21:00.214727 [info ]: Started scheduling
+03:21:00.214822 [info ]: Finished scheduling [  0.00s]
+03:21:00.214982 [info ]: 
+==================== Execution Summary =====================
+Finished 'compile' successfully for target 'dev' [616ms]
+Processed: 6 models
+Summary: 6 total | 6 success
+03:21:00.215235 [info ]: Cached model count updated: 6 models (accurate)

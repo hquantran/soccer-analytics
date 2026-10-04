@@ -29,6 +29,7 @@ from dashboard.data import (
 )
 from dashboard.metrics_config import radar_metric_specs, scatter_view_by_id, scatter_views_for_position
 from dashboard.recommender import DEFAULT_MIN_MINUTES, recommend_similar_players
+from dashboard.scout_ui import build_scatter_chart_context, render_scout_analysis
 from dashboard.ui import inject_theme_css, render_metric_grid, render_profile_sidebar
 
 inject_theme_css()
@@ -230,6 +231,26 @@ if len(radar_labels) < 3:
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 st.markdown('<h3 class="section-title">Position scatter</h3>', unsafe_allow_html=True)
 render_profile_scatter(peer_table, profile["position"], player_id, profile["player_name"], applied)
+
+active_scatter = scatter_view_by_id(
+    profile["position"], st.session_state.get("profile_scatter_view", "")
+)
+chart_context = {
+    "season_trajectory": trend_df[
+        ["season_label", "minutes", "primary_label", "primary_value"]
+    ].to_dict(orient="records"),
+    "radar_percentiles": [
+        {"metric": label, "peer_percentile": value}
+        for label, value in zip(radar_labels, radar_values)
+    ],
+    "scatter": build_scatter_chart_context(peer_table, [profile], active_scatter),
+}
+render_scout_analysis(
+    [profile],
+    peer_table,
+    key_prefix="profile_scout",
+    chart_context=chart_context,
+)
 
 with st.expander("Underlying season rows"):
     show_cols = [
