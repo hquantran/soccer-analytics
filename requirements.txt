@@ -26,3 +26,5 @@ jupyter>=1.0.0
 ipykernel>=6.29.0
 duckdb>=1.0.0
 seaborn>=0.13.2
+#AI
+google-genai>=1.0.0

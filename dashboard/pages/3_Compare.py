@@ -24,6 +24,7 @@ from dashboard.data import (
     percentile_scores,
 )
 from dashboard.metrics_config import radar_metric_specs, scatter_view_by_id, scatter_views_for_position
+from dashboard.scout_ui import build_scatter_chart_context, render_scout_analysis
 from dashboard.ui import inject_theme_css, render_compare_sidebar, render_metric_grid
 
 inject_theme_css()
@@ -224,4 +225,28 @@ render_compare_scatter(
     id_b,
     profile_b["player_name"],
     applied,
+)
+
+active_scatter = scatter_view_by_id(
+    position, st.session_state.get("compare_scatter_view", "")
+)
+chart_context = {
+    "radar_percentiles": [
+        {
+            "metric": label,
+            "peer_percentiles": {
+                profile_a["player_name"]: value_a,
+                profile_b["player_name"]: value_b,
+            },
+        }
+        for label, value_a, value_b in zip(shared_labels, aligned_a, aligned_b)
+    ],
+    "scatter": build_scatter_chart_context(peer_table, [profile_a, profile_b], active_scatter),
+}
+render_scout_analysis(
+    [profile_a, profile_b],
+    peer_table,
+    key_prefix="compare_scout",
+    chart_context=chart_context,
+    comparison_mode=True,
 )

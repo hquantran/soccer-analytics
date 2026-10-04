@@ -1,5 +1,6 @@
 # Local config and runtime artifacts
 config/config.toml
+.streamlit/secrets.toml
 *.duckdb
 data/warehouse/*.duckdb
 __pycache__/

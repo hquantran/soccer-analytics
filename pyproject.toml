@@ -17,6 +17,7 @@ dependencies = [
     "openpyxl>=3.1.0",
     "plotly>=5.18.0",
     "streamlit-keyup>=0.2.0",
+    "google-genai>=1.0.0",
     # Recommendation / notebooks
     "scikit-learn>=1.4.0",
     "jupyter>=1.0.0",
