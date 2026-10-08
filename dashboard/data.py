@@ -9,6 +9,8 @@ import duckdb
 import pandas as pd
 import streamlit as st
 
+from dashboard.warehouse import BACKEND, query as warehouse_query
+
 from dashboard.metrics_config import (
     ADDITIVE_COLS,
     BI_RATE_KEYS,
@@ -90,13 +92,7 @@ def format_age(age) -> str:
         return "—"
 
 
-def _connect() -> duckdb.DuckDBPyConnection:
-    if not DB_PATH.exists():
-        raise FileNotFoundError(f"DuckDB not found at {DB_PATH}. Run dbt to build models.")
-    return duckdb.connect(str(DB_PATH), read_only=True)
-
-
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_player_lookup() -> pd.DataFrame:
     """
     Lightweight one-row-per-player index for selectbox search.
@@ -119,11 +115,10 @@ def load_player_lookup() -> pd.DataFrame:
         ) = 1
         order by player_name
     """
-    with _connect() as conn:
-        return conn.execute(sql).df()
+    return warehouse_query(sql)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_filter_dimension_values() -> dict:
     """Distinct filter values from bi_player_seasons (small result)."""
     sql = """
@@ -137,12 +132,14 @@ def load_filter_dimension_values() -> dict:
         from main.bi_player_seasons
         where position != 'Goalkeeper'
     """
-    with _connect() as conn:
-        row = conn.execute(sql).fetchone()
-    leagues = [x for x in (row[0] or []) if x]
-    seasons = [int(x) for x in (row[1] or [])]
-    positions = [x for x in (row[2] or []) if x and x != "Goalkeeper"]
-    teams = [x for x in (row[3] or []) if x]
+    if BACKEND == 'databricks':
+        for column in ('league_name', 'season', 'position', 'team_name'):
+            sql = sql.replace(f'list(distinct {column} order by {column})', f'sort_array(collect_set({column}))')
+    row = warehouse_query(sql).iloc[0].tolist()
+    leagues = [x for x in (row[0] if row[0] is not None else []) if x]
+    seasons = [int(x) for x in (row[1] if row[1] is not None else [])]
+    positions = [x for x in (row[2] if row[2] is not None else []) if x and x != "Goalkeeper"]
+    teams = [x for x in (row[3] if row[3] is not None else []) if x]
     age_min = int(row[4]) if row[4] is not None else 16
     age_max = int(row[5]) if row[5] is not None else 40
     return {
@@ -155,7 +152,7 @@ def load_filter_dimension_values() -> dict:
     }
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_player_seasons_by_id(
     player_id: int,
     seasons: tuple[int, ...] | None = None,
@@ -184,11 +181,10 @@ def load_player_seasons_by_id(
         f"where {' and '.join(clauses)} "
         f"order by season, team_name"
     )
-    with _connect() as conn:
-        return conn.execute(sql, params).df()
+    return warehouse_query(sql, params)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_peer_season_rows(
     position: str,
     seasons: tuple[int, ...] | None = None,
@@ -221,13 +217,15 @@ def load_peer_season_rows(
         params.append(float(age_max))
 
     sql = f"select * from main.bi_player_seasons where {' and '.join(clauses)}"
-    with _connect() as conn:
-        return conn.execute(sql, params).df()
+    return warehouse_query(sql, params)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_player_seasons() -> pd.DataFrame:
     """Load the dashboard payload from the columnar export."""
+    if BACKEND == 'databricks':
+        columns = ', '.join(f'`{column}`' for column in DASHBOARD_COLUMNS)
+        return warehouse_query(f'select {columns} from main.bi_player_seasons')
     if PARQUET_PATH.exists():
         return pd.read_parquet(PARQUET_PATH, columns=DASHBOARD_COLUMNS)
     if DB_PATH.exists():
@@ -243,7 +241,7 @@ def load_player_seasons() -> pd.DataFrame:
     )
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def filter_frame(
     df: pd.DataFrame,
     *,
@@ -401,7 +399,7 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
     }
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     """One aggregated row per player with position metrics and all scatter axes.
 
@@ -489,7 +487,7 @@ def _metric_series_from_sums(sums_df: pd.DataFrame, spec: MetricSpec) -> pd.Seri
     return result.astype("float64")
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def cached_peer_table(
     position: str,
     seasons: tuple[int, ...] | None,
@@ -548,7 +546,7 @@ def ensure_players_in_peer_table(
     return pd.concat([peer_table, extra_peers.loc[missing]], ignore_index=True)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def top_players_table(
     df: pd.DataFrame,
     position: str,
@@ -588,7 +586,7 @@ def top_players_table(
     return peers.sort_values(sort_key, ascending=False).head(limit).reset_index(drop=True)
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def position_averages(peer_table: pd.DataFrame, specs: list[MetricSpec]) -> dict[str, float | None]:
     """Mean of selected metrics across the peer table (league/position scope)."""
     out: dict[str, float | None] = {}
@@ -605,7 +603,7 @@ def position_averages(peer_table: pd.DataFrame, specs: list[MetricSpec]) -> dict
     return out
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def percentile_scores(
     peer_table: pd.DataFrame,
     player_id: int,
@@ -637,7 +635,7 @@ def percentile_scores(
     return labels, values
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def metric_percentile_map(
     peer_table: pd.DataFrame,
     player_id: int,
@@ -664,7 +662,7 @@ def metric_percentile_map(
     return out
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def build_season_trend_frame(player_rows: pd.DataFrame, position: str) -> pd.DataFrame:
     """One row per season for dual-axis trend chart."""
     if player_rows.empty:

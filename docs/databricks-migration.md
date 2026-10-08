@@ -175,13 +175,28 @@ columns; these mirror the canonical contract. dbt parity tests and Python contra
 tests govern the definitions. Power BI Desktop is required to create and validate
 an actual report; no fabricated PBIX is included.
 
-Streamlit continues reading the working local DuckDB tables and Parquet exports.
-Once remote parity passes, `python -m scripts.export_databricks_consumer` refreshes
-the private local BI cache from Databricks, using a separate DuckDB file. Launch
-with `SOCCER_DUCKDB_PATH=data/warehouse/databricks_consumer.duckdb` and
-`SOCCER_PARQUET_PATH=data/exports/databricks_bi_player_seasons.parquet` so every
-dashboard query uses the same remote snapshot. The original warehouse is preserved.
-Keep the application local/private; this migration does not deploy it.
+Streamlit now reads `bi_player_seasons` **directly from the Databricks SQL
+warehouse**. Set `SOCCER_BACKEND=databricks` in the ignored `.env` and launch:
+
+```powershell
+.\.venv-analytics\Scripts\streamlit.exe run dashboard/app.py
+```
+
+The app loads `.env` automatically. It binds filter values as SQL parameters and
+caches query results in memory for five minutes. Restart Streamlit after changing
+backend/connection settings; use Streamlit's Clear cache action to refresh earlier.
+It does not write a local cloud-data cache or fall back to local data after a remote
+error. The warehouse must be available and Free Edition quotas still apply.
+
+`DBT_TARGET` selects the transformation/MetricFlow backend independently of
+`SOCCER_BACKEND`, which selects the application's data source. Existing metric
+calculations and the semantic definitions are unchanged; the app consumes the BI
+table, not MetricFlow. The original historical DuckDB file is preserved.
+
+For the local application set `SOCCER_BACKEND=duckdb` and restart. Its original
+DuckDB/Parquet path settings remain supported. The optional
+`scripts.export_databricks_consumer.py` is a legacy snapshot utility and is not
+needed for this direct connection. Keep Streamlit local/private.
 
 ## Private data policy
 
