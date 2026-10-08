@@ -1,0 +1,9 @@
+// Import bi_player_seasons. DIVIDE returns BLANK for a zero denominator.
+Goals per 90 = DIVIDE(90 * SUM(bi_player_seasons[goals]), SUM(bi_player_seasons[minutes]))
+Assists per 90 = DIVIDE(90 * SUM(bi_player_seasons[assists]), SUM(bi_player_seasons[minutes]))
+Key passes per 90 = DIVIDE(90 * SUM(bi_player_seasons[passes_key]), SUM(bi_player_seasons[minutes]))
+Tackles per 90 = DIVIDE(90 * SUM(bi_player_seasons[tackles_total]), SUM(bi_player_seasons[minutes]))
+Pass accuracy % = DIVIDE(100 * SUM(bi_player_seasons[passes_completed]), SUM(bi_player_seasons[passes_total]))
+Duel success % = DIVIDE(100 * SUM(bi_player_seasons[duels_won]), SUM(bi_player_seasons[duels_total]))
+Dribble attempts per 90 = DIVIDE(90 * SUM(bi_player_seasons[dribbles_attempts]), SUM(bi_player_seasons[minutes]))
+Dribble success % = DIVIDE(100 * SUM(bi_player_seasons[dribbles_success]), SUM(bi_player_seasons[dribbles_attempts]))

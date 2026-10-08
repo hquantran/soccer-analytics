@@ -6,6 +6,47 @@ Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
 
 ---
 
+## Analytics engineering migration
+
+The original DuckDB/dbt implementation remains available. This branch adds a
+private Databricks/Delta migration path, shared canonical metric definitions and
+an open-source MetricFlow semantic graph. **Remote migration is pending workspace
+authentication and runtime parity validation; it is not yet a completed deployment.**
+
+```mermaid
+flowchart LR
+    History[Private persisted dlt history] --> Parquet[One-time private Parquet transfer]
+    Parquet --> Delta[Databricks managed Delta tables]
+    Delta --> DBT[dbt Core: staging, dimensions, additive facts]
+    DBT --> Semantics[MetricFlow entities, dimensions and metrics]
+    DBT --> BI[Curated player-season serving table]
+    Contract[Canonical metric contract] --> DBT
+    Contract --> Semantics
+    Contract --> Local[Private Streamlit and recommender rollups]
+    BI --> PowerBI[Private Power BI Desktop]
+    BI --> Cache[Private local consumer cache]
+    Cache --> Local
+    History --> DuckDB[Original DuckDB and dbt path]
+    DuckDB --> Local
+```
+
+The fact grain is **player ? team ? league ? season stint**, with a 300-minute
+minimum. Rate metrics divide aggregated additive inputs, so multi-season rates
+remain weighted by playing time. Dribbling uses explicit `dribble_attempts_per90`
+and `dribble_success_pct`; the former ambiguous BI column is deprecated. Estimated
+completed passes retain the original provider-percentage calculation.
+
+See the [migration, validation and consumer guide](docs/databricks-migration.md)
+for configuration, transfer commands, canonical formulas, tests and Power BI setup.
+Python 3.11 and the checked-in `uv.lock` provide the validated dependency path.
+No paid hosted dbt Semantic Layer is required. Streamlit stays local/private.
+
+Underlying third-party sports data is intentionally excluded: do not commit
+DuckDB databases, raw data, CSV/Parquet exports, migration artifacts, notebook
+outputs, Power BI datasets, credentials or populated private configuration.
+
+---
+
 ## Overview
 
 Scouting players across leagues and seasons is more difficult than simply looking at goals, assists, or ratings. Analysts need to work with different levels of playing time, teams, competitions, positions, and dozens of performance metrics.
@@ -377,13 +418,7 @@ This collects player data and loads the raw results into DuckDB.
 Run the data quality tests:
 
 ```bash
-dbt test
-```
-
-Then build the analytical models:
-
-```bash
-dbt run
+dbt build --profiles-dir . --target dev
 ```
 
 ### 6. Configure Gemini

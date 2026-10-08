@@ -22,7 +22,8 @@ class MetricFlowExecutionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=folder) as temporary:
             # Keep the catalog name used by the local semantic manifest.
             database = Path(temporary) / 'api_sports.duckdb'
-            env = dict(os.environ, DBT_TARGET='dev', DUCKDB_PATH=str(database), PYTHONIOENCODING='utf-8')
+            env = dict(os.environ, DBT_TARGET='dev', DUCKDB_PATH=str(database),
+                       PYTHONIOENCODING='utf-8', PYTHONUTF8='1')
             columns = ('minutes', 'goals', 'assists', 'passes_key', 'tackles_total',
                        'passes_total', 'passes_completed', 'duels_total', 'duels_won',
                        'dribbles_attempts', 'dribbles_success')
