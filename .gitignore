@@ -7,6 +7,9 @@ config/config.toml
 !.env.example
 *.duckdb
 data/warehouse/*.duckdb
+output/*.csv
+output/*.parquet
+data/migrations/
 __pycache__/
 *.pyc
 .venv/
@@ -16,6 +19,10 @@ data/exports/*.parquet
 data/exports/*.csv
 !data/exports/.gitkeep
 !data/warehouse/.gitkeep
+profiles.local.yml
+.databrickscfg
+*.token
+*.pem
 logs/*.log
 .DS_Store
 .agents/
