@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from config.metrics import CANONICAL_METRICS
 
 
 @dataclass(frozen=True)
@@ -14,6 +15,12 @@ class MetricSpec:
     scale: float = 1.0
     format: str = "{:.2f}"
     higher_is_better: bool = True
+
+    def __post_init__(self):
+        contract = CANONICAL_METRICS.get(self.key)
+        if contract:
+            for field in ('numerator', 'denominator', 'scale'):
+                object.__setattr__(self, field, contract[field])
 
 
 @dataclass(frozen=True)
@@ -60,7 +67,7 @@ ADDITIVE_COLS = [
 ]
 
 # BI season-grain rates that match MetricSpec formulas exactly.
-# Do NOT include bi.dribbles_per90 — BI uses dribbles_success, UI uses attempts.
+# Canonical dribble attempts now match both BI and Python rollups.
 BI_RATE_KEYS = frozenset(
     {
         "goals_per90",
@@ -68,6 +75,7 @@ BI_RATE_KEYS = frozenset(
         "goal_involvements_per90",
         "key_passes_per90",
         "tackles_per90",
+        "dribble_attempts_per90",
         "shot_accuracy_pct",
         "goal_conversion_pct",
         "pass_accuracy_pct",
@@ -122,7 +130,7 @@ POSITION_METRICS: dict[str, dict[str, list[MetricSpec]]] = {
             ),
             MetricSpec("pass_accuracy_pct", "Pass accuracy %", "passes_completed", "passes_total", 100.0, "{:.1f}%"),
             MetricSpec("key_passes_per90", "Key passes / 90", "passes_key", "minutes", 90.0),
-            MetricSpec("dribbles_per90", "Dribbles / 90", "dribbles_attempts", "minutes", 90.0),
+            MetricSpec("dribble_attempts_per90", "Dribble attempts / 90", "dribbles_attempts", "minutes", 90.0),
         ],
         "secondary": [
             MetricSpec("dribble_success_pct", "Dribble success %", "dribbles_success", "dribbles_attempts", 100.0, "{:.1f}%"),

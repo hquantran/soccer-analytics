@@ -14,13 +14,13 @@ from sklearn.preprocessing import StandardScaler
 
 from dashboard.metrics_config import MetricSpec
 
-# v1 style features — match BI rate formulas (dribbles_per90 = successful dribbles / 90)
+# Explicit canonical attempts and success metrics; similarity rankings may change.
 RECOMMENDER_SPECS: list[MetricSpec] = [
     MetricSpec("goals_per90", "Goals / 90", "goals", "minutes", 90.0),
     MetricSpec("assists_per90", "Assists / 90", "assists", "minutes", 90.0),
     MetricSpec("key_passes_per90", "Key passes / 90", "passes_key", "minutes", 90.0),
     MetricSpec("tackles_per90", "Tackles / 90", "tackles_total", "minutes", 90.0),
-    MetricSpec("dribbles_per90", "Dribbles / 90", "dribbles_success", "minutes", 90.0),
+    MetricSpec("dribble_attempts_per90", "Dribble attempts / 90", "dribbles_attempts", "minutes", 90.0),
     MetricSpec("shot_accuracy_pct", "Shot accuracy %", "shots_on_target", "shots_total", 100.0),
     MetricSpec("goal_conversion_pct", "Conversion %", "goals", "shots_total", 100.0),
     MetricSpec("dribble_success_pct", "Dribble success %", "dribbles_success", "dribbles_attempts", 100.0),

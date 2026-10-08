@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 
 import duckdb
 import pandas as pd
@@ -22,8 +23,8 @@ from dashboard.metrics_config import (
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = PROJECT_ROOT / "data" / "warehouse" / "api_sports.duckdb"
-PARQUET_PATH = PROJECT_ROOT / "data" / "exports" / "bi_player_seasons.parquet"
+DB_PATH = Path(os.environ.get('SOCCER_DUCKDB_PATH', str(PROJECT_ROOT / 'data/warehouse/api_sports.duckdb')))
+PARQUET_PATH = Path(os.environ.get('SOCCER_PARQUET_PATH', str(PROJECT_ROOT / 'data/exports/bi_player_seasons.parquet')))
 
 # Keep the dashboard payload narrow. Rates are recomputed for multi-season
 # views, while the stored rates provide the single-row fast path.
@@ -48,7 +49,7 @@ DASHBOARD_COLUMNS = [
     "goal_involvements_per90",
     "key_passes_per90",
     "tackles_per90",
-    "dribbles_per90",
+    "dribble_attempts_per90",
     "shot_accuracy_pct",
     "goal_conversion_pct",
     "pass_accuracy_pct",
