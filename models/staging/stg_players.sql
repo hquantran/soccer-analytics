@@ -6,22 +6,22 @@ with player as (
         player__id as player_id,
         -- API short names are often "C. Romero"; prefer Firstname + short surname.
         case
-            when regexp_matches(player__name, '^[A-Za-zÀ-ÖØ-öø-ÿ]\. ')
+            when {{ regex_matches('player__name', '^[A-Za-zÀ-ÖØ-öø-ÿ][.] ') }}
                 and nullif(trim(player__firstname), '') is not null
             then trim(
                 split_part(trim(player__firstname), ' ', 1)
                 || ' '
-                || regexp_replace(player__name, '^[A-Za-zÀ-ÖØ-öø-ÿ]\. ', '')
+                || regexp_replace(player__name, '^[A-Za-zÀ-ÖØ-öø-ÿ][.] ', '')
             )
             else coalesce(
                 nullif(trim(player__name), ''),
                 nullif(trim(player__firstname || ' ' || player__lastname), '')
             )
         end as name,
-        date_diff('year', cast(player__birth__date as date), current_date) as age,
+        {{ age_in_years('player__birth__date') }} as age,
         player__nationality as nationality,
-        nullif(regexp_replace(player__height, '[^0-9]', '', 'g'), '')::int as height_cm,
-        nullif(regexp_replace(player__weight, '[^0-9]', '', 'g'), '')::int as weight_kg,
+        nullif({{ regex_replace_all('player__height', '[^0-9]', '') }}, '')::int as height_cm,
+        nullif({{ regex_replace_all('player__weight', '[^0-9]', '') }}, '')::int as weight_kg,
         player__injured as injured,
         player__photo as photo
     from {{ source('raw', 'players_raw') }}

@@ -13,6 +13,9 @@ data/migrations/
 __pycache__/
 *.pyc
 .venv/
+.venv*/
+*.pbix
+*.pbit
 target/
 dbt_internal_packages/
 data/exports/*.parquet
@@ -26,3 +29,11 @@ profiles.local.yml
 logs/*.log
 .DS_Store
 .agents/
+*.duckdb.wal
+*.csv
+*.parquet
+*.jsonl
+data/raw/
+logs/
+.databricks/
+.user.yml

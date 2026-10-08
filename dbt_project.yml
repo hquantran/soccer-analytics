@@ -9,10 +9,23 @@ test-paths: ["tests"]
 target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
+# Shared contract: dbt SQL, semantic definitions and Python consumers use these inputs.
+vars:
+  canonical_metrics:
+    goals_per90: {numerator: goals, denominator: minutes, scale: 90}
+    assists_per90: {numerator: assists, denominator: minutes, scale: 90}
+    key_passes_per90: {numerator: passes_key, denominator: minutes, scale: 90}
+    tackles_per90: {numerator: tackles_total, denominator: minutes, scale: 90}
+    pass_accuracy_pct: {numerator: passes_completed, denominator: passes_total, scale: 100}
+    duel_success_pct: {numerator: duels_won, denominator: duels_total, scale: 100}
+    dribble_attempts_per90: {numerator: dribbles_attempts, denominator: minutes, scale: 90}
+    dribble_success_pct: {numerator: dribbles_success, denominator: dribbles_attempts, scale: 100}
+
 # Layering (analytics engineering):
 #   raw (dlt source) → staging → marts (dimensions / facts) → bi (presentation)
 models:
   soccer_analytics:
+    +file_format: "{{ 'delta' if target.type == 'databricks' else 'parquet' }}"
     staging:
       +materialized: view
     marts:
@@ -23,5 +36,5 @@ models:
     bi:
       +materialized: table
       +post-hook:
-        - "COPY (SELECT * FROM {{ this }}) TO 'data/exports/{{ model.name }}.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);"
-        - "COPY (SELECT * FROM {{ this }}) TO 'data/exports/{{ model.name }}.csv' (HEADER, DELIMITER ',');"
+        - "{{ export_bi_model_artifact('parquet') }}"
+        - "{{ export_bi_model_artifact('csv') }}"

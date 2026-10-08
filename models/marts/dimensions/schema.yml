@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: dim_players
+    description: One row per player with latest available descriptive attributes.
     columns:
       - name: player_id
         tests:
@@ -9,6 +10,7 @@ models:
           - not_null
 
   - name: dim_teams
+    description: One row per team.
     columns:
       - name: team_id
         tests:
@@ -19,6 +21,7 @@ models:
           - not_null
 
   - name: dim_leagues
+    description: One row per league in the configured scope.
     columns:
       - name: league_id
         tests:

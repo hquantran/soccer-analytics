@@ -1,0 +1,10 @@
+{% macro canonical_rate(name, prefix='f.', aggregate=true) %}
+    {% set metric = var('canonical_metrics')[name] %}
+    {% set numerator = prefix ~ metric.numerator %}
+    {% set denominator = prefix ~ metric.denominator %}
+    {% if aggregate %}
+        {% set numerator = 'sum(' ~ numerator ~ ')' %}
+        {% set denominator = 'sum(' ~ denominator ~ ')' %}
+    {% endif %}
+    ({{ metric.scale }}.0 * {{ numerator }} / nullif({{ denominator }}, 0))
+{% endmacro %}

@@ -53,13 +53,15 @@ select
     -- key_passes_per90:     Midfielders (CM, CAM, CDM) — primary
     -- tackles_per90:        Defenders (CB, LB, RB) — primary;
     --                       Midfielders (CDM) — secondary
-    -- assists_per90 / dribbles_per90 / goal_involvements_per90: supporting
+    -- assists_per90 / dribble_attempts_per90 / goal_involvements_per90: supporting
     -- ---------------------------------------------------------------------
-    round(sum(f.goals) * 90.0 / nullif(sum(f.minutes), 0), 3) as goals_per90,
-    round(sum(f.assists) * 90.0 / nullif(sum(f.minutes), 0), 3) as assists_per90,
+    round({{ canonical_rate('goals_per90') }}, 3) as goals_per90,
+    round({{ canonical_rate('assists_per90') }}, 3) as assists_per90,
     round(sum(f.goals + f.assists) * 90.0 / nullif(sum(f.minutes), 0), 3) as goal_involvements_per90,
-    round(sum(f.passes_key) * 90.0 / nullif(sum(f.minutes), 0), 3) as key_passes_per90,
-    round(sum(f.tackles_total) * 90.0 / nullif(sum(f.minutes), 0), 3) as tackles_per90,
+    round({{ canonical_rate('key_passes_per90') }}, 3) as key_passes_per90,
+    round({{ canonical_rate('tackles_per90') }}, 3) as tackles_per90,
+    round({{ canonical_rate('dribble_attempts_per90') }}, 3) as dribble_attempts_per90,
+    -- Deprecated legacy alias: successful dribbles / 90; new consumers use attempts.
     round(sum(f.dribbles_success) * 90.0 / nullif(sum(f.minutes), 0), 3) as dribbles_per90,
 
     -- ---------------------------------------------------------------------
@@ -77,9 +79,9 @@ select
     -- ---------------------------------------------------------------------
     round(100.0 * sum(f.shots_on_target) / nullif(sum(f.shots_total), 0), 3) as shot_accuracy_pct,
     round(100.0 * sum(f.goals) / nullif(sum(f.shots_total), 0), 3) as goal_conversion_pct,
-    round(100.0 * sum(f.passes_completed) / nullif(sum(f.passes_total), 0), 3) as pass_accuracy_pct,
-    round(100.0 * sum(f.dribbles_success) / nullif(sum(f.dribbles_attempts), 0), 3) as dribble_success_pct,
-    round(100.0 * sum(f.duels_won) / nullif(sum(f.duels_total), 0), 3) as duel_success_pct,
+    round({{ canonical_rate('pass_accuracy_pct') }}, 3) as pass_accuracy_pct,
+    round({{ canonical_rate('dribble_success_pct') }}, 3) as dribble_success_pct,
+    round({{ canonical_rate('duel_success_pct') }}, 3) as duel_success_pct,
     round(sum(f.fouls_committed) * 1.0 / nullif(sum(f.tackles_total), 0), 3) as fouls_per_tackle
 from {{ ref('fct_player_seasons') }} f
 inner join {{ ref('dim_players') }} p using (player_id)
