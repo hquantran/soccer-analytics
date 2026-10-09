@@ -1,6 +1,15 @@
+{% macro canonical_numerator(name, prefix='') -%}
+    {%- set numerator = var('canonical_metrics')[name].numerator -%}
+    {%- if numerator is string -%}
+        {{- prefix ~ numerator -}}
+    {%- else -%}
+        ({{ prefix }}{{ numerator | join(' + ' ~ prefix) }})
+    {%- endif -%}
+{%- endmacro %}
+
 {% macro canonical_rate(name, prefix='f.', aggregate=true) %}
     {% set metric = var('canonical_metrics')[name] %}
-    {% set numerator = prefix ~ metric.numerator %}
+    {% set numerator = canonical_numerator(name, prefix) %}
     {% set denominator = prefix ~ metric.denominator %}
     {% if aggregate %}
         {% set numerator = 'sum(' ~ numerator ~ ')' %}

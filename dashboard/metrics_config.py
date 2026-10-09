@@ -10,7 +10,7 @@ from config.metrics import CANONICAL_METRICS
 class MetricSpec:
     key: str
     label: str
-    numerator: str
+    numerator: str | tuple[str, ...] = ""
     denominator: str | None = None
     scale: float = 1.0
     format: str = "{:.2f}"
@@ -20,7 +20,8 @@ class MetricSpec:
         contract = CANONICAL_METRICS.get(self.key)
         if contract:
             for field in ('numerator', 'denominator', 'scale'):
-                object.__setattr__(self, field, contract[field])
+                value = contract[field]
+                object.__setattr__(self, field, tuple(value) if isinstance(value, list) else value)
 
 
 @dataclass(frozen=True)
@@ -66,74 +67,46 @@ ADDITIVE_COLS = [
     "fouls_committed",
 ]
 
-# BI season-grain rates that match MetricSpec formulas exactly.
-# Canonical dribble attempts now match both BI and Python rollups.
-BI_RATE_KEYS = frozenset(
-    {
-        "goals_per90",
-        "assists_per90",
-        "goal_involvements_per90",
-        "key_passes_per90",
-        "tackles_per90",
-        "dribble_attempts_per90",
-        "shot_accuracy_pct",
-        "goal_conversion_pct",
-        "pass_accuracy_pct",
-        "dribble_success_pct",
-        "duel_success_pct",
-        "fouls_per_tackle",
-    }
-)
-
-
 POSITION_METRICS: dict[str, dict[str, list[MetricSpec]]] = {
     "Attacker": {
         "primary": [
-            MetricSpec("goals_per90", "Goals / 90", "goals", "minutes", 90.0),
-            MetricSpec("goal_involvements_per90", "G+A / 90", "goals", "minutes", 90.0),
-            MetricSpec("goal_conversion_pct", "Conversion %", "goals", "shots_total", 100.0, "{:.1f}%"),
-            MetricSpec("shot_accuracy_pct", "Shot accuracy %", "shots_on_target", "shots_total", 100.0, "{:.1f}%"),
-            MetricSpec("shots_per90", "Shots / 90", "shots_total", "minutes", 90.0),
-            MetricSpec("assists_per90", "Assists / 90", "assists", "minutes", 90.0),
+            MetricSpec("goals_per90", "Goals / 90"),
+            MetricSpec("goal_involvements_per90", "G+A / 90"),
+            MetricSpec("goal_conversion_pct", "Conversion %", format="{:.1f}%"),
+            MetricSpec("shot_accuracy_pct", "Shot accuracy %", format="{:.1f}%"),
+            MetricSpec("shots_per90", "Shots / 90"),
+            MetricSpec("assists_per90", "Assists / 90"),
         ],
         "secondary": [
-            MetricSpec("dribble_success_pct", "Dribble success %", "dribbles_success", "dribbles_attempts", 100.0, "{:.1f}%"),
-            MetricSpec("fouls_drawn_per90", "Fouls drawn / 90", "fouls_drawn", "minutes", 90.0),
+            MetricSpec("dribble_success_pct", "Dribble success %", format="{:.1f}%"),
+            MetricSpec("fouls_drawn_per90", "Fouls drawn / 90"),
         ],
     },
     "Midfielder": {
         "primary": [
-            MetricSpec("key_passes_per90", "Key passes / 90", "passes_key", "minutes", 90.0),
-            MetricSpec("goal_involvements_per90", "G+A / 90", "goals", "minutes", 90.0),
-            MetricSpec("passes_per90", "Passes / 90", "passes_total", "minutes", 90.0),
-            MetricSpec("pass_accuracy_pct", "Pass accuracy %", "passes_completed", "passes_total", 100.0, "{:.1f}%"),
-            MetricSpec("duel_success_pct", "Duel win %", "duels_won", "duels_total", 100.0, "{:.1f}%"),
-            MetricSpec("tackles_per90", "Tackles / 90", "tackles_total", "minutes", 90.0),
+            MetricSpec("key_passes_per90", "Key passes / 90"),
+            MetricSpec("goal_involvements_per90", "G+A / 90"),
+            MetricSpec("passes_per90", "Passes / 90"),
+            MetricSpec("pass_accuracy_pct", "Pass accuracy %", format="{:.1f}%"),
+            MetricSpec("duel_success_pct", "Duel win %", format="{:.1f}%"),
+            MetricSpec("tackles_per90", "Tackles / 90"),
         ],
         "secondary": [
-            MetricSpec("dribble_success_pct", "Dribble success %", "dribbles_success", "dribbles_attempts", 100.0, "{:.1f}%"),
-            MetricSpec("assists_per90", "Assists / 90", "assists", "minutes", 90.0),
+            MetricSpec("dribble_success_pct", "Dribble success %", format="{:.1f}%"),
+            MetricSpec("assists_per90", "Assists / 90"),
         ],
     },
     "Defender": {
         "primary": [
-            MetricSpec("duel_success_pct", "Duel win %", "duels_won", "duels_total", 100.0, "{:.1f}%"),
-            MetricSpec("tackles_per90", "Tackles / 90", "tackles_total", "minutes", 90.0),
-            MetricSpec(
-                "fouls_per_tackle",
-                "Fouls / tackle",
-                "fouls_committed",
-                "tackles_total",
-                1.0,
-                "{:.2f}",
-                higher_is_better=False,
-            ),
-            MetricSpec("pass_accuracy_pct", "Pass accuracy %", "passes_completed", "passes_total", 100.0, "{:.1f}%"),
-            MetricSpec("key_passes_per90", "Key passes / 90", "passes_key", "minutes", 90.0),
-            MetricSpec("dribble_attempts_per90", "Dribble attempts / 90", "dribbles_attempts", "minutes", 90.0),
+            MetricSpec("duel_success_pct", "Duel win %", format="{:.1f}%"),
+            MetricSpec("tackles_per90", "Tackles / 90"),
+            MetricSpec("fouls_per_tackle", "Fouls / tackle", higher_is_better=False, format="{:.2f}"),
+            MetricSpec("pass_accuracy_pct", "Pass accuracy %", format="{:.1f}%"),
+            MetricSpec("key_passes_per90", "Key passes / 90"),
+            MetricSpec("dribble_attempts_per90", "Dribble attempts / 90"),
         ],
         "secondary": [
-            MetricSpec("dribble_success_pct", "Dribble success %", "dribbles_success", "dribbles_attempts", 100.0, "{:.1f}%"),
+            MetricSpec("dribble_success_pct", "Dribble success %", format="{:.1f}%"),
         ],
     },
 }
@@ -337,35 +310,6 @@ def trend_metric_for_position(position: str) -> MetricSpec:
         if spec.key == key:
             return spec
     return metrics_for_position(position)["primary"][0]
-
-
-def compute_metric(row_sums: dict[str, float], spec: MetricSpec) -> float | None:
-    if spec.key == "goal_involvements_per90":
-        goals = row_sums.get("goals")
-        assists = row_sums.get("assists")
-        if goals is None and assists is None:
-            return None
-        num = float(goals or 0) + float(assists or 0)
-        den = row_sums.get("minutes")
-        if den is None or den == 0:
-            return None
-        return num * 90.0 / float(den)
-
-    num = row_sums.get(spec.numerator)
-    if num is None:
-        return None
-    if spec.denominator is None:
-        return float(num)
-    den = row_sums.get(spec.denominator)
-    if den is None or den == 0:
-        return None
-    return float(num) * spec.scale / float(den)
-
-
-def compute_xy(row_sums: dict[str, float], axes: ScatterAxes) -> tuple[float | None, float | None]:
-    x_spec = MetricSpec(axes.x_key, axes.x_label, axes.x_numerator, axes.x_denominator, axes.x_scale)
-    y_spec = MetricSpec(axes.y_key, axes.y_label, axes.y_numerator, axes.y_denominator, axes.y_scale)
-    return compute_metric(row_sums, x_spec), compute_metric(row_sums, y_spec)
 
 
 def all_scatter_metric_keys(position: str) -> set[str]:

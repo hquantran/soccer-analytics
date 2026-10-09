@@ -86,8 +86,8 @@ on DuckDB. Credentials are read from environment variables, never SQL or code.
 
 `compare-databricks` checks all five curated model row counts, distinct players,
 leagues, seasons, additive totals, 20 deterministically selected fact records, and
-every player's multi-season additive totals. The latter cover the numerator and
-denominator of all eight canonical metrics. dbt also tests serving rate parity.
+every player's multi-season additive totals. These cover the original eight metrics; the expanded formula checks cover
+all 16 shared rates. dbt also tests serving rate parity.
 Differences fail the command and produce an ignored private JSON report for
 investigation. Expected changes are only the added explicit dribble-attempt rate
 and recommender feature semantics; existing successful-dribble legacy rates remain.
@@ -135,8 +135,8 @@ estimate null; the current denominator includes those attempts. This preserves t
 existing definition but can understate accuracy when coverage is incomplete.
 This limitation should be stated when discussing the metric.
 
-`dribbles_per90` remains only as a deprecated BI compatibility column meaning
-successful dribbles per 90. Dashboard, recommender and notebook code use
+The BI column `successful_dribbles_per90` explicitly means successful dribbles
+per 90; it replaces the ambiguous `dribbles_per90` name. Dashboard, recommender and notebook code use
 `dribble_attempts_per90` and `dribble_success_pct`. Similarity rankings can change
 because attempts replace successes in the dribble volume feature. The UI layout
 and Gemini integration are unchanged.
@@ -175,28 +175,37 @@ columns; these mirror the canonical contract. dbt parity tests and Python contra
 tests govern the definitions. Power BI Desktop is required to create and validate
 an actual report; no fabricated PBIX is included.
 
-Streamlit now reads `bi_player_seasons` **directly from the Databricks SQL
-warehouse**. Set `SOCCER_BACKEND=databricks` in the ignored `.env` and launch:
+Streamlit queries **MetricFlow for metric values** on the Databricks SQL
+warehouse. Profile attributes and filter choices come directly from the fact and
+dimension tables. The application does not read the BI table or Parquet exports.
+Set `SOCCER_BACKEND=databricks` in the ignored `.env` and launch:
 
 ```powershell
 .\.venv-analytics\Scripts\streamlit.exe run dashboard/app.py
 ```
 
-The app loads `.env` automatically. It binds filter values as SQL parameters and
-caches query results in memory for five minutes. Restart Streamlit after changing
-backend/connection settings; use Streamlit's Clear cache action to refresh earlier.
-It does not write a local cloud-data cache or fall back to local data after a remote
-error. The warehouse must be available and Free Edition quotas still apply.
+The app loads `.env` automatically. Attribute queries bind filter values as SQL
+parameters. Exact selected stint IDs scope semantic queries, preserving season,
+league, team, age and majority-position filters. MetricFlow computes the rates,
+additive totals and minutes-weighted rating; charts, percentiles and similarity
+scores remain dashboard responsibilities. An entirely missing completed-pass total
+produces a null accuracy instead of an artificial zero.
 
-`DBT_TARGET` selects the transformation/MetricFlow backend independently of
-`SOCCER_BACKEND`, which selects the application's data source. Existing metric
-calculations and the semantic definitions are unchanged; the app consumes the BI
-table, not MetricFlow. The original historical DuckDB file is preserved.
+Results are cached in memory for five minutes. MetricFlow runs in a subprocess
+with a separate generated project and manifest under ignored
+`target/streamlit_<backend>`. Query requests and CSV results are temporary files
+under ignored `data/migrations`, deleted after use. Large filters are loaded by a
+Python worker to avoid Windows' command-line length limit. Cold queries include
+MetricFlow startup time; the SQL warehouse must be available. There is no silent
+local fallback after a remote error. Restart after changing connection settings.
 
-For the local application set `SOCCER_BACKEND=duckdb` and restart. Its original
-DuckDB/Parquet path settings remain supported. The optional
-`scripts.export_databricks_consumer.py` is a legacy snapshot utility and is not
-needed for this direct connection. Keep Streamlit local/private.
+`SOCCER_BACKEND` selects both the dashboard attribute source and its MetricFlow
+target. `DBT_TARGET` still selects the target for manual dbt/MetricFlow commands.
+Use the Python 3.11 `.venv-analytics` environment, which contains `dbt` and `mf`.
+For local semantic queries, set `SOCCER_BACKEND=duckdb`; optional
+`SOCCER_DUCKDB_PATH` selects the database. The historical DuckDB database remains
+intact. BI models and `scripts.export_databricks_consumer.py` remain optional for
+other consumers and are not required by Streamlit.
 
 ## Private data policy
 
@@ -211,3 +220,17 @@ References: [open-source MetricFlow](https://github.com/dbt-labs/metricflow),
 [MetricFlow commands](https://docs.getdbt.com/docs/build/metricflow-commands),
 [Databricks Free Edition](https://docs.databricks.com/aws/en/getting-started/free-edition).
 [Power BI connector](https://learn.microsoft.com/en-us/power-query/connectors/databricks-azure).
+
+## Shared metric definitions
+
+`dbt_project.yml` defines the inputs and scales for all 16 rates. BI SQL uses
+`canonical_rate`, semantic measures render the same numerator, and Streamlit
+requests the resulting metric names through MetricFlow. Its display metadata
+reads the same contract through `config/metrics.py`. Change the formula there
+when updating an existing metric, then rebuild dbt models and restart Streamlit.
+The optional BI table is still built by dbt SQL. Streamlit uses grouped semantic
+queries directly and does not recalculate rates in Python. Rates are calculated
+after summing additive inputs, with null results for zero denominators.
+
+Goal involvements use the combined numerator `[goals, assists]`. Successful
+dribbles per 90 remain distinct from attempts per 90 and dribble success percent.

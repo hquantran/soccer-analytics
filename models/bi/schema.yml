@@ -36,8 +36,14 @@ models:
         description: Dribble attempts per 90 minutes; use additive attempts/minutes for rollups.
         tests:
           - non_negative
-      - name: dribbles_per90
-        description: "DEPRECATED: legacy successful dribbles per 90. New consumers use dribble_attempts_per90 and dribble_success_pct."
+      - name: successful_dribbles_per90
+        description: Successful dribbles per 90 minutes; use additive successes/minutes for rollups.
+      - name: shots_per90
+        description: Shots per 90 minutes from the shared metric contract.
+      - name: passes_per90
+        description: Pass attempts per 90 minutes from the shared metric contract.
+      - name: fouls_drawn_per90
+        description: Fouls drawn per 90 minutes from the shared metric contract.
       - name: shot_accuracy_pct
         tests:
           - is_between:

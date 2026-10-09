@@ -11,7 +11,7 @@ Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
 The original DuckDB/dbt implementation remains available. This branch adds a
 private Databricks/Delta migration path, shared canonical metric definitions and
 an open-source MetricFlow semantic graph. The private workspace has passed migration parity and semantic validation;
-Streamlit can now query its curated tables directly.
+Streamlit now queries metrics through MetricFlow and reads profile attributes from the curated facts and dimensions.
 
 ```mermaid
 flowchart LR
@@ -22,25 +22,26 @@ flowchart LR
     DBT --> BI[Curated player-season serving table]
     Contract[Canonical metric contract] --> DBT
     Contract --> Semantics
-    Contract --> Local[Private Streamlit and recommender rollups]
+    Semantics --> Local[Private Streamlit and recommender]
+    DBT --> Attributes[Player profile attributes]
+    Attributes --> Local
     BI --> PowerBI[Private Power BI Desktop]
-    BI --> Local
     History --> DuckDB[Original DuckDB and dbt path]
-    DuckDB --> Local
+    DuckDB --> Semantics
 ```
 
 The fact grain is **player ? team ? league ? season stint**, with a 300-minute
 minimum. Rate metrics divide aggregated additive inputs, so multi-season rates
 remain weighted by playing time. Dribbling uses explicit `dribble_attempts_per90`
-and `dribble_success_pct`; the former ambiguous BI column is deprecated. Estimated
+and `dribble_success_pct`; successful dribbles per 90 have the explicit name `successful_dribbles_per90`. Estimated
 completed passes retain the original provider-percentage calculation.
 
 See the [migration, validation and consumer guide](docs/databricks-migration.md)
 for configuration, transfer commands, canonical formulas, tests and Power BI setup.
 Python 3.11 and the checked-in `uv.lock` provide the validated dependency path.
 No paid hosted dbt Semantic Layer is required. Streamlit stays local/private.
-Set `SOCCER_BACKEND=databricks` in ignored `.env` to query the cloud BI table
-directly, or `SOCCER_BACKEND=duckdb` for the preserved local implementation.
+Set `SOCCER_BACKEND=databricks` in ignored `.env` for semantic queries on the cloud
+warehouse, or `SOCCER_BACKEND=duckdb` for semantic queries on the preserved local database.
 The application loads `.env` automatically; no download-back step is needed.
 
 Underlying third-party sports data is intentionally excluded: do not commit

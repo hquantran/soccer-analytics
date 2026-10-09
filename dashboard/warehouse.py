@@ -1,4 +1,4 @@
-"""Read the BI serving table directly from Databricks or the local DuckDB backend."""
+"""Read profile attributes from facts and dimensions on the selected warehouse."""
 from decimal import Decimal
 import os
 from pathlib import Path
@@ -16,15 +16,26 @@ if BACKEND not in ('databricks', 'duckdb'):
 
 def query(sql, params=None):
     """Bind filter values as parameters; remote errors never fall back to local data."""
+    namespace_prefix = 'main'
+    if BACKEND == 'databricks':
+        from scripts.migrate_history import namespace
+        namespace_prefix = namespace()[2]
+    attributes = f'''(
+        select f.*, p.name as player_name, p.nationality, p.photo,
+               p.height_cm, p.weight_kg, p.age, t.team_name, l.league_name
+        from {namespace_prefix}.fct_player_seasons f
+        join {namespace_prefix}.dim_players p using (player_id)
+        join {namespace_prefix}.dim_teams t using (team_id)
+        join {namespace_prefix}.dim_leagues l using (league_id)
+    )'''
+    sql = sql.replace('main.player_season_attributes', attributes)
     if BACKEND == 'duckdb':
         path = os.environ.get('SOCCER_DUCKDB_PATH', str(ROOT / 'data/warehouse/api_sports.duckdb'))
         if not Path(path).exists():
             raise FileNotFoundError(f'DuckDB not found: {path}')
         with duckdb.connect(path, read_only=True) as connection:
             return connection.execute(sql, params or []).df()
-    from scripts.migrate_history import remote_connection, namespace
-    # All application SQL uses one known table; the namespace validates identifiers.
-    sql = sql.replace('main.bi_player_seasons', namespace()[2] + '.bi_player_seasons')
+    from scripts.migrate_history import remote_connection
     with remote_connection() as connection, connection.cursor() as cursor:
         cursor.execute(sql, params or [])
         frame = pd.DataFrame.from_records(cursor.fetchall(), columns=[c[0] for c in cursor.description])

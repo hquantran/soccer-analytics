@@ -20,6 +20,14 @@ vars:
     duel_success_pct: {numerator: duels_won, denominator: duels_total, scale: 100}
     dribble_attempts_per90: {numerator: dribbles_attempts, denominator: minutes, scale: 90}
     dribble_success_pct: {numerator: dribbles_success, denominator: dribbles_attempts, scale: 100}
+    goal_involvements_per90: {numerator: [goals, assists], denominator: minutes, scale: 90}
+    successful_dribbles_per90: {numerator: dribbles_success, denominator: minutes, scale: 90}
+    shot_accuracy_pct: {numerator: shots_on_target, denominator: shots_total, scale: 100}
+    goal_conversion_pct: {numerator: goals, denominator: shots_total, scale: 100}
+    fouls_per_tackle: {numerator: fouls_committed, denominator: tackles_total, scale: 1}
+    shots_per90: {numerator: shots_total, denominator: minutes, scale: 90}
+    passes_per90: {numerator: passes_total, denominator: minutes, scale: 90}
+    fouls_drawn_per90: {numerator: fouls_drawn, denominator: minutes, scale: 90}
 
 # Layering (analytics engineering):
 #   raw (dlt source) → staging → marts (dimensions / facts) → bi (presentation)

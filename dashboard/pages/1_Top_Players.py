@@ -51,7 +51,7 @@ if applied.get("seasons") and 2026 in applied["seasons"]:
         f"Try {format_season(2025)} for a fuller sample if rankings look thin."
     )
 
-# Position-scoped query + cached aggregation (avoids loading the full BI table)
+# Position-scoped attributes and cached MetricFlow aggregation
 peer_table = cached_peer_table(
     position,
     seasons_t,

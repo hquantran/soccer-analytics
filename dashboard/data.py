@@ -1,64 +1,23 @@
-"""Load and aggregate bi_player_seasons for the Streamlit dashboard."""
+"""Load profile attributes and query metrics through the semantic layer."""
 
 from __future__ import annotations
 
-from pathlib import Path
-import os
-
-import duckdb
 import pandas as pd
 import streamlit as st
 
 from dashboard.warehouse import BACKEND, query as warehouse_query
+from dashboard.semantic import query_rows
 
 from dashboard.metrics_config import (
     ADDITIVE_COLS,
-    BI_RATE_KEYS,
     MetricSpec,
     all_metric_specs,
     all_scatter_metric_keys,
-    compute_metric,
-    compute_xy,
     metrics_for_position,
     scatter_views_for_position,
     trend_metric_for_position,
 )
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = Path(os.environ.get('SOCCER_DUCKDB_PATH', str(PROJECT_ROOT / 'data/warehouse/api_sports.duckdb')))
-PARQUET_PATH = Path(os.environ.get('SOCCER_PARQUET_PATH', str(PROJECT_ROOT / 'data/exports/bi_player_seasons.parquet')))
-
-# Keep the dashboard payload narrow. Rates are recomputed for multi-season
-# views, while the stored rates provide the single-row fast path.
-DASHBOARD_COLUMNS = [
-    "player_season_id",
-    "player_id",
-    "player_name",
-    "nationality",
-    "photo",
-    "age",
-    "team_id",
-    "team_name",
-    "league_id",
-    "league_name",
-    "season",
-    "position",
-    "injured",
-    "rating",
-    *ADDITIVE_COLS,
-    "goals_per90",
-    "assists_per90",
-    "goal_involvements_per90",
-    "key_passes_per90",
-    "tackles_per90",
-    "dribble_attempts_per90",
-    "shot_accuracy_pct",
-    "goal_conversion_pct",
-    "pass_accuracy_pct",
-    "dribble_success_pct",
-    "duel_success_pct",
-    "fouls_per_tackle",
-]
 
 
 def format_season(year: int | float | str) -> str:
@@ -107,7 +66,7 @@ def load_player_lookup() -> pd.DataFrame:
             age,
             league_name,
             season
-        from main.bi_player_seasons
+        from main.player_season_attributes
         where position != 'Goalkeeper'
         qualify row_number() over (
             partition by player_id
@@ -120,7 +79,7 @@ def load_player_lookup() -> pd.DataFrame:
 
 @st.cache_data(ttl=300, show_spinner=False)
 def load_filter_dimension_values() -> dict:
-    """Distinct filter values from bi_player_seasons (small result)."""
+    """Distinct filter values from player season facts (small result)."""
     sql = """
         select
             list(distinct league_name order by league_name) as leagues,
@@ -129,7 +88,7 @@ def load_filter_dimension_values() -> dict:
             list(distinct team_name order by team_name) as teams,
             min(age) as age_min,
             max(age) as age_max
-        from main.bi_player_seasons
+        from main.player_season_attributes
         where position != 'Goalkeeper'
     """
     if BACKEND == 'databricks':
@@ -159,7 +118,7 @@ def load_player_seasons_by_id(
     leagues: tuple[str, ...] | None = None,
     teams: tuple[str, ...] | None = None,
 ) -> pd.DataFrame:
-    """Exact player_id lookup into bi_player_seasons (no name ILIKE)."""
+    """Exact player_id lookup into player season facts (no name ILIKE)."""
     clauses = ["player_id = ?", "position != 'Goalkeeper'"]
     params: list = [int(player_id)]
 
@@ -177,7 +136,7 @@ def load_player_seasons_by_id(
         params.extend(teams)
 
     sql = (
-        f"select * from main.bi_player_seasons "
+        f"select * from main.player_season_attributes "
         f"where {' and '.join(clauses)} "
         f"order by season, team_name"
     )
@@ -216,29 +175,14 @@ def load_peer_season_rows(
         clauses.append("age <= ?")
         params.append(float(age_max))
 
-    sql = f"select * from main.bi_player_seasons where {' and '.join(clauses)}"
+    sql = f"select * from main.player_season_attributes where {' and '.join(clauses)}"
     return warehouse_query(sql, params)
 
 
 @st.cache_data(ttl=300, show_spinner=False)
 def load_player_seasons() -> pd.DataFrame:
-    """Load the dashboard payload from the columnar export."""
-    if BACKEND == 'databricks':
-        columns = ', '.join(f'`{column}`' for column in DASHBOARD_COLUMNS)
-        return warehouse_query(f'select {columns} from main.bi_player_seasons')
-    if PARQUET_PATH.exists():
-        return pd.read_parquet(PARQUET_PATH, columns=DASHBOARD_COLUMNS)
-    if DB_PATH.exists():
-        with duckdb.connect(str(DB_PATH), read_only=True) as conn:
-            try:
-                columns = ", ".join(f'"{column}"' for column in DASHBOARD_COLUMNS)
-                return conn.execute(f"select {columns} from main.bi_player_seasons").df()
-            except duckdb.Error:
-                pass
-    raise FileNotFoundError(
-        "No bi_player_seasons data found. Run `dbt run` to build main.bi_player_seasons "
-        f"or generate {PARQUET_PATH.name}."
-    )
+    """Load raw stint attributes from the warehouse; no BI export is required."""
+    return warehouse_query("select * from main.player_season_attributes where position != 'Goalkeeper'")
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -296,19 +240,18 @@ def top_player_matches(df: pd.DataFrame, query: str, limit: int = 5) -> pd.DataF
 
 
 def _row_sums(rows: pd.DataFrame) -> dict[str, float]:
-    return {col: float(rows[col].fillna(0).sum()) for col in ADDITIVE_COLS if col in rows.columns}
+    metrics = query_rows(rows)
+    if metrics.empty:
+        return {}
+    return {col: float(metrics.iloc[0][col]) for col in ADDITIVE_COLS if col in metrics and pd.notna(metrics.iloc[0][col])}
 
 
 def _metric_from_rows(rows: pd.DataFrame, spec: MetricSpec) -> float | None:
-    """
-    Single BI row: reuse precomputed season rates when formulas match.
-    Multi-row (multi-season or multi-stint): sum additives, then recompute.
-    """
-    if len(rows) == 1 and spec.key in BI_RATE_KEYS and spec.key in rows.columns:
-        raw = rows.iloc[0][spec.key]
-        if pd.notna(raw):
-            return float(raw)
-    return compute_metric(_row_sums(rows), spec)
+    metrics = query_rows(rows)
+    if metrics.empty or spec.key not in metrics:
+        return None
+    value = metrics.iloc[0][spec.key]
+    return None if pd.isna(value) else float(value)
 
 
 def resolve_majority_position(rows: pd.DataFrame) -> tuple[str, pd.DataFrame, dict]:
@@ -363,10 +306,9 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
     first = pos_rows.sort_values("season").iloc[-1]
     sums = _row_sums(pos_rows)
 
-    if "rating" in pos_rows.columns and sums.get("minutes", 0) > 0:
-        rating = float((pos_rows["rating"].fillna(0) * pos_rows["minutes"].fillna(0)).sum() / sums["minutes"])
-    else:
-        rating = float(first.get("rating") or 0)
+    semantic = query_rows(pos_rows)
+    raw_rating = semantic.iloc[0]['rating'] if not semantic.empty else None
+    rating = None if pd.isna(raw_rating) else float(raw_rating)
 
     seasons = sorted(pos_rows["season"].dropna().unique().tolist())
     teams = sorted(pos_rows["team_name"].dropna().unique().tolist())
@@ -394,7 +336,8 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
         "metrics": computed,
         "metric_specs": metric_blocks,
         "sums": sums,
-        "used_bi_rates": len(pos_rows) == 1,
+        "used_bi_rates": False,
+        "metric_source": "semantic",
         "rows": pos_rows,
     }
 
@@ -403,16 +346,14 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
 def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     """One aggregated row per player with position metrics and all scatter axes.
 
-    Always sum additive columns then recompute rates (correct for 1+ rows and
-    matches BI season-grain formulas). Vectorized for dashboard performance.
+    MetricFlow computes additive totals and rates over the exact selected stints.
     """
     peers = df[df["position"] == position]
     if peers.empty:
         return pd.DataFrame()
 
-    additive = [c for c in ADDITIVE_COLS if c in peers.columns]
     grouped = peers.groupby("player_id", sort=False)
-    sums = grouped[additive].sum().reset_index()
+    sums = query_rows(peers).rename(columns={"player": "player_id"})
 
     # Latest stint for display identity (name / age)
     latest_idx = peers.groupby("player_id", sort=False)["season"].idxmax()
@@ -434,17 +375,6 @@ def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     out = identity.merge(sums, on="player_id").merge(teams, on="player_id").merge(leagues, on="player_id")
     out["position"] = position
 
-    if "rating" in peers.columns and "minutes" in peers.columns:
-        weighted = peers.assign(
-            _rw=peers["rating"].fillna(0) * peers["minutes"].fillna(0),
-            _mins=peers["minutes"].fillna(0),
-        )
-        rating = weighted.groupby("player_id", sort=False).agg(_rw=("_rw", "sum"), _mins=("_mins", "sum"))
-        rating["rating"] = rating["_rw"] / rating["_mins"].replace(0, pd.NA)
-        out = out.merge(rating[["rating"]].reset_index(), on="player_id", how="left")
-    else:
-        out["rating"] = None
-
     specs = all_metric_specs(position)
     scatter_specs: list[MetricSpec] = []
     seen_keys = {s.key for s in specs}
@@ -458,33 +388,14 @@ def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
                 seen_keys.add(key)
 
     for spec in list(specs) + scatter_specs:
-        out[spec.key] = _metric_series_from_sums(out, spec)
+        if spec.key not in out.columns:
+            out[spec.key] = out[spec.numerator] if isinstance(spec.numerator, str) and spec.numerator in out else None
 
     for key in all_scatter_metric_keys(position):
         if key not in out.columns:
             out[key] = None
 
     return out.reset_index(drop=True)
-
-
-def _metric_series_from_sums(sums_df: pd.DataFrame, spec: MetricSpec) -> pd.Series:
-    """Vectorized MetricSpec over a frame of summed additive columns."""
-    if spec.key == "goal_involvements_per90":
-        goals = pd.to_numeric(sums_df.get("goals"), errors="coerce").fillna(0)
-        assists = pd.to_numeric(sums_df.get("assists"), errors="coerce").fillna(0)
-        minutes = pd.to_numeric(sums_df.get("minutes"), errors="coerce")
-        return ((goals + assists) * 90.0 / minutes.where(minutes != 0)).astype("float64")
-
-    if spec.numerator not in sums_df.columns:
-        return pd.Series(float("nan"), index=sums_df.index, dtype="float64")
-    num = pd.to_numeric(sums_df[spec.numerator], errors="coerce")
-    if spec.denominator is None:
-        return num.astype("float64")
-    if spec.denominator not in sums_df.columns:
-        return pd.Series(float("nan"), index=sums_df.index, dtype="float64")
-    den = pd.to_numeric(sums_df[spec.denominator], errors="coerce")
-    result = num * float(spec.scale) / den.where(den != 0)
-    return result.astype("float64")
 
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -669,20 +580,16 @@ def build_season_trend_frame(player_rows: pd.DataFrame, position: str) -> pd.Dat
         return pd.DataFrame(columns=["season", "season_label", "minutes", "primary_value", "primary_label"])
 
     primary = trend_metric_for_position(position)
-    records: list[dict] = []
-    for season, rows in player_rows.groupby("season"):
-        sums = _row_sums(rows)
-        records.append(
-            {
-                "season": int(season),
-                "season_label": format_season(season),
-                "minutes": sums.get("minutes", 0.0),
-                "primary_value": _metric_from_rows(rows, primary),
-                "primary_label": primary.label,
-                "primary_key": primary.key,
-            }
-        )
-    return pd.DataFrame.from_records(records).sort_values("season").reset_index(drop=True)
+    metrics = query_rows(player_rows, 'player_season__season')
+    if metrics.empty:
+        return pd.DataFrame(columns=['season', 'season_label', 'minutes', 'primary_value', 'primary_label'])
+    metrics = metrics.rename(columns={'player_season__season': 'season', primary.key: 'primary_value'})
+    metrics['season'] = metrics['season'].astype(int)
+    metrics['season_label'] = metrics['season'].map(format_season)
+    metrics['primary_label'] = primary.label
+    metrics['primary_key'] = primary.key
+    return metrics[['season', 'season_label', 'minutes', 'primary_value', 'primary_label', 'primary_key']].sort_values('season').reset_index(drop=True)
+
 
 
 def format_metric_value(value: float | None, spec: MetricSpec) -> str:

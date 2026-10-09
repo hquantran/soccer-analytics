@@ -150,10 +150,10 @@ with right:
             f"Position resolved by majority seasons played → **{position}** ({breakdown}). "
             "Metrics use only rows at that position."
         )
-    if profile.get("used_bi_rates"):
-        st.caption("Rates for this single season/stint reuse BI-layer values.")
+    if profile.get("metric_source") == "semantic":
+        st.caption("Metrics calculated by MetricFlow over the selected seasons/stints.")
     else:
-        st.caption("Rates recomputed from summed volume across the selected seasons/stints.")
+        st.caption("Metrics calculated by MetricFlow over the selected seasons/stints.")
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 specs = profile["metric_specs"]

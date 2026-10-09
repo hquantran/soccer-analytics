@@ -271,7 +271,7 @@ def _render_season_filter(prefix: str, seasons_all: list[int]) -> list[int]:
         options=["Single season", "Multi season"],
         horizontal=True,
         key=f"{prefix}_season_mode_v2",
-        help="Single season uses one BI season row path; multi aggregates volume across seasons.",
+        help="Metrics are calculated across the selected seasons.",
     )
 
     if mode == "Single season":
@@ -446,7 +446,7 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
                 positions_all,
                 index=positions_all.index(default_pos) if default_pos in positions_all else 0,
                 key="profile_sb_position",
-                help="Only used if the player's BI rows lack a position. Charts normally use the player's recorded position.",
+                help="Only used if the player's data lacks a position. Charts normally use the player's recorded position.",
             )
             age_range = st.slider(
                 "Age range",
