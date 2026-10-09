@@ -4,6 +4,14 @@ createOrReplace
 		defaultPowerBIDataSourceVersion: powerBI_V3
 		sourceQueryCulture: en-US
 
+		expression DatabricksHost = "<DATABRICKS_HOST>" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+		expression DatabricksHttpPath = "<DATABRICKS_HTTP_PATH>" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+		expression DatabricksCatalog = "<DATABRICKS_CATALOG>" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+		expression DatabricksSchema = "<DATABRICKS_SCHEMA>" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
 		table fct_player_seasons
 
 			column player_season_id
@@ -236,9 +244,9 @@ createOrReplace
 				mode: import
 				source =
 					let
-					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
-					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
-					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),
+					    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],
+					    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],
 					    Data = Schema{[Name="fct_player_seasons",Kind="Table"]}[Data],
 					    Selected = Table.SelectColumns(Data, {"player_season_id", "player_id", "team_id", "league_id", "season", "position", "injured", "rating", "minutes", "appearances", "goals", "assists", "shots_total", "shots_on_target", "passes_total", "passes_completed", "passes_key", "tackles_total", "duels_total", "duels_won", "dribbles_attempts", "dribbles_success", "fouls_drawn", "fouls_committed"})
 					in
@@ -267,15 +275,20 @@ createOrReplace
 				summarizeBy: none
 				sourceColumn: age
 
+			column birth_date
+				dataType: dateTime
+				summarizeBy: none
+				sourceColumn: birth_date
+
 			partition dim_players = m
 				mode: import
 				source =
 					let
-					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
-					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
-					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),
+					    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],
+					    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],
 					    Data = Schema{[Name="dim_players",Kind="Table"]}[Data],
-					    Selected = Table.SelectColumns(Data, {"player_id", "name", "nationality", "age"})
+					    Selected = Table.SelectColumns(Data, {"player_id", "name", "nationality", "age", "birth_date"})
 					in
 					    Selected
 
@@ -296,9 +309,9 @@ createOrReplace
 				mode: import
 				source =
 					let
-					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
-					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
-					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),
+					    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],
+					    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],
 					    Data = Schema{[Name="dim_teams",Kind="Table"]}[Data],
 					    Selected = Table.SelectColumns(Data, {"team_id", "team_name"})
 					in
@@ -321,9 +334,9 @@ createOrReplace
 				mode: import
 				source =
 					let
-					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
-					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
-					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),
+					    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],
+					    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],
 					    Data = Schema{[Name="dim_leagues",Kind="Table"]}[Data],
 					    Selected = Table.SelectColumns(Data, {"league_id", "league_name"})
 					in
@@ -345,9 +358,9 @@ createOrReplace
 				mode: import
 				source =
 					let
-					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
-					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
-					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),
+					    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],
+					    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],
 					    Data = Schema{[Name="fct_player_seasons",Kind="Table"]}[Data],
 					    Seasons = Table.Distinct(Table.SelectColumns(Data, {"season"})),
 					    Selected = Table.AddColumn(Seasons, "season_label", each Text.From([season]) & "/" & Text.From([season]+1), type text)

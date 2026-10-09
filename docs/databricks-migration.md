@@ -165,12 +165,12 @@ provides `mf`; no paid hosted semantic endpoint is needed.
 
 Power BI Desktop uses the Azure Databricks connector (also for Databricks on other
 clouds): provide workspace host and SQL warehouse HTTP path, authenticate, then
-select `<catalog>.<curated_schema>.bi_player_seasons`. Use Import for this small
+import the fact and dimension tables described in the [connection guide](../powerbi/README.md). Use Import for this small
 dataset unless DirectQuery is required. Import stores private data in the PBIX;
 keep that file private. Do not publish a dataset or report publicly.
 
 Power BI does not automatically consume the MetricFlow YAML. For filter-aware
-rates use the supplied [DAX measures](power-bi-measures.dax) over the exposed additive
+rates use the supplied [DAX measures](../powerbi/measures.dax) over the fact's additive
 columns; these mirror the canonical contract. dbt parity tests and Python contract
 tests govern the definitions. Power BI Desktop is required to create and validate
 an actual report; no fabricated PBIX is included.

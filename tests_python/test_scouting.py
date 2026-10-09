@@ -30,6 +30,8 @@ class ScoutingTests(unittest.TestCase):
             self.assertIn(dax_rate(contract), model)
         self.assertEqual(model.count('crossFilteringBehavior: oneDirection'), 4)
         self.assertNotIn('DATABRICKS_TOKEN', model)
+        self.assertIn('column birth_date\n\t\t\t\tdataType: dateTime', model)
+        self.assertIn('{"player_id", "name", "nationality", "age", "birth_date"}', model)
 
 
 if __name__ == '__main__':

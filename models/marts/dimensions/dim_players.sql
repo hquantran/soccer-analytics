@@ -7,7 +7,8 @@ select
     photo,
     height_cm,
     weight_kg,
-    age
+    age,
+    birth_date
 from {{ ref('stg_players') }}
 qualify row_number() over (
     partition by player_id

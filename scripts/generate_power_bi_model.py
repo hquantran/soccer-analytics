@@ -23,12 +23,17 @@ def generate():
             **{column: 'int64' for column in ADDITIVE_COLS}}
     fact['passes_completed'] = 'double'
     tables = {'fct_player_seasons': fact,
-              'dim_players': {'player_id': 'int64', 'name': 'string', 'nationality': 'string', 'age': 'int64'},
+              'dim_players': {'player_id': 'int64', 'name': 'string', 'nationality': 'string', 'age': 'int64', 'birth_date': 'dateTime'},
               'dim_teams': {'team_id': 'int64', 'team_name': 'string'},
               'dim_leagues': {'league_id': 'int64', 'league_name': 'string'},
               'dim_seasons': {'season': 'int64', 'season_label': 'string'}}
     script = ['createOrReplace', '\tmodel Model', '\t\tculture: en-US',
               '\t\tdefaultPowerBIDataSourceVersion: powerBI_V3', '\t\tsourceQueryCulture: en-US']
+    for name, placeholder in [('DatabricksHost', 'DATABRICKS_HOST'),
+                              ('DatabricksHttpPath', 'DATABRICKS_HTTP_PATH'),
+                              ('DatabricksCatalog', 'DATABRICKS_CATALOG'),
+                              ('DatabricksSchema', 'DATABRICKS_SCHEMA')]:
+        script += ['', f'\t\texpression {name} = "<{placeholder}>" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]']
     for table, columns in tables.items():
         script += ['', f'\t\ttable {table}']
         for column, datatype in columns.items():
@@ -52,9 +57,9 @@ def generate():
         source_table = 'fct_player_seasons' if table == 'dim_seasons' else table
         script += ['', f'\t\t\tpartition {table} = m', '\t\t\t\tmode: import', '\t\t\t\tsource =']
         m = ['let',
-             '    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),',
-             '    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],',
-             '    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],',
+             '    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog=null, Database=null]),',
+             '    Catalog = Source{[Name=DatabricksCatalog,Kind="Database"]}[Data],',
+             '    Schema = Catalog{[Name=DatabricksSchema,Kind="Schema"]}[Data],',
              f'    Data = Schema{{[Name="{source_table}",Kind="Table"]}}[Data],']
         if table == 'dim_seasons':
             m += ['    Seasons = Table.Distinct(Table.SelectColumns(Data, {"season"})),',

@@ -4,6 +4,8 @@ models:
   - name: dim_players
     description: One row per player with latest available descriptive attributes.
     columns:
+      - name: birth_date
+        description: Nullable date of birth parsed from the raw player record; use with a season reference date for historical age.
       - name: player_id
         tests:
           - unique

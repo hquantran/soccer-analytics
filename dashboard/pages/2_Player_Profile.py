@@ -75,6 +75,29 @@ except FileNotFoundError as exc:
     st.error(str(exc))
     st.stop()
 
+link = st.session_state.pop("profile_link_pending", None)
+if link is not None:
+    try:
+        linked_player = int(link[0])
+        linked_season = int(link[1]) if link[1] is not None else None
+        if linked_player not in set(lookup["player_id"].astype(int)):
+            raise ValueError("Player not found in the scouting data.")
+        if linked_season is not None and linked_season not in dims["seasons"]:
+            raise ValueError("Season not found in the scouting data.")
+    except (TypeError, ValueError):
+        st.error("This profile link has an invalid or unavailable player or season.")
+        st.stop()
+    st.session_state.update({
+        "profile_sb_player_id": linked_player,
+        "profile_sb_name_q": "",
+        "profile_sb_leagues": dims["leagues"],
+        "profile_sb_teams": [],
+        "profile_sb_age": (dims["age_min"], dims["age_max"]),
+    })
+    if linked_season is not None:
+        st.session_state["profile_sb_season_mode_v2"] = "Single season"
+        st.session_state["profile_sb_season_single"] = format_season(linked_season)
+
 applied = render_profile_sidebar(lookup, dims)
 if not applied or not applied.get("player_id"):
     st.info("Choose filters and a player in the sidebar to open a profile.")

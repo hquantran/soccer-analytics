@@ -44,16 +44,16 @@ class MetricContractTests(unittest.TestCase):
             self.assertEqual(metrics[key]['type'], 'ratio')
 
     def test_power_bi_contract(self):
-        dax = (ROOT / 'docs/power-bi-measures.dax').read_text()
+        dax = (ROOT / 'powerbi/measures.dax').read_text(encoding='utf-8')
         for contract in CANONICAL_METRICS.values():
             inputs = contract['numerator']
             inputs = [inputs] if isinstance(inputs, str) else inputs
-            numerator = " + ".join(f"SUM(bi_player_seasons[{column}])" for column in inputs)
+            numerator = " + ".join(f"SUM(fct_player_seasons[{column}])" for column in inputs)
             if len(inputs) > 1:
                 numerator = f"({numerator})"
             expression = (
                 f"DIVIDE({contract['scale']} * {numerator}, "
-                f"SUM(bi_player_seasons[{contract['denominator']}]))"
+                f"SUM(fct_player_seasons[{contract['denominator']}]))"
             )
             self.assertIn(expression, dax)
 

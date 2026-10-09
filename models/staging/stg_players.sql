@@ -18,6 +18,7 @@ with player as (
                 nullif(trim(player__firstname || ' ' || player__lastname), '')
             )
         end as name,
+        try_cast(player__birth__date as date) as birth_date,
         {{ age_in_years('player__birth__date') }} as age,
         player__nationality as nationality,
         nullif({{ regex_replace_all('player__height', '[^0-9]', '') }}, '')::int as height_cm,
@@ -66,6 +67,7 @@ select
     p.player_id,
     p.name,
     p.age,
+    p.birth_date,
     p.nationality,
     p.height_cm,
     p.weight_kg,
