@@ -33,13 +33,13 @@ DEFAULT_MIN_MINUTES = 500.0
 
 
 def ensure_recommender_features(peer_table: pd.DataFrame) -> pd.DataFrame:
-    """Return a copy with all recommender rate columns computed from additive sums."""
+    """Validate and preserve the prepared scouting-mart peer rates."""
     if peer_table.empty:
         return peer_table.copy()
 
     missing = [key for key in FEATURE_COLS if key not in peer_table]
     if missing:
-        raise ValueError(f'Semantic peer table is missing metrics: {missing}')
+        raise ValueError(f'Scouting peer table is missing metrics: {missing}')
     return peer_table.copy()
 
 

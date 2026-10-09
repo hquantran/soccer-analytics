@@ -182,10 +182,10 @@ if profile_a.get("position_info", {}).get("used_majority") or profile_b.get("pos
         "Position uses majority seasons played within the selected window; "
         "metrics only include rows at that position."
     )
-if profile_a.get("metric_source") == "semantic" and profile_b.get("metric_source") == "semantic":
-    st.caption("Both players' metrics are calculated by MetricFlow over their selected seasons/stints.")
+if profile_a.get("metric_source") == "scouting_mart" and profile_b.get("metric_source") == "scouting_mart":
+    st.caption("Metrics use scouting-mart values for one stint and weighted totals for multiple stints.")
 else:
-    st.caption("Metrics calculated by MetricFlow over the selected seasons/stints.")
+    st.caption("Metrics use scouting-mart values for one stint and weighted totals for multiple stints.")
 st.caption("P## badges = percentile vs same-position peers in the selected filters.")
 
 radar_specs = radar_metric_specs(position)

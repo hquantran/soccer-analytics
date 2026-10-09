@@ -175,37 +175,21 @@ columns; these mirror the canonical contract. dbt parity tests and Python contra
 tests govern the definitions. Power BI Desktop is required to create and validate
 an actual report; no fabricated PBIX is included.
 
-Streamlit queries **MetricFlow for metric values** on the Databricks SQL
-warehouse. Profile attributes and filter choices come directly from the fact and
-dimension tables. The application does not read the BI table or Parquet exports.
-Set `SOCCER_BACKEND=databricks` in the ignored `.env` and launch:
+Streamlit reads `bi_player_seasons` directly as its scouting mart. Stored rates
+are used only for a single stint; multiple stints are grouped by player or season
+and recalculated from summed additive inputs using `dbt_project.yml`. Missing
+completed-pass totals remain null. The recommender uses the prepared peer rates.
+No MetricFlow subprocess or CSV export is required for dashboard requests.
 
-```powershell
-.\.venv-analytics\Scripts\streamlit.exe run dashboard/app.py
-```
+Set `SOCCER_BACKEND=databricks` (or `duckdb` for the preserved local source),
+then restart Streamlit. Results are cached in memory for five minutes. Remote
+errors do not fall back to local data. MetricFlow modules and semantic definitions
+remain optional for experimentation.
 
-The app loads `.env` automatically. Attribute queries bind filter values as SQL
-parameters. Exact selected stint IDs scope semantic queries, preserving season,
-league, team, age and majority-position filters. MetricFlow computes the rates,
-additive totals and minutes-weighted rating; charts, percentiles and similarity
-scores remain dashboard responsibilities. An entirely missing completed-pass total
-produces a null accuracy instead of an artificial zero.
-
-Results are cached in memory for five minutes. MetricFlow runs in a subprocess
-with a separate generated project and manifest under ignored
-`target/streamlit_<backend>`. Query requests and CSV results are temporary files
-under ignored `data/migrations`, deleted after use. Large filters are loaded by a
-Python worker to avoid Windows' command-line length limit. Cold queries include
-MetricFlow startup time; the SQL warehouse must be available. There is no silent
-local fallback after a remote error. Restart after changing connection settings.
-
-`SOCCER_BACKEND` selects both the dashboard attribute source and its MetricFlow
-target. `DBT_TARGET` still selects the target for manual dbt/MetricFlow commands.
-Use the Python 3.11 `.venv-analytics` environment, which contains `dbt` and `mf`.
-For local semantic queries, set `SOCCER_BACKEND=duckdb`; optional
-`SOCCER_DUCKDB_PATH` selects the database. The historical DuckDB database remains
-intact. BI models and `scripts.export_databricks_consumer.py` remain optional for
-other consumers and are not required by Streamlit.
+The recommended Power BI path is now separate: import the fact and dimension
+tables using the [Power BI semantic model starter](../powerbi/README.md).
+Its relationships and DAX measures are generated from the same metric contract.
+The older wide-table/DAX route above remains an alternative. No report is created.
 
 ## Private data policy
 
@@ -225,11 +209,10 @@ References: [open-source MetricFlow](https://github.com/dbt-labs/metricflow),
 
 `dbt_project.yml` defines the inputs and scales for all 16 rates. BI SQL uses
 `canonical_rate`, semantic measures render the same numerator, and Streamlit
-requests the resulting metric names through MetricFlow. Its display metadata
-reads the same contract through `config/metrics.py`. Change the formula there
+uses the same contract through `config/metrics.py` for weighted rollups. Change the formula there
 when updating an existing metric, then rebuild dbt models and restart Streamlit.
-The optional BI table is still built by dbt SQL. Streamlit uses grouped semantic
-queries directly and does not recalculate rates in Python. Rates are calculated
+The optional BI table is still built by dbt SQL. Streamlit uses the scouting mart and shared Python rollups; Power BI has its
+own generated semantic model over the dimensions and facts. Rates are calculated
 after summing additive inputs, with null results for zero denominators.
 
 Goal involvements use the combined numerator `[goals, assists]`. Successful

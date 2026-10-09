@@ -1,4 +1,4 @@
-"""Read profile attributes from facts and dimensions on the selected warehouse."""
+"""Read the scouting mart from the selected warehouse."""
 from decimal import Decimal
 import os
 from pathlib import Path
@@ -20,15 +20,7 @@ def query(sql, params=None):
     if BACKEND == 'databricks':
         from scripts.migrate_history import namespace
         namespace_prefix = namespace()[2]
-    attributes = f'''(
-        select f.*, p.name as player_name, p.nationality, p.photo,
-               p.height_cm, p.weight_kg, p.age, t.team_name, l.league_name
-        from {namespace_prefix}.fct_player_seasons f
-        join {namespace_prefix}.dim_players p using (player_id)
-        join {namespace_prefix}.dim_teams t using (team_id)
-        join {namespace_prefix}.dim_leagues l using (league_id)
-    )'''
-    sql = sql.replace('main.player_season_attributes', attributes)
+    sql = sql.replace('main.player_season_attributes', namespace_prefix + '.bi_player_seasons')
     if BACKEND == 'duckdb':
         path = os.environ.get('SOCCER_DUCKDB_PATH', str(ROOT / 'data/warehouse/api_sports.duckdb'))
         if not Path(path).exists():

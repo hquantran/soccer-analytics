@@ -1,4 +1,4 @@
-"""Load profile attributes and query metrics through the semantic layer."""
+"""Load the scouting mart and roll up shared metrics."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from dashboard.warehouse import BACKEND, query as warehouse_query
-from dashboard.semantic import query_rows
+from dashboard.scouting import query_rows
 
 from dashboard.metrics_config import (
     ADDITIVE_COLS,
@@ -181,7 +181,7 @@ def load_peer_season_rows(
 
 @st.cache_data(ttl=300, show_spinner=False)
 def load_player_seasons() -> pd.DataFrame:
-    """Load raw stint attributes from the warehouse; no BI export is required."""
+    """Load scouting-mart stints directly; no export is required."""
     return warehouse_query("select * from main.player_season_attributes where position != 'Goalkeeper'")
 
 
@@ -337,7 +337,7 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
         "metric_specs": metric_blocks,
         "sums": sums,
         "used_bi_rates": False,
-        "metric_source": "semantic",
+        "metric_source": "scouting_mart",
         "rows": pos_rows,
     }
 
@@ -346,7 +346,7 @@ def aggregate_player_rows(rows: pd.DataFrame) -> dict:
 def build_peer_table(df: pd.DataFrame, position: str) -> pd.DataFrame:
     """One aggregated row per player with position metrics and all scatter axes.
 
-    MetricFlow computes additive totals and rates over the exact selected stints.
+    Roll up scouting-mart totals using the shared metric definitions.
     """
     peers = df[df["position"] == position]
     if peers.empty:

@@ -11,23 +11,20 @@ Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
 The original DuckDB/dbt implementation remains available. This branch adds a
 private Databricks/Delta migration path, shared canonical metric definitions and
 an open-source MetricFlow semantic graph. The private workspace has passed migration parity and semantic validation;
-Streamlit now queries metrics through MetricFlow and reads profile attributes from the curated facts and dimensions.
+Streamlit reads the precomputed scouting mart; the Power BI connection layer imports the dimensional models.
 
 ```mermaid
 flowchart LR
-    History[Private persisted dlt history] --> Parquet[One-time private Parquet transfer]
-    Parquet --> Delta[Databricks managed Delta tables]
-    Delta --> DBT[dbt Core: staging, dimensions, additive facts]
-    DBT --> Semantics[MetricFlow entities, dimensions and metrics]
-    DBT --> BI[Curated player-season serving table]
-    Contract[Canonical metric contract] --> DBT
-    Contract --> Semantics
-    Semantics --> Local[Private Streamlit and recommender]
-    DBT --> Attributes[Player profile attributes]
-    Attributes --> Local
-    BI --> PowerBI[Private Power BI Desktop]
-    History --> DuckDB[Original DuckDB and dbt path]
-    DuckDB --> Semantics
+    History[Preserved DuckDB history] --> Delta[Databricks Delta raw tables]
+    Delta --> DBT[dbt facts and dimensions]
+    DBT --> PBIModel[Power BI semantic model: relationships and DAX]
+    PBIModel --> PBI[Power BI reports]
+    DBT --> Mart[Scouting mart: bi_player_seasons]
+    Mart --> App[Streamlit profiles and recommendations]
+    Contract[Shared metric definitions] --> Mart
+    Contract --> PBIModel
+    Contract --> App
+    DBT --> MF[Optional MetricFlow experiments]
 ```
 
 The fact grain is **player ? team ? league ? season stint**, with a 300-minute
@@ -40,8 +37,8 @@ See the [migration, validation and consumer guide](docs/databricks-migration.md)
 for configuration, transfer commands, canonical formulas, tests and Power BI setup.
 Python 3.11 and the checked-in `uv.lock` provide the validated dependency path.
 No paid hosted dbt Semantic Layer is required. Streamlit stays local/private.
-Set `SOCCER_BACKEND=databricks` in ignored `.env` for semantic queries on the cloud
-warehouse, or `SOCCER_BACKEND=duckdb` for semantic queries on the preserved local database.
+Set `SOCCER_BACKEND=databricks` in ignored `.env` to read the cloud scouting mart,
+or `SOCCER_BACKEND=duckdb` to use the preserved local database.
 The application loads `.env` automatically; no download-back step is needed.
 
 Underlying third-party sports data is intentionally excluded: do not commit
@@ -437,3 +434,6 @@ Without a Gemini API key, the deterministic analytics and scouting flags remain 
 ```bash
 streamlit run dashboard/app.py
 ```
+The [Power BI connection layer](powerbi/README.md) contains a generated TMDL
+semantic model with Databricks import queries, relationships and shared DAX
+measures. No Power BI report or credentials are included.

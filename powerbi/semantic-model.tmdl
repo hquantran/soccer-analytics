@@ -1,0 +1,383 @@
+createOrReplace
+	model Model
+		culture: en-US
+		defaultPowerBIDataSourceVersion: powerBI_V3
+		sourceQueryCulture: en-US
+
+		table fct_player_seasons
+
+			column player_season_id
+				dataType: string
+				summarizeBy: none
+				sourceColumn: player_season_id
+				isHidden
+
+			column player_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: player_id
+				isHidden
+
+			column team_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: team_id
+				isHidden
+
+			column league_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: league_id
+				isHidden
+
+			column season
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: season
+				isHidden
+
+			column position
+				dataType: string
+				summarizeBy: none
+				sourceColumn: position
+
+			column injured
+				dataType: boolean
+				summarizeBy: none
+				sourceColumn: injured
+
+			column rating
+				dataType: double
+				summarizeBy: none
+				sourceColumn: rating
+				isHidden
+
+			column minutes
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: minutes
+				isHidden
+
+			column appearances
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: appearances
+				isHidden
+
+			column goals
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: goals
+				isHidden
+
+			column assists
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: assists
+				isHidden
+
+			column shots_total
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: shots_total
+				isHidden
+
+			column shots_on_target
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: shots_on_target
+				isHidden
+
+			column passes_total
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: passes_total
+				isHidden
+
+			column passes_completed
+				dataType: double
+				summarizeBy: none
+				sourceColumn: passes_completed
+				isHidden
+
+			column passes_key
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: passes_key
+				isHidden
+
+			column tackles_total
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: tackles_total
+				isHidden
+
+			column duels_total
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: duels_total
+				isHidden
+
+			column duels_won
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: duels_won
+				isHidden
+
+			column dribbles_attempts
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: dribbles_attempts
+				isHidden
+
+			column dribbles_success
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: dribbles_success
+				isHidden
+
+			column fouls_drawn
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: fouls_drawn
+				isHidden
+
+			column fouls_committed
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: fouls_committed
+				isHidden
+
+			measure goals_per90 = DIVIDE(90 * SUM(fct_player_seasons[goals]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure assists_per90 = DIVIDE(90 * SUM(fct_player_seasons[assists]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure key_passes_per90 = DIVIDE(90 * SUM(fct_player_seasons[passes_key]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure tackles_per90 = DIVIDE(90 * SUM(fct_player_seasons[tackles_total]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure pass_accuracy_pct = DIVIDE(100 * SUM(fct_player_seasons[passes_completed]), SUM(fct_player_seasons[passes_total]))
+				formatString: 0.0"%"
+				displayFolder: Performance
+
+			measure duel_success_pct = DIVIDE(100 * SUM(fct_player_seasons[duels_won]), SUM(fct_player_seasons[duels_total]))
+				formatString: 0.0"%"
+				displayFolder: Performance
+
+			measure dribble_attempts_per90 = DIVIDE(90 * SUM(fct_player_seasons[dribbles_attempts]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure dribble_success_pct = DIVIDE(100 * SUM(fct_player_seasons[dribbles_success]), SUM(fct_player_seasons[dribbles_attempts]))
+				formatString: 0.0"%"
+				displayFolder: Performance
+
+			measure goal_involvements_per90 = DIVIDE(90 * (SUM(fct_player_seasons[goals]) + SUM(fct_player_seasons[assists])), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure successful_dribbles_per90 = DIVIDE(90 * SUM(fct_player_seasons[dribbles_success]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure shot_accuracy_pct = DIVIDE(100 * SUM(fct_player_seasons[shots_on_target]), SUM(fct_player_seasons[shots_total]))
+				formatString: 0.0"%"
+				displayFolder: Performance
+
+			measure goal_conversion_pct = DIVIDE(100 * SUM(fct_player_seasons[goals]), SUM(fct_player_seasons[shots_total]))
+				formatString: 0.0"%"
+				displayFolder: Performance
+
+			measure fouls_per_tackle = DIVIDE(1 * SUM(fct_player_seasons[fouls_committed]), SUM(fct_player_seasons[tackles_total]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure shots_per90 = DIVIDE(90 * SUM(fct_player_seasons[shots_total]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure passes_per90 = DIVIDE(90 * SUM(fct_player_seasons[passes_total]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure fouls_drawn_per90 = DIVIDE(90 * SUM(fct_player_seasons[fouls_drawn]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure minutes_total = SUM(fct_player_seasons[minutes])
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure goals_total = SUM(fct_player_seasons[goals])
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure assists_total = SUM(fct_player_seasons[assists])
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure players_count = DISTINCTCOUNT(fct_player_seasons[player_id])
+				formatString: 0.00
+				displayFolder: Performance
+
+			measure rating_weighted = DIVIDE(SUMX(fct_player_seasons, COALESCE(fct_player_seasons[rating], 0) * fct_player_seasons[minutes]), SUM(fct_player_seasons[minutes]))
+				formatString: 0.00
+				displayFolder: Performance
+
+			partition fct_player_seasons = m
+				mode: import
+				source =
+					let
+					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
+					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
+					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Data = Schema{[Name="fct_player_seasons",Kind="Table"]}[Data],
+					    Selected = Table.SelectColumns(Data, {"player_season_id", "player_id", "team_id", "league_id", "season", "position", "injured", "rating", "minutes", "appearances", "goals", "assists", "shots_total", "shots_on_target", "passes_total", "passes_completed", "passes_key", "tackles_total", "duels_total", "duels_won", "dribbles_attempts", "dribbles_success", "fouls_drawn", "fouls_committed"})
+					in
+					    Selected
+
+		table dim_players
+
+			column player_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: player_id
+				isHidden
+
+			column name
+				dataType: string
+				summarizeBy: none
+				sourceColumn: name
+
+			column nationality
+				dataType: string
+				summarizeBy: none
+				sourceColumn: nationality
+
+			column age
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: age
+
+			partition dim_players = m
+				mode: import
+				source =
+					let
+					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
+					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
+					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Data = Schema{[Name="dim_players",Kind="Table"]}[Data],
+					    Selected = Table.SelectColumns(Data, {"player_id", "name", "nationality", "age"})
+					in
+					    Selected
+
+		table dim_teams
+
+			column team_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: team_id
+				isHidden
+
+			column team_name
+				dataType: string
+				summarizeBy: none
+				sourceColumn: team_name
+
+			partition dim_teams = m
+				mode: import
+				source =
+					let
+					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
+					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
+					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Data = Schema{[Name="dim_teams",Kind="Table"]}[Data],
+					    Selected = Table.SelectColumns(Data, {"team_id", "team_name"})
+					in
+					    Selected
+
+		table dim_leagues
+
+			column league_id
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: league_id
+				isHidden
+
+			column league_name
+				dataType: string
+				summarizeBy: none
+				sourceColumn: league_name
+
+			partition dim_leagues = m
+				mode: import
+				source =
+					let
+					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
+					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
+					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Data = Schema{[Name="dim_leagues",Kind="Table"]}[Data],
+					    Selected = Table.SelectColumns(Data, {"league_id", "league_name"})
+					in
+					    Selected
+
+		table dim_seasons
+
+			column season
+				dataType: int64
+				summarizeBy: none
+				sourceColumn: season
+
+			column season_label
+				dataType: string
+				summarizeBy: none
+				sourceColumn: season_label
+
+			partition dim_seasons = m
+				mode: import
+				source =
+					let
+					    Source = Databricks.Catalogs("<DATABRICKS_HOST>", "<DATABRICKS_HTTP_PATH>", [Catalog=null, Database=null]),
+					    Catalog = Source{[Name="<DATABRICKS_CATALOG>",Kind="Database"]}[Data],
+					    Schema = Catalog{[Name="<DATABRICKS_SCHEMA>",Kind="Schema"]}[Data],
+					    Data = Schema{[Name="fct_player_seasons",Kind="Table"]}[Data],
+					    Seasons = Table.Distinct(Table.SelectColumns(Data, {"season"})),
+					    Selected = Table.AddColumn(Seasons, "season_label", each Text.From([season]) & "/" & Text.From([season]+1), type text)
+					in
+					    Selected
+
+		relationship fact_dim_players
+			fromColumn: fct_player_seasons.player_id
+			toColumn: dim_players.player_id
+			fromCardinality: many
+			toCardinality: one
+			crossFilteringBehavior: oneDirection
+
+		relationship fact_dim_teams
+			fromColumn: fct_player_seasons.team_id
+			toColumn: dim_teams.team_id
+			fromCardinality: many
+			toCardinality: one
+			crossFilteringBehavior: oneDirection
+
+		relationship fact_dim_leagues
+			fromColumn: fct_player_seasons.league_id
+			toColumn: dim_leagues.league_id
+			fromCardinality: many
+			toCardinality: one
+			crossFilteringBehavior: oneDirection
+
+		relationship fact_dim_seasons
+			fromColumn: fct_player_seasons.season
+			toColumn: dim_seasons.season
+			fromCardinality: many
+			toCardinality: one
+			crossFilteringBehavior: oneDirection

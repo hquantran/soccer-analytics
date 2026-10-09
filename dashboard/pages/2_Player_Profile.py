@@ -150,10 +150,10 @@ with right:
             f"Position resolved by majority seasons played → **{position}** ({breakdown}). "
             "Metrics use only rows at that position."
         )
-    if profile.get("metric_source") == "semantic":
-        st.caption("Metrics calculated by MetricFlow over the selected seasons/stints.")
+    if profile.get("metric_source") == "scouting_mart":
+        st.caption("Metrics use scouting-mart values for one stint and weighted totals for multiple stints.")
     else:
-        st.caption("Metrics calculated by MetricFlow over the selected seasons/stints.")
+        st.caption("Metrics use scouting-mart values for one stint and weighted totals for multiple stints.")
 
 st.markdown('<div class="viz-spacer"></div>', unsafe_allow_html=True)
 specs = profile["metric_specs"]
