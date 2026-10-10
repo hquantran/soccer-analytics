@@ -6,13 +6,25 @@ This case study uses six seasons of recorded player statistics, from 2020/21 to 
 
 [View the full Power BI report](../Soccer_analytics.pdf)
 
-## Why this analysis matters
+## The recruitment problem
 
 A high goal total does not explain whether a team has enough scoring options. A high scoring rate does not show whether a player can maintain it over several seasons. Recruitment analysis needs both the squad question and the evidence behind each candidate.
 
 Power BI helps an analyst review teams, compare leagues, and identify players to investigate. Streamlit then provides detailed profiles, player comparisons, similar-player search, and AI-assisted explanations.
 
-The intended result is a shortlist for further scouting, with clear reasons and unanswered questions. This is a portfolio case study; no transfer outcome, time saving, or financial return has been measured.
+The project addresses a practical screening problem: deciding where to focus scouting effort without relying on raw totals or one impressive rate. It connects team-level questions with player evidence and detailed follow-up.
+
+This is a portfolio case study. Its output is a shortlist for further review; no transfer outcome, time saving, or financial return has been measured.
+
+## Main findings and decisions
+
+| Finding | Decision it supports |
+|---|---|
+| Crystal Palace's top three scorers accounted for an average 64.6% of recorded goals each season in a separate annual analysis | Investigate scoring options outside the leading trio before deciding whether more attacking depth is needed |
+| Bale leads the displayed scoring-rate ranking, but his evidence covers one season; Haaland and Mbappe have six seasons represented | Consider both scoring rate and the amount of playing-time evidence when prioritizing players |
+| Bundesliga has the highest overall attacker scoring rate in the included sample | Compare candidates with relevant league and season peers rather than treating all raw rates as equivalent |
+
+These findings support further investigation, not a transfer decision. The players in the ranking are examples of the screening method, not a shortlist matched to a particular club's budget or tactical needs.
 
 ## 1. Start with a squad question
 
@@ -65,22 +77,23 @@ The current ranking shows why playing time matters:
 | Player | Recorded goals | Recorded minutes | Overall goals per 90 | Seasons represented |
 |---|---:|---:|---:|---:|
 | Gareth Bale | 11 | 921 | 1.075 | 1 |
-| Hamza Igamane | 5 | 428 | 1.051 | 1 |
-| Jhon Durán | 12 | 1,131 | 0.955 | 2 |
+| Jhon Duran | 12 | 1,131 | 0.955 | 2 |
 | Erling Haaland | 161 | 15,356 | 0.944 | 6 |
-| Kylian Mbappé | 167 | 15,923 | 0.944 | 6 |
+| Kylian Mbappe | 167 | 15,923 | 0.944 | 6 |
 
-Bale and Igamane have higher recorded rates, but Haaland and Mbappé have much more playing time across seasons. A higher rate from a short period is less evidence of sustained output.
+Bale has a higher recorded rate, but Haaland and Mbappe have much more playing time across seasons. A short productive spell and sustained output deserve different levels of follow-up. Neither rate alone establishes the best candidate.
 
-**Reading note:** the ranking includes players below 900 minutes, including Igamane at 428 minutes. It identifies high recorded scoring rates; it is not a list restricted to players with substantial playing time. Blank cells do not mean zero goals.
+The updated report applies a **900-minute minimum to each player's total across the selected seasons**. Igamane's 428-minute record is therefore excluded. This improves the initial screen, but it is not a 900-minute minimum for every season.
 
-**Next action:** qualify individual player-seasons at 900 minutes before using the heatmap to assess sustained output. For an experienced-player screen, also review how many seasons meet the criteria. Assess emerging players separately so a long-history requirement does not automatically exclude them.
+For example, Duran has 1,131 recorded minutes overall, made up of 505 in 2023/24 and 626 in 2024/25. He passes the current total-minutes filter even though neither season reaches 900 minutes. His high rate warrants review, but the evidence is more limited than the six-season records.
 
-A separate calculation illustrates this approach: Mbappé, Haaland, Lewandowski, Kane, and Guirassy each recorded at least 900 attacker minutes and at least 0.40 goals per 90 in all six seasons. These are examples of sustained output, not an affordable shortlist. The thresholds are screening choices, not proven predictors of future success.
+**Next action:** use the current ranking to find players to investigate, then check their minutes in each season. If the question is sustained performance, apply the 900-minute requirement separately to each player-season and review how often the player meets the output criteria. Keep a separate route for emerging players with shorter histories. Blank cells do not mean zero goals.
+
+A separate calculation illustrates this approach: Mbappe, Haaland, Lewandowski, Kane, and Guirassy each recorded at least 900 attacker minutes and at least 0.40 goals per 90 in all six seasons. These are examples of sustained output, not an affordable shortlist. The thresholds are screening choices, not proven predictors of future success.
 
 ## 4. Compare players in the right context
 
-The league chart provides a reference for the selected position. Across the six-season attacker sample, the ranking is:
+The league chart provides a reference for the selected position. Its saved 900-minute filter checks each league's combined minutes; it does not remove individual players with fewer than 900 minutes. Across the six-season attacker sample, the ranking is:
 
 | League | Goals per 90 attacker-minutes |
 |---|---:|
@@ -106,6 +119,12 @@ An analyst can then review season trends and position-specific metrics, compare 
 
 Scouting signals highlight statistical patterns and their supporting evidence. AI-assisted explanations help describe those patterns in plain language and require analyst review.
 
+## How this supports a recruitment review
+
+Suppose a club wants to understand whether it needs another scoring option. Start by reviewing a relevant season's scoring concentration and the contribution of players outside the leading trio. Check squad age and existing alternatives before assuming a signing is the answer.
+
+If additional scouting is justified, use the player matrix to identify productive attackers. Compare their rates with minutes and season history, then use league context and Streamlit profiles to assess supporting evidence. The review should end with candidates for video and role assessment, plus clear reasons for including them. This workflow does not claim that the example players are suitable replacements for any team in the report.
+
 ## Recommended next steps
 
 1. **Define the squad question:** identify a scoring-depth or succession issue worth investigating.
@@ -119,7 +138,7 @@ Scouting signals highlight statistical patterns and their supporting evidence. A
 
 - Findings use the recorded data for 2020/21 through 2025/26. Coverage varies by player and team; season labels do not guarantee complete records.
 - The source excludes player stints below 300 minutes. Recorded team totals can therefore differ from official totals.
-- Overall per-90 rates account for playing time. They do not measure consistency by themselves. The current ranking has no consistently enforced 900-minute player-season minimum.
+- Overall per-90 rates account for playing time. They do not measure consistency by themselves. The current matrix requires 900 total player minutes across the selected seasons, not 900 minutes in each season.
 - Historical age findings use birth dates and July 1 of each season-start year. Missing birth dates are not included in the under-25 share but remain in total minutes.
 - Annual scoring concentration and the sustained-output examples were calculated separately from the report's displayed multi-season rankings.
 - The analysis does not establish affordability, tactical fit, medical status, or future performance. Scoring is not adjusted for penalties or expected goals.
