@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pandas as pd
 import streamlit as st
 
 from dashboard.data import (
@@ -405,6 +406,12 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
         )
 
         st.markdown("### Player")
+        # The lookup describes the latest stint; a selected player's historical
+        # stint can belong to another league. Keep that player selectable.
+        selected_player = st.session_state.get("profile_sb_player_id")
+        if selected_player is not None and selected_player not in set(scoped["player_id"]):
+            retained = lookup[lookup["player_id"] == selected_player]
+            scoped = pd.concat([scoped, retained], ignore_index=True)
         name_q = (st.text_input("Filter by name", key="profile_sb_name_q", placeholder="Type to narrow list…") or "").strip()
         if name_q and not scoped.empty:
             scoped = scoped[scoped["player_name"].str.contains(name_q, case=False, na=False)]

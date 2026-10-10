@@ -1,12 +1,64 @@
-﻿# Six Seasons of European Football
+# From Scoring Gaps to a Focused Scouting Shortlist
 
-## Scoring dependence, sustained player output, and youth participation
+## A recruitment screening case study across six seasons
 
 Prepared October 9, 2026. Scope: **season-start years 2020–2025 (2020/21–2025/26)**. **2026 is excluded from every calculation.**
 
 This analysis looks beyond single-season rankings to identify recurring scoring concentration, sustained individual output, and changes in youth participation across five European leagues. Power BI provides the overview; linked Streamlit profiles support further scouting.
 
+## Business problem
+
+A hypothetical football club is preparing its next recruitment review. The sporting director needs to decide which roles deserve more scouting and which players warrant detailed evaluation. Raw goal totals favor players with more minutes, one strong season can dominate attention, and reviewing profiles individually makes broad comparisons difficult.
+
+**The decision: Where should the club focus its scouting effort to broaden scoring contributions and identify players with sustained, role-relevant output?**
+
+This is a portfolio case study, not a commissioned engagement. No actual club adoption, recruitment savings, or transfer outcomes are claimed.
+
+## How the solution supports that decision
+
+| Decision stage | What the project provides | Practical output |
+|---|---|---|
+| Diagnose the need | Team scoring concentration and output trends | A scoring-depth question or role to investigate |
+| Establish context | Position-specific league rates and historical age participation | A relevant comparison group |
+| Screen candidates | Player-season heatmap with a 900-minute qualification | Players with repeated output and sufficient exposure |
+| Investigate alternatives | Linked Streamlit profiles, peer comparisons, and similarity search | A narrower list for video and domain review |
+| Explain the evidence | Calculated findings with optional AI-assisted explanations | A reviewable scouting brief |
+
+**Intended value:** Make screening more consistent and shorten the path from an aggregate finding to player-level evidence. Affordability and tactical suitability remain outside the model: fees, wages, contracts, match context, and several advanced performance measures are unavailable.
+
+## Executive takeaways and recommended actions
+
+| Finding | Why it matters | Recommended next step |
+|---|---|---|
+| Crystal Palace's annual top-three share exceeds 60% in five seasons | Scoring concentration recurs rather than appearing in just one season | Examine contributors outside the leading trio before deciding whether broader attacking support is needed |
+| Several forwards sustain the scoring criterion across six qualified seasons | Repeated substantial-minute output is more informative than one high-rate cell | Apply the same screen to the wider pool, then review candidates in Streamlit and video |
+| Bundesliga leads attacker scoring rates in four seasons, but the leader changes | Raw rates sit within different league and season contexts | Show a candidate's league benchmark and previous seasons alongside their latest rate |
+| PSG's under-25 minutes share rises by 33.6 percentage points between endpoints | Playing-time participation changes substantially | Inspect the players and intervening seasons before inferring a recruitment or development strategy |
+| Estimated passing accuracy produces questionable values | An uncertain metric could misdirect a recommendation | Validate the raw field before making passing-quality claims |
+
+These findings prioritize investigation. They do not demonstrate causal dependence on scorers, league strength, academy success, or future player performance. Established stars below illustrate the screening method; they are not presumed affordable recruitment targets.
+
 Figures were calculated from the local DuckDB fact and dimension tables, not extracted from the PBIX cache. Refresh the report and match the filters before presenting them. Season labels and similar sample sizes do not guarantee complete source coverage.
+
+The saved PBIX contains three pages: **Team Attack**, **Team Profiles**, and **League & Player Trends**. Goals/assists and shots are now separate visuals. The player matrix and league chart use a position-dependent metric. The age chart uses the dynamic `Minutes by Display Age` measure: its interpretation depends on whether a season filter is active.
+
+The analysis window contains **12,723 player stints and 4,586 distinct players**. Stints are player/team/league/season combinations, not necessarily one row per player-season.
+
+## What the current multi-season scoring chart actually shows
+
+**Stakeholder message:** “Some clubs' recorded scoring across the selected window is concentrated in the same three players. This measures continuity of scoring contributions, rather than each season's reliance on its leading trio.”
+
+| Team | Recorded goals, 2020–2025 window | Goals from the window's top three players | Share |
+|---|---:|---:|---:|
+| Nottingham Forest | 176 | 91 | 51.7% |
+| Leicester | 198 | 100 | 50.5% |
+| Tottenham | 347 | 171 | 49.3% |
+| West Ham | 282 | 134 | 47.5% |
+| Osasuna | 245 | 115 | 46.9% |
+
+These are the five highest shares among teams with at least 150 recorded goals in the selected window. All positions are included. This ranking does not require six seasons of coverage for every club; promotion, relegation, and missing coverage can change each club's exposure. Apply an explicit 2020–2025 filter to reproduce it in Power BI.
+
+**Implication:** Review whether leading scorers represent persistent contributors or a short period of concentrated output. For year-by-year depth, use the annual calculation below instead. Neither calculation establishes a causal dependency on those players.
 
 ## 1. Scoring concentration is a recurring pattern
 
@@ -87,11 +139,37 @@ The model estimates completed passes as `round(passes_total × passes_accuracy_p
 
 Verify raw field meaning, missingness, and numerator/denominator coverage against source records. Do not use the scatter's accuracy axis to claim passing quality until validated.
 
+## Match each claim to its visual
+
+| Report visual | Safe interpretation | Required selection or qualification |
+|---|---|---|
+| Top-three goal-share chart | Share contributed by three players within the selected window | Explicit season range; annual averages need a separate calculation |
+| Goals/assists and shots trends | Recorded output changes, not automatically changes in efficiency | Same team and coverage window; conversion is needed to assess efficiency |
+| Dynamic age chart | Historical age groups when seasons are filtered; current-age groups otherwise | Select seasons for historical youth-participation findings |
+| Passing/creation scatter | Exploratory comparison of estimated accuracy and key-pass rate | Validate passing field before interpreting accuracy |
+| Player-season matrix | Position-specific output over time | ≥900 minutes per player-season; goals, key passes, or tackles are different constructs |
+| League rate chart | Position-specific weighted rate among included stints | One position; player slicer must not narrow the benchmark |
+
+The midfielder and defender views describe creation and tackling activity, respectively. They should not be labelled overall performance or defensive quality without additional evidence. Blank qualified cells represent unavailable or insufficient-minute observations, not zero performance.
+
 ## Suggested presentation script
 
 “We examined six season labels across five European leagues, excluding 2026. Crystal Palace shows recurring scoring concentration, several attackers sustain our scoring threshold across six qualified seasons, and youth participation changes substantially at some clubs. League scoring-rate rankings also vary over time, reinforcing the importance of context in recruitment. These findings prioritize further scouting rather than establish tactical causes.”
 
 ## Coverage and checks
+
+### Intended business impact and how to test it
+
+The business outcome has not yet been measured. Evaluate the workflow by asking analysts to complete the same screening task with their existing process and this project, comparing:
+
+- Time to produce a shortlist with documented evidence.
+- Proportion of candidates meeting the requested position, season, and minutes criteria.
+- Recommendations accepted for further review by a football domain expert.
+- Reproducibility of findings from the documented filters.
+
+These are proposed success measures, not achieved results. The current demonstrated scope is a connected analysis workflow covering **12,723 recorded stints and 4,586 players**, with explicit metric definitions and qualification rules.
+
+### Data coverage
 
 | Season | Included stints | Distinct players |
 |---|---:|---:|

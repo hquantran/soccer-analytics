@@ -27,7 +27,8 @@ compare = st.Page(PAGES / "3_Compare.py", title="Compare")
 pg = st.navigation([top, profile, compare])
 link_player = st.query_params.get("player_id")
 link_season = st.query_params.get("season")
-link_key = (link_player, link_season)
+link_league = tuple(st.query_params.get_all("league"))
+link_key = (link_player, link_season, link_league)
 if link_player is not None and st.session_state.get("profile_link_seen") != link_key:
     st.session_state["profile_link_seen"] = link_key
     st.session_state["profile_link_pending"] = link_key
