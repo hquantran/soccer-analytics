@@ -1,131 +1,129 @@
-# Recruitment Analytics: From Squad Needs to Player Screening
+# Recruitment Analytics: From Squad Questions to Player Review
 
+**Business question: Where might a squad benefit from additional recruitment, and which players deserve a closer look?**
 
+This case study uses six seasons of recorded player statistics, from 2020/21 to 2025/26, across five European leagues. The dataset contains 12,723 records covering 4,586 players. Each record represents a player at a team in a league and season. The 2026/27 season is excluded.
 
-**Analysis window:** 2020/21?2025/26; season-start year 2026 excluded. The local snapshot contains 12,723 player?team?league?season stints across five European leagues and 4,586 players.
+[View the full Power BI report](../Soccer_analytics.pdf)
 
-[View the Power BI report PDF](../Soccer_analytics.pdf)
+## Why this analysis matters
 
-## Business Question
+A high goal total does not explain whether a team has enough scoring options. A high scoring rate does not show whether a player can maintain it over several seasons. Recruitment analysis needs both the squad question and the evidence behind each candidate.
 
-**Where might a squad benefit from additional recruitment, and which players warrant further evaluation?**
+Power BI helps an analyst review teams, compare leagues, and identify players to investigate. Streamlit then provides detailed profiles, player comparisons, similar-player search, and AI-assisted explanations.
 
-A recruitment team must first establish a need, then assess candidates against that need. Raw scoring totals favor players with more minutes, a standout season can conceal inconsistent output, and the same rate can mean different things across positions and competitions.
+The intended result is a shortlist for further scouting, with clear reasons and unanswered questions. This is a portfolio case study; no transfer outcome, time saving, or financial return has been measured.
 
-This project supports that initial investigation. Power BI provides team-level signals, league comparisons, and player-season screening. Streamlit provides deeper profiles, peer comparisons, similar-player search, and AI-assisted explanations. Together, they help an analyst assemble candidates and questions for further scouting; they do not determine who a club should sign.
+## 1. Start with a squad question
 
-This is a hypothetical recruitment case study, not evidence of a completed club engagement or measured recruitment impact.
+![Team Attack: attacking trends and top-three scorers' share](images/powerbi/page-1.png)
 
-## 1. Identify Potential Squad Needs
+*Report snapshot. Read team trends within the selected team and season range.*
 
-![Team Attack report: scoring concentration and attacking trends](images/powerbi/page-1.png)
+The Team Attack page asks two useful questions: **how has attacking output changed, and how concentrated is scoring among a few players?** Goals and assists show recorded contributions. The separate shots chart helps investigate whether changes in goals came with changes in shooting volume.
 
-*Saved report snapshot. Its selections differ from the independently calculated annual comparisons below.*
+Across the full six-season window, the three leading scorers contributed:
 
-Scoring concentration provides a starting question: **how much does a team rely on its leading contributors, and what happens beyond them?** Goals, assists, and shots across seasons help an analyst investigate whether a change reflects attacking volume, finishing, or personnel.
+| Team | Top-three goals / recorded team goals | Share |
+|---|---:|---:|
+| Nottingham Forest | 91 / 176 | 51.7% |
+| Leicester | 100 / 198 | 50.5% |
+| Tottenham | 171 / 347 | 49.3% |
 
-Among clubs with at least 30 recorded goals in each of the six seasons, Crystal Palace's leading three scorers accounted for a **mean annual share of 64.6%**, exceeding 60% in five seasons. Tottenham's mean was 63.3%, and Aston Villa's was 61.6%.
+These figures describe the same three players across the whole window, not a new top three chosen each season. Teams also have different numbers of seasons represented, so the ranking alone is not a fair measure of squad weakness.
 
-Repeated concentration warrants investigation, but it does not establish a squad weakness. A team may successfully concentrate chances among specialist finishers. Before suggesting recruitment, review the most relevant season, contributions outside the leading trio, and the roles of existing alternatives. Availability and tactical evidence are needed to determine whether additional depth would address a real problem.
+A separate annual check adds useful context: among teams with at least 30 recorded goals in each of the six seasons, Crystal Palace's top-three share averaged **64.6%**, exceeding 60% in five seasons. This annual average is an additional calculation, not the value shown by the multi-season chart.
 
-**Next step:** define a specific question, such as whether the squad has sufficient alternative scoring options, before screening additional attackers.
+**What this means:** repeated reliance on a few scorers gives the analyst a question about alternative scoring options. It can also reflect successful specialist finishers. It does not prove that another attacker is needed.
 
-The report's top-three measure ranks contributors over the selected window. The annual figures above instead identify each season's leading three separately and average the six shares equally. These are different analyses; selecting several seasons in the chart does not reproduce the mean annual statistic.
+**Next action:** review a relevant single season, contributions outside the leading trio, and the available alternatives. Use video and role assessment to decide whether recruitment would address a real gap.
 
-## 2. Understand Squad Context
+## 2. Understand who receives playing time
 
-![Team Profiles report: minutes by age group and exploratory passing analysis](images/powerbi/page-2.png)
+![Team Profiles: age-group minutes and passing-versus-creation scatter](images/powerbi/page-2.png)
 
-*The age visual has historical and current-age modes. Passing accuracy is not cleared for recruitment recommendations.*
+The age chart shows the share of recorded minutes given to each age group. It can support questions about succession, experience, and opportunities for younger players. A younger or older squad is not automatically better.
 
-Playing-time allocation helps frame the squad question. A high share of minutes for younger players may prompt discussion about experience and support; a low share may prompt questions about succession. Neither pattern is inherently preferable.
+As an additional historical check, PSG's under-25 minutes share increased from **36.3% in 2020/21 to 69.9% in 2025/26**, a change of 33.6 percentage points. This calculation uses each player's age on July 1 of the season-start year. It shows increased playing time for younger players. It does not explain whether they came through the academy or were recruited.
 
-Using age on July 1 of each season-start year, PSG's under-25 share of recorded minutes increased from **36.3% in 2020/21 to 69.9% in 2025/26**, a rise of 33.6 percentage points. This establishes an endpoint change in participation. It does not prove a deliberate youth-development strategy, distinguish academy players from young signings, or show that the change was steady.
+**Next action:** examine the players behind the change and the intervening seasons. Establish which roles might need support or succession planning before looking for candidates.
 
-**Next step:** inspect the players driving the change and the intervening seasons, then consider their roles alongside the original squad question. Use explicit season selections for historical age analysis. With no season selected, current-age mode groups historical minutes by age today; it does not describe the current squad.
+**Reading note:** the historical figures above use age at the start of each season. Grouping past minutes by current age answers a different question and should not be used to describe the current squad.
 
-### Validation before recommendation
+### A metric that needs further checking
 
-The passing-versus-chance-creation scatter could help explore team style, but its passing input requires validation. The current calculation estimates completed passes from a provider field treated as a percentage. It produces suspicious 2024/25 team values, including **44.1% for PSG and 12.2% for Manchester United**.
+The passing-accuracy input requires source validation. The scatter is excluded from the findings and should not support recruitment recommendations until the underlying data has been checked.
 
-Confirm the source field's meaning and missing-data coverage before using this metric. Until then, defer passing-quality conclusions and exclude this scatter from stakeholder recommendations. Detecting an implausible result is a reason to investigate the calculation, not to explain it as football behavior.
+## 3. Separate high rates from sustained output
 
-## 3. Screen Players for Sustained Performance
+![League and Player Trends: player-season heatmap sorted by weighted rate](images/powerbi/page-3.png)
 
-![League and Player Trends report: player-season heatmap and league comparison](images/powerbi/page-3.png)
+The updated heatmap ranks attackers by their **weighted goals per 90 across the selected seasons**. Each season column shows that season's rate. The Total column recalculates the rate from total goals and total minutes; it does not add the season rates or take their simple average.
 
-*The PDF shows an attacker selection. The interactive report changes the output metric by position; the PDF is a static snapshot.*
+The current ranking shows why playing time matters:
 
-Once the squad question is defined, the player-season heatmap helps distinguish repeated output from isolated high rates. A minimum-minute requirement reduces the weight placed on a few productive appearances, although it cannot eliminate performance uncertainty.
+| Player | Recorded goals | Recorded minutes | Overall goals per 90 | Seasons represented |
+|---|---:|---:|---:|---:|
+| Gareth Bale | 11 | 921 | 1.075 | 1 |
+| Hamza Igamane | 5 | 428 | 1.051 | 1 |
+| Jhon Durán | 12 | 1,131 | 0.955 | 2 |
+| Erling Haaland | 161 | 15,356 | 0.944 | 6 |
+| Kylian Mbappé | 167 | 15,923 | 0.944 | 6 |
 
-For an illustrative attacker screen, qualify each player-season at **900 attacker minutes**, require at least four qualified seasons, and count seasons with at least **0.40 goals per 90**. The following players meet the scoring threshold in all six qualified seasons:
+Bale and Igamane have higher recorded rates, but Haaland and Mbappé have much more playing time across seasons. A higher rate from a short period is less evidence of sustained output.
 
-| Player | Qualified seasons | Seasons at ?0.40 goals/90 | Lowest qualified-season rate |
-|---|---:|---:|---:|
-| Kylian Mbapp? | 6 | 6 | 0.831 |
-| Erling Haaland | 6 | 6 | 0.722 |
-| Robert Lewandowski | 6 | 6 | 0.620 |
-| Harry Kane | 6 | 6 | 0.473 |
-| Serhou Guirassy | 6 | 6 | 0.510 |
+**Reading note:** the ranking includes players below 900 minutes, including Igamane at 428 minutes. It identifies high recorded scoring rates; it is not a list restricted to players with substantial playing time. Blank cells do not mean zero goals.
 
-These established forwards demonstrate the screening method; they are not a budget-qualified shortlist. The thresholds are analytical choices, not validated predictors of transfer success. A four-season requirement also excludes emerging players, who need a separate development-focused review.
+**Next action:** qualify individual player-seasons at 900 minutes before using the heatmap to assess sustained output. For an experienced-player screen, also review how many seasons meet the criteria. Assess emerging players separately so a long-history requirement does not automatically exclude them.
 
-**Next step:** apply role-appropriate criteria to the relevant candidate pool, retain minutes alongside rates, and inspect season-to-season changes. A blank qualified cell can indicate insufficient minutes or absent data; it must not be read as zero performance.
+A separate calculation illustrates this approach: Mbappé, Haaland, Lewandowski, Kane, and Guirassy each recorded at least 900 attacker minutes and at least 0.40 goals per 90 in all six seasons. These are examples of sustained output, not an affordable shortlist. The thresholds are screening choices, not proven predictors of future success.
 
-The heatmap supports this review, but the four-season qualification and strong-season counts above were calculated separately from the local data. They should not be described as an automated feature of the saved report.
+## 4. Compare players in the right context
 
-## 4. Put Performance in Context
+The league chart provides a reference for the selected position. Across the six-season attacker sample, the ranking is:
 
-A candidate's rate needs a relevant comparison group. The report uses goals per 90 for attackers, key passes per 90 for midfielders, and tackles per 90 for defenders. These measure different contributions; they are not interchangeable overall-performance scores. Higher tackle volume, for example, may reflect greater defensive workload rather than better defending.
+| League | Goals per 90 attacker-minutes |
+|---|---:|
+| Bundesliga | 0.372 |
+| Ligue 1 | 0.341 |
+| Premier League | 0.323 |
+| Serie A | 0.321 |
+| La Liga | 0.316 |
 
-Among included attackers, Bundesliga had the highest aggregate scoring rate in **four of six seasons**. The leader changed from Serie A in 2020/21 (0.391 goals per 90 attacker-minutes) to Bundesliga in 2021/22?2024/25, then Ligue 1 in 2025/26 (0.355).
+These are total attacker goals divided by total attacker minutes, multiplied by 90. They are not team goals per match or an average of individual player rates.
 
-This variation supports using season-specific context. It does not establish league strength, ease of scoring, or a transfer adjustment factor. Coverage and the mix of included players also affect the comparison.
+**What this means:** scoring rates differ across the included samples. This does not prove that one league is stronger or easier. The players covered, seasons selected, and playing-time distribution affect the result.
 
-**Next step:** compare a candidate with same-position peers in the relevant season and league, then inspect supporting metrics. Keep a league benchmark independent of an individual player selection when the purpose is to compare that player with the wider population.
+**Next action:** compare candidates with peers in the same position, season, and league. Use the wider league as the reference when assessing an individual candidate.
 
-## 5. Investigate Shortlisted Players
+The interactive report uses goals per 90 for attackers, key passes per 90 for midfielders, and tackles per 90 for defenders. These describe different contributions, not a shared overall-quality score. More tackles can reflect more defensive work rather than better defending.
 
-Power BI identifies a statistical question; Streamlit helps investigate the player behind it. Player-season hyperlinks can carry the selected player, season, and league selections into the profile. The current local setup requires Streamlit to be running on the viewer's machine.
+## 5. Move from screening to deeper investigation
 
-In Streamlit, an analyst can:
+Player-season links connect the report to Streamlit profiles for deeper review.
 
-- Review position-specific output, season trends, peer percentiles, and supporting charts.
-- Compare two players in the same resolved position under a consistent filter window.
-- Find statistically similar players to expand the pool of alternatives. Similarity describes a statistical profile, not equal ability or tactical fit.
-- Examine rule-based scouting signals and the evidence that triggered them.
-- Request Gemini explanations grounded in supplied metrics, chart context, and scouting signals when configured. Explanations remain subject to analyst verification.
+An analyst can then review season trends and position-specific metrics, compare the player with peers, compare two players directly, and find statistically similar alternatives. Similarity means similar recorded statistics; it does not establish equal ability or tactical fit.
 
-**Next step:** record why each candidate merits video or specialist review, which evidence supports that judgment, and what remains unknown. The application helps organize investigation; it does not supply contract, medical, affordability, or complete tactical assessments.
+Scouting signals highlight statistical patterns and their supporting evidence. AI-assisted explanations help describe those patterns in plain language and require analyst review.
 
-## Recommended Recruitment Workflow
+## Recommended next steps
 
-1. **Define the question:** select a team and relevant season; investigate a scoring-depth or succession signal.
-2. **Establish context:** review attacking trends and age-based participation before assuming recruitment is the answer.
-3. **Set screening criteria:** choose the position, output metrics, minimum minutes, and appropriate history requirement.
-4. **Benchmark fairly:** compare candidates within relevant season, league, and position groups.
-5. **Investigate in Streamlit:** review profiles, peers, comparisons, statistical alternatives, and supporting explanations.
-6. **Recommend further scouting:** document candidates, evidence, uncertainties, and the questions video, tactical, medical, and financial review must resolve.
+1. **Define the squad question:** identify a scoring-depth or succession issue worth investigating.
+2. **Check the context:** review the relevant team, season, age groups, and data coverage.
+3. **Set player criteria:** choose the position and apply a meaningful player-season minutes threshold.
+4. **Review repeated output:** distinguish a short productive spell from several strong seasons.
+5. **Investigate candidates in Streamlit:** examine supporting metrics, peers, and alternatives.
+6. **Recommend further scouting:** document candidates, reasons, and the questions specialist review must answer.
 
-## What the Analysis Can and Cannot Tell Us
+## Scope and limitations
 
-The analysis can identify recurring statistical patterns, compare recorded output on consistent definitions, and provide evidence for prioritizing further review.
+- Findings use the recorded data for 2020/21 through 2025/26. Coverage varies by player and team; season labels do not guarantee complete records.
+- The source excludes player stints below 300 minutes. Recorded team totals can therefore differ from official totals.
+- Overall per-90 rates account for playing time. They do not measure consistency by themselves. The current ranking has no consistently enforced 900-minute player-season minimum.
+- Historical age findings use birth dates and July 1 of each season-start year. Missing birth dates are not included in the under-25 share but remain in total minutes.
+- Annual scoring concentration and the sustained-output examples were calculated separately from the report's displayed multi-season rankings.
+- The analysis does not establish affordability, tactical fit, medical status, or future performance. Scoring is not adjusted for penalties or expected goals.
 
-It cannot establish that a team needs a transfer, that a player will reproduce performance elsewhere, or that a statistically similar player is a suitable replacement. Scoring concentration, youth participation, and league averages are investigative signals rather than causal explanations. Goals are not adjusted for penalties or expected goals in this case study.
+## Intended outcome
 
-No recruitment outcome, adoption, time saving, or financial return has been measured. Any future evaluation should assess the quality and reproducibility of the shortlist and its usefulness to expert reviewers.
-
-## Analytical Notes
-
-- **Evidence source:** numerical findings were recalculated from the local DuckDB snapshot. The PDF and inspected PBIX visual structure establish presentation, not numerical parity with the embedded Power BI model. Match filters and refresh data before reproducing findings.
-- **Coverage and grain:** one fact row represents a player?team?league?season stint. Staging excludes stints below 300 minutes. Recorded team goals therefore may differ from official totals; season labels alone do not establish completeness.
-- **Screening threshold:** 900 minutes qualifies aggregated player-seasons at the selected position, not entire leagues. A visual-level league total filter does not implement player qualification. Streamlit similarity search has a separate default 500-minute candidate floor; align filters before comparing outputs.
-- **Rate definitions:** per-90 rates use `90 ? sum(events) / sum(minutes)`. Percentage rates divide summed numerators by summed denominators. Do not average stored player rates. Multi-season rates are weighted by their denominators.
-- **Age:** historical findings use birth dates and a July 1 reference date, not the fact model's January 1 season key. Missing birth dates remain in total minutes but do not enter the under-25 numerator.
-- **Consumers:** Power BI imports dimensional facts and dimensions; Streamlit reads the scouting mart, which excludes goalkeepers. Shared metric definitions support consistent formulas. Optional MetricFlow work is not required by either application.
-- **Scope:** the briefing covers season-start years 2020?2025. It does not claim that every season or player has complete provider coverage. Passing accuracy remains withheld pending validation.
-
-## Intended Outcome
-
-An **evidence-backed shortlist and a clear set of questions for further scouting**, tied to an explicitly investigated squad need. The value is a traceable path from team-level signal to candidate review, with human judgment at each decision.
-
+A clear squad question, a set of candidates supported by evidence, and a plan for further scouting. The report helps decide **where to investigate next**, rather than making an automatic transfer recommendation.
