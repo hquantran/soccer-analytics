@@ -37,3 +37,4 @@ data/raw/
 logs/
 .databricks/
 .user.yml
+.tools/

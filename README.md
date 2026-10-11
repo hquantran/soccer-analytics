@@ -8,10 +8,11 @@ Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
 
 ## Analytics engineering migration
 
-The original DuckDB/dbt implementation remains available. This branch adds a
-private Databricks/Delta migration path, shared canonical metric definitions and
-an open-source MetricFlow semantic graph. The private workspace has passed migration parity and semantic validation;
-Streamlit reads the precomputed scouting mart; the Power BI connection layer imports the dimensional models.
+The project supports a local DuckDB warehouse and a private Databricks cloud
+warehouse. dbt builds dimensional tables and a separate scouting mart. Power BI
+imports the dimensional tables into its semantic model of relationships and DAX
+measures; Streamlit reads the scouting mart. Both paths reuse formula definitions
+from `dbt_project.yml`. No separate semantic-query service is required.
 
 ```mermaid
 flowchart LR
@@ -24,7 +25,6 @@ flowchart LR
     Contract[Shared metric definitions] --> Mart
     Contract --> PBIModel
     Contract --> App
-    DBT --> MF[Optional MetricFlow experiments]
 ```
 
 The fact grain is **player ? team ? league ? season stint**, with a 300-minute
@@ -36,7 +36,7 @@ completed passes retain the original provider-percentage calculation.
 See the [migration, validation and consumer guide](docs/databricks-migration.md)
 for configuration, transfer commands, canonical formulas, tests and Power BI setup.
 Python 3.11 and the checked-in `uv.lock` provide the validated dependency path.
-No paid hosted dbt Semantic Layer is required. Streamlit stays local/private.
+The Power BI semantic model provides the reporting semantic layer. Streamlit stays local/private.
 Set `SOCCER_BACKEND=databricks` in ignored `.env` to read the cloud scouting mart,
 or `SOCCER_BACKEND=duckdb` to use the preserved local database.
 The application loads `.env` automatically; no download-back step is needed.

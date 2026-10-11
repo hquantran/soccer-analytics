@@ -1,5 +1,4 @@
-"""Cross-consumer contract and real MetricFlow SQL aggregation checks."""
-import json
+"""Shared metric and Power BI formula contract checks."""
 import unittest
 from pathlib import Path
 
@@ -23,25 +22,6 @@ class MetricContractTests(unittest.TestCase):
         self.assertEqual(MetricSpec('goal_involvements_per90', 'G+A').numerator, ('goals', 'assists'))
         with self.assertRaises(ValueError):
             ensure_recommender_features(frame.drop(columns=['goals_per90']))
-
-    def test_parsed_semantic_contract(self):
-        manifest = json.loads((ROOT / 'target/manifest.json').read_text(encoding='utf-8'))
-        models = {value['name']: value for value in manifest['semantic_models'].values()}
-        measures = {m['name']: m for m in models['player_seasons']['measures']}
-        metrics = {value['name']: value for value in manifest['metrics'].values()}
-        for key, contract in CANONICAL_METRICS.items():
-            params = metrics[key]['type_params']
-            num_metric = params['numerator']['name']
-            den_metric = params['denominator']['name']
-            numerator = measures[metrics[num_metric]['type_params']['measure']['name']]
-            denominator = measures[metrics[den_metric]['type_params']['measure']['name']]
-            inputs = contract['numerator']
-            expr = inputs if isinstance(inputs, str) else "(" + " + ".join(inputs) + ")"
-            self.assertEqual(numerator['expr'], f"{expr} * {contract['scale']}")
-            self.assertEqual(denominator['expr'], contract['denominator'])
-            self.assertEqual(numerator['agg'], 'sum')
-            self.assertEqual(denominator['agg'], 'sum')
-            self.assertEqual(metrics[key]['type'], 'ratio')
 
     def test_power_bi_contract(self):
         dax = (ROOT / 'powerbi/measures.dax').read_text(encoding='utf-8')

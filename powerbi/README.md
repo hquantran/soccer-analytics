@@ -3,7 +3,8 @@
 The Power BI path imports `fct_player_seasons`, `dim_players`, `dim_teams`,
 and `dim_leagues` directly from Databricks. A season dimension is derived at
 import. Streamlit separately reads `bi_player_seasons`, the scouting mart.
-MetricFlow is optional for experiments and is not required by either dashboard.
+The Power BI semantic model is the reporting semantic layer. Shared formula
+definitions generate its DAX measures; no separate metric-query engine is used.
 
 `semantic-model.tmdl` defines the import partitions, four one-to-many,
 single-direction relationships, 16 weighted rate measures, totals and weighted
