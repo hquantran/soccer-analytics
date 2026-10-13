@@ -280,21 +280,6 @@ The current pipeline covers:
 
 ---
 
-## Power BI finding: passing accuracy and chance creation
-
-![Team passing accuracy and key passes per 90](docs/images/powerbi/page-2.png)
-
-Each dot in the scatter plot represents a team. Teams farther right have higher
-calculated passing accuracy, while teams higher up record more key passes per 90.
-Most teams show a positive association between the two metrics, although some
-teams with high passing accuracy record relatively few key passes. This suggests
-that pass completion alone does not fully describe a team's chance creation.
-The chart shows an association; it does not establish a causal relationship.
-
-Passing accuracy is calculated assuming the API's `passes__accuracy` field is a
-percentage. This interpretation still needs to be verified against the source
-definition before using the metric to support recruitment recommendations.
-
 ## Key Takeaways & Impact
 
 ### How the Platform Helps

@@ -62,9 +62,19 @@ As an additional historical check, PSG's under-25 minutes share increased from *
 
 **Reading note:** the historical figures above use age at the start of each season. Grouping past minutes by current age answers a different question and should not be used to describe the current squad.
 
-### A metric that needs further checking
+### Passing accuracy and chance creation
 
-The passing-accuracy input requires source validation. The scatter is excluded from the findings and should not support recruitment recommendations until the underlying data has been checked.
+Each dot in the scatter plot represents a team. Teams farther right have higher
+calculated passing accuracy, while teams higher up record more key passes per 90.
+Most teams show a positive association between the two metrics, although some
+teams with high passing accuracy record relatively few key passes. This suggests
+that pass completion alone does not fully describe a team's chance creation.
+The chart shows an association; it does not establish a causal relationship.
+
+**Methodology note:** passing accuracy is calculated assuming the API's
+`passes__accuracy` field is a percentage. This interpretation still needs to be
+verified against the source definition before using the metric to support
+recruitment recommendations.
 
 ## 3. Separate high rates from sustained output
 
