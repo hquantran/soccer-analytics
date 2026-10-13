@@ -1,8 +1,6 @@
 # ⚽ Soccer Scouting & Player Analytics Platform
 
-An end-to-end soccer scouting platform that turns large-scale player statistics into **searchable player profiles, statistical recommendations, interactive analysis, and AI-assisted scouting explanations**.
-
-Built with Python, dlt, DuckDB, dbt, Streamlit, and Gemini.
+A soccer analytics project for exploring player performance across five European leagues. It includes a Streamlit scouting app, player similarity search, a Power BI semantic model, and optional Gemini explanations.
 
 ---
 
@@ -27,7 +25,7 @@ flowchart LR
     Contract --> App
 ```
 
-The fact grain is **player, team, league, and season stint**, with a 300-minute
+The fact grain is **player ? team ? league ? season stint**, with a 300-minute
 minimum. Rate metrics divide aggregated additive inputs, so multi-season rates
 remain weighted by playing time. Dribbling uses explicit `dribble_attempts_per90`
 and `dribble_success_pct`; successful dribbles per 90 have the explicit name `successful_dribbles_per90`. Estimated
@@ -40,10 +38,6 @@ The Power BI semantic model provides the reporting semantic layer. Streamlit sta
 Set `SOCCER_BACKEND=databricks` in ignored `.env` to read the cloud scouting mart,
 or `SOCCER_BACKEND=duckdb` to use the preserved local database.
 The application loads `.env` automatically; no download-back step is needed.
-
-`main` is the Databricks-first version and also supports local DuckDB.
-`local-setup` preserves the version of `main` from before the Databricks merge;
-it is a snapshot and does not automatically receive future updates.
 
 Underlying third-party sports data is intentionally excluded: do not commit
 DuckDB databases, raw data, CSV/Parquet exports, migration artifacts, notebook
@@ -80,7 +74,7 @@ Player and season statistics are collected from **API-Football** across five maj
 - Serie A
 - La Liga
 
-The current pipeline covers **2020–2026**, representing 35 league-season combinations.
+The current pipeline covers **2020-2026**, representing 35 league-season combinations.
 
 Raw API data is loaded into DuckDB using `dlt` and transformed with `dbt` into structured player-season records.
 
@@ -113,7 +107,7 @@ This makes player comparisons more meaningful when players have different amount
 
 ---
 
-## 🤖 AI-Assisted Scouting
+## AI-Assisted Scouting
 
 The platform goes beyond displaying statistics by adding a **Gemini-powered AI scouting assistant** directly inside the player analysis workflow.
 
@@ -183,7 +177,7 @@ The application therefore uses AI to make quantitative analysis easier to interp
 
 ---
 
-## 🔎 Player Discovery
+## Player Discovery
 
 The platform also includes a statistical player recommendation system.
 
@@ -207,7 +201,7 @@ An analyst can start with a player they already know and use the system to ident
 
 ---
 
-## 📊 Streamlit Scouting Application
+## Streamlit Scouting Application
 
 The Streamlit application brings the analytical and AI components together.
 
@@ -235,7 +229,7 @@ Users can move from a known player to statistically similar players and continue
 
 ---
 
-## 🏗️ Data & Application Architecture
+## Data & Application Architecture
 
 ```text
                     API-Football
@@ -271,14 +265,14 @@ Users can move from a known player to statistically similar players and continue
 
 ---
 
-## 📈 Dataset Scale
+## Dataset Scale
 
 The current pipeline covers:
 
 | Metric | Scale |
 |---|---|
 | Leagues | 5 |
-| Seasons | 2020–2026 |
+| Seasons | 2020-2026 |
 | League-season combinations | 35 |
 | Raw player records | 26,132 |
 | Raw player-statistic records | 27,412 |
@@ -286,7 +280,7 @@ The current pipeline covers:
 
 ---
 
-## 💡 Key Takeaways & Impact
+## Key Takeaways & Impact
 
 ### How the Platform Helps
 
@@ -308,7 +302,7 @@ The current pipeline covers:
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Area | Technology |
 |---|---|
@@ -325,7 +319,7 @@ The current pipeline covers:
 
 ---
 
-## 👨‍💻 Contributions
+## Contributions
 
 This project was built by Ha Tran and Quan.
 
@@ -335,6 +329,7 @@ This project was built by Ha Tran and Quan.
 - Built the end-to-end ELT pipeline using Python, dlt, DuckDB, and dbt
 - Built the transformation workflow from raw API responses to analysis-ready player-season data
 - Developed the standardized performance metrics used throughout the application
+- Built the Power BI semantic layer, including table relationships and DAX measures
 - Conducted exploratory data analysis to understand player distributions and performance patterns
 - Built the Streamlit scouting application
 - Integrated the Gemini AI assistant into player profiles and player comparisons
@@ -349,7 +344,7 @@ This project was built by Ha Tran and Quan.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 soccer-analytics/
@@ -388,7 +383,7 @@ soccer-analytics/
 
 ---
 
-## 🚀 Running the Project
+## Running the Project
 
 ### 1. Clone the Repository
 
@@ -405,26 +400,27 @@ Install the required Python and dbt dependencies for the project environment.
 pip install -r requirements.txt
 ```
 
-### 3. Select Your Warehouse
+### 3. Configure API Access
 
-Copy `.env.example` to ignored `.env` and choose one backend.
+Add the required API-Football credentials to the project configuration. Never commit a populated config file.
 
-**Databricks (primary setup):** set `SOCCER_BACKEND=databricks` and fill in
-`DATABRICKS_HOST`, `DATABRICKS_HTTP_PATH`, `DATABRICKS_TOKEN`,
-`DATABRICKS_CATALOG`, and `DATABRICKS_SCHEMA`. The dashboard reads the existing
-`bi_player_seasons` table. See the [warehouse guide](docs/databricks-migration.md)
-if the cloud models have not been provisioned yet.
+### 4. Run the Data Pipeline
 
-**Local DuckDB:** set `SOCCER_BACKEND=duckdb`. The dashboard opens the existing
-`data/warehouse/api_sports.duckdb` database read-only. Set `SOCCER_DUCKDB_PATH`
-if your database is elsewhere. It must already contain `main.bi_player_seasons`.
+```bash
+python run_players.py
+```
 
-Launching either dashboard backend does not require rerunning ingestion,
-migration, or dbt builds. Preserve existing raw history; `run_players.py` is an
-ingestion command, not a dashboard setup step. A fresh clone does not include
-private warehouse data.
+This collects player data and loads the raw results into DuckDB.
 
-### 4. Configure Gemini
+### 5. Run dbt
+
+Run the data quality tests:
+
+```bash
+dbt build --profiles-dir . --target dev
+```
+
+### 6. Configure Gemini
 
 To enable the AI scouting features, add a valid `GEMINI_API_KEY` to the ignored local `.streamlit/secrets.toml` file. Optionally configure `GEMINI_MODEL`.
 
@@ -432,7 +428,7 @@ Never commit or share populated secrets files.
 
 Without a Gemini API key, the deterministic analytics and scouting flags remain available, but AI explanations are disabled.
 
-### 5. Launch the Application
+### 7. Launch the Application
 
 ```bash
 streamlit run dashboard/app.py
