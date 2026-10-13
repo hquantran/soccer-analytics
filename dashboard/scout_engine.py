@@ -1,4 +1,4 @@
-"""Deterministic scouting findings built from the dashboard BI player table."""
+"""Deterministic scouting findings built from the semantic dashboard results."""
 
 from dataclasses import asdict, dataclass
 from typing import Optional
@@ -95,7 +95,7 @@ class ScoutEngine:
                 )
             )
 
-        # BI currently has goals and shots, but no non-penalty goals or xG.
+        # The source currently has goals and shots, but no non-penalty goals or xG.
         if "goals_per90" in peers.columns and "shots_per90" in peers.columns:
             goals_90 = self._number(player, "goals_per90")
             shots_90 = self._number(player, "shots_per90")

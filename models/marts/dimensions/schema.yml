@@ -2,13 +2,17 @@ version: 2
 
 models:
   - name: dim_players
+    description: One row per player with latest available descriptive attributes.
     columns:
+      - name: birth_date
+        description: Nullable date of birth parsed from the raw player record; use with a season reference date for historical age.
       - name: player_id
         tests:
           - unique
           - not_null
 
   - name: dim_teams
+    description: One row per team.
     columns:
       - name: team_id
         tests:
@@ -19,6 +23,7 @@ models:
           - not_null
 
   - name: dim_leagues
+    description: One row per league in the configured scope.
     columns:
       - name: league_id
         tests:

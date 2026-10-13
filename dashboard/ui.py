@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pandas as pd
 import streamlit as st
 
 from dashboard.data import (
@@ -271,7 +272,7 @@ def _render_season_filter(prefix: str, seasons_all: list[int]) -> list[int]:
         options=["Single season", "Multi season"],
         horizontal=True,
         key=f"{prefix}_season_mode_v2",
-        help="Single season uses one BI season row path; multi aggregates volume across seasons.",
+        help="Metrics are calculated across the selected seasons.",
     )
 
     if mode == "Single season":
@@ -405,6 +406,12 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
         )
 
         st.markdown("### Player")
+        # The lookup describes the latest stint; a selected player's historical
+        # stint can belong to another league. Keep that player selectable.
+        selected_player = st.session_state.get("profile_sb_player_id")
+        if selected_player is not None and selected_player not in set(scoped["player_id"]):
+            retained = lookup[lookup["player_id"] == selected_player]
+            scoped = pd.concat([scoped, retained], ignore_index=True)
         name_q = (st.text_input("Filter by name", key="profile_sb_name_q", placeholder="Type to narrow list…") or "").strip()
         if name_q and not scoped.empty:
             scoped = scoped[scoped["player_name"].str.contains(name_q, case=False, na=False)]
@@ -446,7 +453,7 @@ def render_profile_sidebar(lookup, dims: dict) -> dict | None:
                 positions_all,
                 index=positions_all.index(default_pos) if default_pos in positions_all else 0,
                 key="profile_sb_position",
-                help="Only used if the player's BI rows lack a position. Charts normally use the player's recorded position.",
+                help="Only used if the player's data lacks a position. Charts normally use the player's recorded position.",
             )
             age_range = st.slider(
                 "Age range",

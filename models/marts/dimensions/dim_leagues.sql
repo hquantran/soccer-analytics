@@ -1,11 +1,7 @@
 -- One row per league in the configured scope.
 
-select *
-from (
-    values
-        (39, 'Premier League'),
-        (61, 'Ligue 1'),
-        (78, 'Bundesliga'),
-        (135, 'Serie A'),
-        (140, 'La Liga')
-) as leagues(league_id, league_name)
+select 39 as league_id, 'Premier League' as league_name
+union all select 61, 'Ligue 1'
+union all select 78, 'Bundesliga'
+union all select 135, 'Serie A'
+union all select 140, 'La Liga'

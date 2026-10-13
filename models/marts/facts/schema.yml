@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: fct_player_seasons
+    description: One additive row per player-team-league-season stint.
     columns:
       - name: player_season_id
         tests:

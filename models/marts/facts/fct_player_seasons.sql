@@ -7,6 +7,7 @@ select
     team_id,
     league_id,
     season,
+    make_date(season, 1, 1) as season_start_date,
     position,
     injured,
     rating,
