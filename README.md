@@ -25,7 +25,7 @@ flowchart LR
     Contract --> App
 ```
 
-The fact grain is **player ? team ? league ? season stint**, with a 300-minute
+The fact grain is **player, team, league, and season stint**, with a 300-minute
 minimum. Rate metrics divide aggregated additive inputs, so multi-season rates
 remain weighted by playing time. Dribbling uses explicit `dribble_attempts_per90`
 and `dribble_success_pct`; successful dribbles per 90 have the explicit name `successful_dribbles_per90`. Estimated
