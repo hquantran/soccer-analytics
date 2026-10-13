@@ -229,6 +229,35 @@ Users can move from a known player to statistically similar players and continue
 
 ---
 
+## Power BI reporting
+
+The Power BI report helps analysts review squad needs and identify players for
+further scouting. Its semantic model imports player-season facts and player,
+team, league, and season dimensions from Databricks. Table relationships and DAX
+measures support filtering, totals, and weighted performance rates. Ha Tran built
+the Power BI semantic layer.
+
+The report has three pages:
+
+- **Team Attack:** season trends in goals, assists, and shots, plus the top three
+  scorers' share of recorded team goals.
+- **Team Profiles:** minutes by age group and a scatter plot comparing calculated
+  passing accuracy with key passes per 90.
+- **League and Player Trends:** player-season goals per 90 and league comparisons.
+
+![Team Attack report page](docs/images/powerbi/page-1.png)
+
+![Team Profiles report page](docs/images/powerbi/page-2.png)
+
+![League and Player Trends report page](docs/images/powerbi/page-3.png)
+
+Read the [recruitment insights and methodology](docs/stakeholder-insights.md) for
+the findings, limitations, and suggested follow-up checks. The
+[full report PDF](Soccer_analytics.pdf) includes all three pages, and the
+[Power BI setup guide](powerbi/README.md) explains the semantic model and connection.
+Streamlit supports the next step with individual profiles, player comparisons,
+and similar-player search.
+
 ## Data & Application Architecture
 
 ```text
@@ -310,6 +339,8 @@ The current pipeline covers:
 | Programming | Python |
 | Data Ingestion | dlt |
 | Analytical Database | DuckDB |
+| Cloud Warehouse | Databricks |
+| Reporting | Power BI, DAX, and TMDL |
 | Transformation | dbt |
 | Analysis | Pandas, NumPy, Matplotlib, Seaborn |
 | Recommendation | Cosine Similarity |
@@ -435,4 +466,5 @@ streamlit run dashboard/app.py
 ```
 The [Power BI connection layer](powerbi/README.md) contains a generated TMDL
 semantic model with Databricks import queries, relationships and shared DAX
-measures. No Power BI report or credentials are included.
+measures. The [report PDF](Soccer_analytics.pdf) and screenshots are included;
+the private PBIX dataset and credentials are excluded.
