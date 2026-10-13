@@ -41,6 +41,10 @@ Set `SOCCER_BACKEND=databricks` in ignored `.env` to read the cloud scouting mar
 or `SOCCER_BACKEND=duckdb` to use the preserved local database.
 The application loads `.env` automatically; no download-back step is needed.
 
+`main` is the Databricks-first version and also supports local DuckDB.
+`local-setup` preserves the version of `main` from before the Databricks merge;
+it is a snapshot and does not automatically receive future updates.
+
 Underlying third-party sports data is intentionally excluded: do not commit
 DuckDB databases, raw data, CSV/Parquet exports, migration artifacts, notebook
 outputs, Power BI datasets, credentials or populated private configuration.
@@ -401,27 +405,26 @@ Install the required Python and dbt dependencies for the project environment.
 pip install -r requirements.txt
 ```
 
-### 3. Configure API Access
+### 3. Select Your Warehouse
 
-Add the required API-Football credentials to the project configuration. Never commit a populated config file.
+Copy `.env.example` to ignored `.env` and choose one backend.
 
-### 4. Run the Data Pipeline
+**Databricks (primary setup):** set `SOCCER_BACKEND=databricks` and fill in
+`DATABRICKS_HOST`, `DATABRICKS_HTTP_PATH`, `DATABRICKS_TOKEN`,
+`DATABRICKS_CATALOG`, and `DATABRICKS_SCHEMA`. The dashboard reads the existing
+`bi_player_seasons` table. See the [warehouse guide](docs/databricks-migration.md)
+if the cloud models have not been provisioned yet.
 
-```bash
-python run_players.py
-```
+**Local DuckDB:** set `SOCCER_BACKEND=duckdb`. The dashboard opens the existing
+`data/warehouse/api_sports.duckdb` database read-only. Set `SOCCER_DUCKDB_PATH`
+if your database is elsewhere. It must already contain `main.bi_player_seasons`.
 
-This collects player data and loads the raw results into DuckDB.
+Launching either dashboard backend does not require rerunning ingestion,
+migration, or dbt builds. Preserve existing raw history; `run_players.py` is an
+ingestion command, not a dashboard setup step. A fresh clone does not include
+private warehouse data.
 
-### 5. Run dbt
-
-Run the data quality tests:
-
-```bash
-dbt build --profiles-dir . --target dev
-```
-
-### 6. Configure Gemini
+### 4. Configure Gemini
 
 To enable the AI scouting features, add a valid `GEMINI_API_KEY` to the ignored local `.streamlit/secrets.toml` file. Optionally configure `GEMINI_MODEL`.
 
@@ -429,7 +432,7 @@ Never commit or share populated secrets files.
 
 Without a Gemini API key, the deterministic analytics and scouting flags remain available, but AI explanations are disabled.
 
-### 7. Launch the Application
+### 5. Launch the Application
 
 ```bash
 streamlit run dashboard/app.py
